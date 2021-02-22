@@ -114,6 +114,17 @@ class: center, middle, inverse, title-slide
 - NameNode single point of failure (there is solution)
 
 ---
+## How to use HDFS ?
+
+- You need a cluster with HDFS to store file (obviously) 
+- HDFS doesn't provide a fancy GUI to interact with  :
+  - Install the hadoop CLI on your machine
+  - Use the Java API 
+  - Use the [WebHDFS REST API](https://hadoop.apache.org/docs/r2.4.1/hadoop-project-dist/hadoop-hdfs/WebHDFS.html)
+- Install HUE, an GUI for the Hadoop ecosystem
+
+
+---
 ## Pros of HDFS
 
 - Fault tolerance :
@@ -139,13 +150,13 @@ class: center, middle, inverse, title-slide
 - To store very big files
 - To store read only files
 - To build all the Hadoop stack on top
-- To store file processed  regularly
+- To store file for batch processing
 
 ---
 ## When HDFS is a bad choice ?
 
 - To store a lots of small files
-- To store files that are edit a lot
+- To store files that are edited a lot
 - To store file used by system which need low latency
 
 ---
@@ -153,6 +164,8 @@ class: center, middle, inverse, title-slide
 
 - HDFS is only a storage solution !
 - There is a framework to process the data called **MapReduce**
+- HDFS doesn't have a GUI, it's all command line (CLI)
+- [HUe](https://gethue.com/) can provide a nice GUI
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>

@@ -1,0 +1,119 @@
+---
+title: "How to store data ?"
+author: "Arthur katossky & Rémi Pépin"
+date: "18/02/2021"
+output: 
+  xaringan::moon_reader:
+    nature:
+      highlightLines: 
+      ratio: 16:10
+      scroll: false
+    css: css/xaringan-themer.css
+
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## Storage cost
+
+<img src="img/storage/storage-cost.png" style="width:70%;display: block; margin-left: auto;margin-right: auto" />
+
+---
+
+## Storage on a machine
+
+<img src="img/storage/storage-average.png" style="width:70%;display: block; margin-left: auto;margin-right: auto" />
+
+---
+
+## Data production
+.pull-left[
+<a href="https://www.statista.com/chart/17518/data-created-in-an-internet-minute/" title="Infographic: A Minute on the Internet in 2020 | Statista">
+<img src="https://cdn.statcdn.com/Infographic/images/normal/17518.jpeg" alt="Infographic: A Minute on the Internet in 2020 | Statista" width="80%" height="auto" style="width: 95%; height: auto !important; max-width:960px;-ms-interpolation-mode: bicubic;"/></a> You will find more infographics at <a href="https://www.statista.com/chartoftheday/">Statista</a>]
+.pull-right[
+There is no way taht any of this app can store all these data on one single machine
+
+They all need distributed storage !
+]
+
+---
+
+## How to store date ?
+
+There is two way to store date :
+--
+
+- A file system (like the one you use on your computer) to store **file**
+--
+
+- A database to store *formated* data
+
+---
+## File system in a nutshell
+
+- Manages files on storage space (like hard disk)
+
+  - Transparent for the user, he only see "file"
+  - Can handle very heterogenous unstructured data
+  - Only understand *metadata*
+
+
+--
+- Use cases :
+  - Read / write data
+  - Security
+  - Good for storing, bad for processing
+  
+---
+## Why use file system
+
+- Because you only want to store data and do not need integrated tools
+- Because your data are very heterogeneous or complex (like photo, video etc)
+
+---
+
+## File system in a nutshell
+
+<img src="img/storage/filesystem.jpg" style="width:90%;display: block; margin-left: auto;margin-right: auto" />
+
+
+
+---
+
+## Databases in a nutshell
+
+- Manages files on storage space
+
+  - Transparent for the user, he only see "data"
+  - Possibly care about data format (numbers, texts, dates...)
+  - Can handle *homogeneous*, *structured* data
+
+--
+
+- Principal use cases :
+  - Unique entry point to access data
+  - Knows how to read/write data
+  - Exposes new tools to manipulate data
+    - Specific lanquage (SQL for instance)
+    - Transactions and concurrency management
+    - Models to organize data
+
+---
+## Databases in a nutshell
+<img src="img/storage/database.jpg" style="width:90%;display: block; margin-left: auto;margin-right: auto" />
+
+---
+
+## Why use a database ?
+
+- Because you need some integrated tools to manipulate your data
+- Because your data are database ready
+
+---
+
+## Distribution : unlimited storage ?
+<img src="https://media.giphy.com/media/5C472t1RGNuq4/source.gif" style="width:90%;display: block; margin-left: auto;margin-right: auto" />
+
+---
