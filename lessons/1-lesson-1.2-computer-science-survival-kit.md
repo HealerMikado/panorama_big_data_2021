@@ -71,11 +71,20 @@
 | python sequential   | 0.45 sec                        | 77 sec                           | 174 sec                            |
 | python parallelized | 0.24 sec                        | 17 sec                           | 40 sec                             |
 
-(benchmark done with a :
+benchmark done with a :
 
 - 12 logical core
 - 16 Go Ram 
-- Ubuntu 16.04)
+- Ubuntu 16.04
+
+- [ ] Keep in mind some common bottlenecks :
+
+  - [ ] Read/write from disk. A common HDD 30-150 MB/sec, SSD 500+ MB/sec. So switching to SSD can improve performances. Your disk are a bottleneck only when you use it a lot.
+  - [ ] Network. Transfer very large data through a network take time. So just get what you need
+  - [ ] CPU. You are doing to much computations, and your CPU are at its max capacity. No easy solution here. Parallelization, approximation, GPU are leads
+  - [ ] Memory bottleneck. You do not have enough RAM -> crash. Increase your RAM, or be smart
+
+  You can monitor your system with tools like windows tasks manager.
 
 ### Documents
 
@@ -89,6 +98,7 @@ A checkmark means that the the source has been read and its content has been ext
 
 - [ ] Python profiler : https://docs.python.org/3/library/profile.html
 - [ ] https://www.blog.pythonlibrary.org/2014/03/20/python-102-how-to-profile-your-code/
+- [ ] https://towardsdatascience.com/finding-performance-bottlenecks-in-python-4372598b7b2c
 
 **Books:**
 

@@ -1,16 +1,17 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<html lang="" xml:lang="">
   <head>
-    <title>Hadoop file system (HDFS)</title>
+    <title>Spark</title>
     <meta charset="utf-8" />
     <meta name="author" content="Arthur katossky &amp; Rémi Pépin" />
-    <link rel="stylesheet" href="css\xaringan-themer.css" type="text/css" />
+    <script src="3-lesson-3.4-Spark_files/header-attrs-2.7/header-attrs.js"></script>
+    <link rel="stylesheet" href="css/xaringan-themer.css" type="text/css" />
   </head>
   <body>
     <textarea id="source">
 class: center, middle, inverse, title-slide
 
-# Hadoop file system (HDFS)
+# Spark
 ### Arthur katossky &amp; Rémi Pépin
 ### 18/02/2021
 
@@ -36,14 +37,38 @@ class: center, middle, inverse, title-slide
 
 ---
 
-## The HDFS architecture
+## Common Spark APIs
+
+--
+- Scala (the default one)
+
+--
+- Java
+
+--
+- **Python** ([pyspark](https://spark.apache.org/docs/latest/api/python/))
+
+--
+- **R** ([SparkR](https://spark.apache.org/docs/latest/sparkr.html), [sparklyR](https://spark.rstudio.com/))
+
+--
+- **SQL** ([Spark SQL](https://spark.apache.org/sql/))
+
+---
+
+## The Spark architecture
 
 ### Architecture
 
 Main/workers architecture&lt;sup&gt;1&lt;/sup&gt;
 
-- **Driver** (main): maintains information about the Spark Application, responding to user's programme, analyse, distributes and schedules works. Can be your own computer in *client-mode* or a server in *cluster-mode*
-- **Executors** (worker): workhorse of the system. Keep data in memory and do the computation. If on top of HDFS, executors and datanode are running on the same machine. 
+- **Driver** (main): maintains information about the Spark Application,
+responding to user's program, analyze, distributes and schedules works.
+Can be your own computer in *client-mode* or a server in *cluster-mode*.
+If the driver fails, everything fail
+- **Executors** (worker): workhorse of the system. Keep data in memory and 
+do the computation. If on top of HDFS, executors and datanode are running on 
+the same machine. If an executors fail, just need some recomputation
 
 .footnote[1:The real architecture is more complex because of the Resource Management Layer]
 
@@ -53,103 +78,222 @@ Main/workers architecture&lt;sup&gt;1&lt;/sup&gt;
 
 ### In memory data
 
-- Spark keeps data in memory (RAM)
+- Spark keeps data in memory (RAM) (like R or Python)
 - Spark is a distributed system
 
 --
 
-So your data are not on only one machine ! There are split among your cluster, **WITHOUT REPLICATION**
+So your data are not on only one machine ! There are spread among your cluster, **WITHOUT REPLICATION**
 
+???
 
 
 ---
-class: center, middle
 
+
+## Key Concepts
+
+### Dataframe
+
+- Spark manipulates **tabular data** :
+
+--
+
+  - Fixed number of typed columns (schema)
+  - Every line must have a value for every column (`null` is ok)
+
+--
+- A DF is spread among your cluster
+
+--
+- You manipulate the DF like it's only in one machine
+
+--
+- **A DF is immutable (you can't modify it once it's created)**
+
+---
+
+
+
+class: center, middle
 
 &lt;img src="https://media.giphy.com/media/EdRgVzb2X3iJW/source.gif" style="width: 80%; display: block; margin-left: auto;margin-right: auto" /&gt;
 
 ---
 
-### How does it work ?
+## Key Concepts
 
-![](img/hdsf/hadoop example.png)
+### Transformations and Actions
+
+- Spark has two types of methods :
+
+  - **Transformation** : takes a dataframe as input and produces another dataframe as output
+  - **Action** : takes a dataframe as input and writes it to output data sources (console, file)
+  
+  
 
 ---
+## Key Concepts
 
-### How to get a file ?
+### Lazy evaluation
 
-- A client requests a file to the NameNode 
-- The NameNode selects for each file block a DataNode
-- It sends back to the client where to find each block
-- The client request the DataNode
+Wait the very last moment to process computation. You manipulated "hollow" dataframe
 
 --
 
-**Pros**: 
+You chained **transformations** to design your process. And you use an **action** to run it.
 
-- No network nor process overload for the NameNode
-- The NameNode can handle a lot of request at the same time 
-- Try to select the best DataNode
+---
+
+## In a nutshell
+
+&lt;img src="img/meme/plan to dataframe.jpg" style="height: 80%; display: block; margin-left: auto;margin-right: auto" /&gt;
+
+
+---
+
+## Key Concepts
+
+### Transformations
+
+Some common transformations :
+
+- `df.map()`/`flatmap()` : applies a function to each row
+- `df.filter()` : filter rows 
+- `df.select()` : select columns
+- `df.selectExpr()` : run `SELECT` SQL statement 
+- `df.union(otherDataframe)`: return a dataframe with the union of the element of the source and the argument
+- `df.distinct()` : Return a new dataframe that contains the distinct elements of the source dataframe
+- `df.groupby()` : group a DF by a criteria
+-  `df.sum()`/`avg()`/`mean()` : if grouped DF return one line by group
+
+???
+- map : one row = one row
+- flatmap : one row = multiple row
+---
+
+class: center, middle
+&lt;img src="http://www.quickmeme.com/img/71/71d4f9e6c603698a186bff6dd8ea8c3fd1b5ad9c9fb37455b8d114b1938a735b.jpg" style="height: 80%; display: block; margin-left: auto;margin-right: auto" /&gt;
+
+---
+## Key Concepts
+
+### `sql()` : one transformation to rule then all&lt;sup&gt;1&lt;/sup&gt;
+
+Spark understands sql statements !
 
 --
 
-**Con**:
-
-- NameNode single point of failure (there is solution)
-
----
-## How to use HDFS ?
-
-- You need a cluster with HDFS to store file (obviously) 
-- HDFS doesn't provide a fancy GUI to interact with  :
-  - Install the hadoop CLI on your machine
-  - Use the Java API 
-  - Use the [WebHDFS REST API](https://hadoop.apache.org/docs/r2.4.1/hadoop-project-dist/hadoop-hdfs/WebHDFS.html)
-- Install HUE, an GUI for the Hadoop ecosystem
+```SQL
+spark.sql("""
+	SELECT user_id, deartement, first_name
+	FROM professors
+    WHERE departement IN
+    	(SELECT name FROM departement WHERE created_date &gt;= '2016-01-01')
+	""")
+```
 
 
----
-## Pros of HDFS
+.footnote[
+1 : not all it's just for the dramatic effect
+]
 
-- Fault tolerance :
-  - Resilient to DataNode failure
-  - NameNode failure can stop the system for some time, but if the log and the namespace image are still here the system can reboot (that's why they are persist on disk)
-- High throughput
-- Scale easily
-  - Just add mote DataNode for more storage capacity
-  - For very large system one NameNode can be insufficient 
 
 ---
+## Key Concepts
 
-## Cons of HDFS
+### `sql()` : one transformation to rule then all
 
-- High latency data access
-- Can't handle lots of small file
-- No concurrent write for the same file
-- No arbitrary modification of a file. Can only add content at the end
+Pros :
 
----
-## When HDFS is a good choice ?
+- Easy to understand
+- Return a DF so you can chain it with another transformation
+- One of the most powerful feature of Spark
 
-- To store very big files
-- To store read only files
-- To build all the Hadoop stack on top
-- To store file for batch processing
+--
 
----
-## When HDFS is a bad choice ?
+Cons :
 
-- To store a lots of small files
-- To store files that are edited a lot
-- To store file used by system which need low latency
+- Some very complex transformations are harder do to in SQL than in Spark
+
 
 ---
-## Keep in mind
 
-- HDFS is only a storage solution !
-- There is a framework to process the data called **MapReduce**
-- HDFS doesn't have a GUI, it's all command line (CLI)
-- [HUe](https://gethue.com/) can provide a nice GUI
+## Key Concepts
+
+### Actions
+
+Trigger computation. So they take time !
+
+--
+
+Common actions :
+
+- `df.show(n=20)` : print the first n row
+- `df.count()`: return the number of line in the dataset
+- `df.take(n)`: return the first n rows as `list` of `Row`
+- `df.write.format().mode().save()` : write the DF to file
+
+---
+## What if spark wasn't lazy ?
+
+- Each line of code could take forever
+
+--
+- User can be dumb (*filter data at the end*)
+
+--
+- Each transformation produce a DF. 10 transformations = 10 DF
+
+--
+
+Only user based optimization
+
+
+---
+## Knowledge is power
+
+--
+- Optimizes your transformations chain because it knows all your transformations
+(*execution plan*)
+
+--
+- Does not keep useless data in memory (better use of memory)
+
+
+
+???
+Postgres has one too
+
+We are in a big data situation, and we do not want to keep in memory
+useless data.
+
+---
+## Lazy excecution : sum up
+
+--
+- Pros :
+  - Spark optimizes your operations
+  - Data are not kept in memory
+
+--
+- Cons :
+  - Cannot reuse the same DF
+
+---
+## Caching DF
+
+Caching make it possible to store in memory or disk a DF for future reuses.
+
+--
+-  `df_to_cached.cache()` to cache a DF
+
+--
+- It's a lazy operation (cached only when computed)
+
+--
+- Very useful in a **interactive data science session** ;) ;)
+
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
@@ -196,9 +340,25 @@ if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
     }
     deleted = true;
   });
-})();</script>
-
-<script>
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
 (function() {
   var links = document.getElementsByTagName('a');
   for (var i = 0; i < links.length; i++) {
@@ -206,8 +366,7 @@ if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
       links[i].target = '_blank';
     }
   }
-})();
-</script>
+})();</script>
 
 <script>
 slideshow._releaseMath = function(el) {

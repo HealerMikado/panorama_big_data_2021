@@ -1,5 +1,5 @@
 ---
-title: "Hadoop file system (HDFS)"
+title: "Spark"
 author: "Arthur katossky & Rémi Pépin"
 date: "18/02/2021"
 output: 
@@ -33,14 +33,38 @@ knitr::opts_chunk$set(echo = FALSE)
 
 ---
 
-## The HDFS architecture
+## Common Spark APIs
+
+--
+- Scala (the default one)
+
+--
+- Java
+
+--
+- **Python** ([pyspark](https://spark.apache.org/docs/latest/api/python/))
+
+--
+- **R** ([SparkR](https://spark.apache.org/docs/latest/sparkr.html), [sparklyR](https://spark.rstudio.com/))
+
+--
+- **SQL** ([Spark SQL](https://spark.apache.org/sql/))
+
+---
+
+## The Spark architecture
 
 ### Architecture
 
 Main/workers architecture<sup>1</sup>
 
-- **Driver** (main): maintains information about the Spark Application, responding to user's programme, analyse, distributes and schedules works. Can be your own computer in *client-mode* or a server in *cluster-mode*
-- **Executors** (worker): workhorse of the system. Keep data in memory and do the computation. If on top of HDFS, executors and datanode are running on the same machine. 
+- **Driver** (main): maintains information about the Spark Application,
+responding to user's program, analyze, distributes and schedules works.
+Can be your own computer in *client-mode* or a server in *cluster-mode*.
+If the driver fails, everything fail
+- **Executors** (worker): workhorse of the system. Keep data in memory and 
+do the computation. If on top of HDFS, executors and datanode are running on 
+the same machine. If an executors fail, just need some recomputation
 
 .footnote[1:The real architecture is more complex because of the Resource Management Layer]
 
@@ -55,28 +79,74 @@ Main/workers architecture<sup>1</sup>
 
 --
 
-So your data are not on only one machine ! There are spred among your cluster, **WITHOUT REPLICATION**
+So your data are not in only one machine ! They are spread among your cluster, **WITHOUT REPLICATION**
 
+???
 
 
 ---
-class: center, middle
 
+
+## Key Concepts
+
+### Dataframe
+
+- Spark manipulates **tabular data** :
+
+--
+
+  - Fixed number of typed columns (schema)
+  - Every line must have a value for every column (`null` is ok)
+
+--
+- A DF is spread among your cluster
+
+--
+- You manipulate the DF like it's only in one machine
+
+--
+- **A DF is immutable (you can't modify it once it's created)**
+
+---
+
+
+
+class: center, middle
 
 <img src="https://media.giphy.com/media/EdRgVzb2X3iJW/source.gif" style="width: 80%; display: block; margin-left: auto;margin-right: auto" />
 
 ---
+
 ## Key Concepts
 
 ### Transformations and Actions
 
 - Spark has two types of methods :
-  - **Transformation** : takes a dataframe in input and produces another dataframe
-  - **Action** : takes a dataframe in input and writes it to output data sources (console, file)
+
+  - **Transformation** : takes a dataframe as input and produces another dataframe as output
+  - **Action** : takes a dataframe as input and writes it to output data sources (console, file)
+  
   
 
+---
+## Key Concepts
+
+### Lazy evaluation
+
+Wait the very last moment to process computation. You manipulated "hollow" dataframe
+
 --
-- You just chained **transformations** to design your process. And you use an action to un it
+Writing a **transformation** don't run any computation.
+
+--
+
+You chained **transformations** to design your process. And you use an **action** to run it.
+
+---
+
+## In a nutshell
+
+<img src="img/meme/plan to dataframe.jpg" style="height: 80%; display: block; margin-left: auto;margin-right: auto" />
 
 
 ---
@@ -85,96 +155,141 @@ class: center, middle
 
 ### Transformations
 
-Commons transformation are :
+Some common transformations :
 
-- ` map()`/`flatmap()` : applies a function to each row
+- `df.map()`/`flatmap()` : applies a function to each row
+- `df.filter()` : filter rows 
+- `df.select()` : select columns
+- `df.selectExpr()` : run `SELECT` SQL statement 
+- `df.union(otherDataframe)`: return a dataframe with the union of the element of the source and the argument
+- `df.distinct()` : Return a new dataframe that contains the distinct elements of the source dataframe
+- `df.groupby()` : group a DF by a criteria
+-  `df.sum()`/`avg()`/`mean()` : if grouped DF return one line by group
 
-- `filter()` : filters row ? (¯\_(ツ)_/¯)
-
-- `select()` : select columns
-
-- `selectExpr()` : To run non aggregating SQL statement (the select part -> compute new columns)
-
-
+???
+- map : one row = one row
+- flatmap : one row = multiple row
 ---
 
-### How does it work ?
-
-![](img/hdsf/hadoop example.png)
+class: center, middle
+<img src="http://www.quickmeme.com/img/71/71d4f9e6c603698a186bff6dd8ea8c3fd1b5ad9c9fb37455b8d114b1938a735b.jpg" style="height: 80%; display: block; margin-left: auto;margin-right: auto" />
 
 ---
+## Key Concepts
 
-### How to get a file ?
+### `sql()` : one transformation to rule then all<sup>1</sup>
 
-- A client requests a file to the NameNode 
-- The NameNode selects for each file block a DataNode
-- It sends back to the client where to find each block
-- The client request the DataNode
+Spark understands sql statements !
 
 --
 
-**Pros**: 
+```SQL
+spark.sql("""
+	SELECT user_id, deartement, first_name
+	FROM professors
+    WHERE departement IN
+    	(SELECT name FROM departement WHERE created_date >= '2016-01-01')
+	""")
+```
 
-- No network nor process overload for the NameNode
-- The NameNode can handle a lot of request at the same time 
-- Try to select the best DataNode
+
+.footnote[
+1 : not all it's just for the dramatic effect
+]
+
+
+---
+## Key Concepts
+
+### `sql()` : one transformation to rule then all
+
+Pros :
+
+- Easy to understand
+- Return a DF so you can chain it with another transformation
+- One of the most powerful feature of Spark
 
 --
 
-**Con**:
+Cons :
 
-- NameNode single point of failure (there is solution)
-
----
-## How to use HDFS ?
-
-- You need a cluster with HDFS to store file (obviously) 
-- HDFS doesn't provide a fancy GUI to interact with  :
-  - Install the hadoop CLI on your machine
-  - Use the Java API 
-  - Use the [WebHDFS REST API](https://hadoop.apache.org/docs/r2.4.1/hadoop-project-dist/hadoop-hdfs/WebHDFS.html)
-- Install HUE, an GUI for the Hadoop ecosystem
+- Some very complex transformations are harder do to in SQL than in Spark
 
 
 ---
-## Pros of HDFS
 
-- Fault tolerance :
-  - Resilient to DataNode failure
-  - NameNode failure can stop the system for some time, but if the log and the namespace image are still here the system can reboot (that's why they are persist on disk)
-- High throughput
-- Scale easily
-  - Just add mote DataNode for more storage capacity
-  - For very large system one NameNode can be insufficient 
+## Key Concepts
 
----
+### Actions
 
-## Cons of HDFS
+Trigger computation. So they take time !
 
-- High latency data access
-- Can't handle lots of small file
-- No concurrent write for the same file
-- No arbitrary modification of a file. Can only add content at the end
+--
+
+Common actions :
+
+- `df.show(n=20)` : print the first n row
+- `df.count()`: return the number of line in the dataset
+- `df.take(n)`: return the first n rows as `list` of `Row`
+- `df.write.format().mode().save()` : write the DF to file
 
 ---
-## When HDFS is a good choice ?
+## What if spark wasn't lazy ?
 
-- To store very big files
-- To store read only files
-- To build all the Hadoop stack on top
-- To store file for batch processing
+- Each line of code could take forever
+
+--
+- User can be dumb (*filter data at the end*)
+
+--
+- Each transformation produce a DF. 10 transformations = 10 DF
+
+--
+
+Only user based optimization
+
 
 ---
-## When HDFS is a bad choice ?
+## Knowledge is power
 
-- To store a lots of small files
-- To store files that are edited a lot
-- To store file used by system which need low latency
+--
+- Optimizes your transformations chain because it knows all your transformations
+(*execution plan*)
+
+--
+- Does not keep useless data in memory (better use of memory)
+
+
+
+???
+Postgres has one too
+
+We are in a big data situation, and we do not want to keep in memory
+useless data.
 
 ---
-## Keep in mind
+## Lazy excecution : sum up
 
-- HDFS is only a storage solution !
-- There is a framework to process the data called **MapReduce**
-- HDFS doesn't have a GUI, it's all command line (CLI)
-- [HUe](https://gethue.com/) can provide a nice GUI
+--
+- Pros :
+  - Spark optimizes your operations
+  - Data are not kept in memory
+
+--
+- Cons :
+  - Cannot reuse the same DF
+
+---
+## Caching DF
+
+Caching make it possible to store in memory or disk a DF for future reuses.
+
+--
+-  `df_to_cached.cache()` to cache a DF
+
+--
+- It's a lazy operation (cached only when computed)
+
+--
+- Very useful in a **interactive data science session** ;) ;)
+
