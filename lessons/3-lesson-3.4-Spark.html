@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+  <head>
+    <title>Hadoop file system (HDFS)</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Arthur katossky &amp; Rémi Pépin" />
+    <link rel="stylesheet" href="css\xaringan-themer.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Hadoop file system (HDFS)
+### Arthur katossky &amp; Rémi Pépin
+### 18/02/2021
+
+---
+
+
+
+
+
+## Spark in a nutshell
+
+- A widely use computing engine
+- *"In memory MapReduce"*
+- Python and R friendly
+- Can process *very large file* 
+- Can run without HDFS or the Hadoop ecosystem
+
+
+---
+## The Hadoop Ecosystem
+
+&lt;img src="https://static.packt-cdn.com/products/9781788995092/graphics/c8625da0-2ffb-41b7-bba8-58c33af68a30.png" style="width: 80%; display: block; margin-left: auto;margin-right: auto" /&gt;
+
+---
+
+## The HDFS architecture
+
+### Architecture
+
+Main/workers architecture&lt;sup&gt;1&lt;/sup&gt;
+
+- **Driver** (main): maintains information about the Spark Application, responding to user's programme, analyse, distributes and schedules works. Can be your own computer in *client-mode* or a server in *cluster-mode*
+- **Executors** (worker): workhorse of the system. Keep data in memory and do the computation. If on top of HDFS, executors and datanode are running on the same machine. 
+
+.footnote[1:The real architecture is more complex because of the Resource Management Layer]
+
+---
+
+## Key Concepts
+
+### In memory data
+
+- Spark keeps data in memory (RAM)
+- Spark is a distributed system
+
+--
+
+So your data are not on only one machine ! There are split among your cluster, **WITHOUT REPLICATION**
+
+
+
+---
+class: center, middle
+
+
+&lt;img src="https://media.giphy.com/media/EdRgVzb2X3iJW/source.gif" style="width: 80%; display: block; margin-left: auto;margin-right: auto" /&gt;
+
+---
+
+### How does it work ?
+
+![](img/hdsf/hadoop example.png)
+
+---
+
+### How to get a file ?
+
+- A client requests a file to the NameNode 
+- The NameNode selects for each file block a DataNode
+- It sends back to the client where to find each block
+- The client request the DataNode
+
+--
+
+**Pros**: 
+
+- No network nor process overload for the NameNode
+- The NameNode can handle a lot of request at the same time 
+- Try to select the best DataNode
+
+--
+
+**Con**:
+
+- NameNode single point of failure (there is solution)
+
+---
+## How to use HDFS ?
+
+- You need a cluster with HDFS to store file (obviously) 
+- HDFS doesn't provide a fancy GUI to interact with  :
+  - Install the hadoop CLI on your machine
+  - Use the Java API 
+  - Use the [WebHDFS REST API](https://hadoop.apache.org/docs/r2.4.1/hadoop-project-dist/hadoop-hdfs/WebHDFS.html)
+- Install HUE, an GUI for the Hadoop ecosystem
+
+
+---
+## Pros of HDFS
+
+- Fault tolerance :
+  - Resilient to DataNode failure
+  - NameNode failure can stop the system for some time, but if the log and the namespace image are still here the system can reboot (that's why they are persist on disk)
+- High throughput
+- Scale easily
+  - Just add mote DataNode for more storage capacity
+  - For very large system one NameNode can be insufficient 
+
+---
+
+## Cons of HDFS
+
+- High latency data access
+- Can't handle lots of small file
+- No concurrent write for the same file
+- No arbitrary modification of a file. Can only add content at the end
+
+---
+## When HDFS is a good choice ?
+
+- To store very big files
+- To store read only files
+- To build all the Hadoop stack on top
+- To store file for batch processing
+
+---
+## When HDFS is a bad choice ?
+
+- To store a lots of small files
+- To store files that are edited a lot
+- To store file used by system which need low latency
+
+---
+## Keep in mind
+
+- HDFS is only a storage solution !
+- There is a framework to process the data called **MapReduce**
+- HDFS doesn't have a GUI, it's all command line (CLI)
+- [HUe](https://gethue.com/) can provide a nice GUI
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightLines": null,
+"ratio": "16:10",
+"scroll": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();</script>
+
+<script>
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
