@@ -47,6 +47,8 @@ A checkmark means that the the source has been read and its content has been ext
 
 **Other websites:**
 
+https://stackoverflow.com/questions/32022334/can-apache-spark-run-without-hadoop
+
 **Books:**
 
 - [x] Hadoop The definitive Book (chapters 19)

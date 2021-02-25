@@ -1,18 +1,18 @@
 <!DOCTYPE html>
-<html lang="" xml:lang="">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
   <head>
     <title>Spark</title>
     <meta charset="utf-8" />
-    <meta name="author" content="Arthur katossky &amp; Rémi Pépin" />
-    <script src="3-lesson-3.4-Spark_files/header-attrs-2.7/header-attrs.js"></script>
-    <link rel="stylesheet" href="css/xaringan-themer.css" type="text/css" />
+    <meta name="author" content="Arthur Katossky &amp; Rémi Pépin" />
+    <link rel="stylesheet" href="css\xaringan-themer.css" type="text/css" />
+    <link rel="stylesheet" href="css\mine.css" type="text/css" />
   </head>
   <body>
     <textarea id="source">
 class: center, middle, inverse, title-slide
 
 # Spark
-### Arthur katossky &amp; Rémi Pépin
+### Arthur Katossky &amp; Rémi Pépin
 ### 18/02/2021
 
 ---
@@ -33,7 +33,7 @@ class: center, middle, inverse, title-slide
 ---
 ## The Hadoop Ecosystem
 
-&lt;img src="https://static.packt-cdn.com/products/9781788995092/graphics/c8625da0-2ffb-41b7-bba8-58c33af68a30.png" style="width: 80%; display: block; margin-left: auto;margin-right: auto" /&gt;
+&lt;img src="https://static.packt-cdn.com/products/9781788995092/graphics/c8625da0-2ffb-41b7-bba8-58c33af68a30.png" style="width: 90%; display: block; margin-left: auto;margin-right: auto" /&gt;
 
 ---
 
@@ -56,7 +56,7 @@ class: center, middle, inverse, title-slide
 
 ---
 
-## The Spark architecture
+## Key Concepts
 
 ### Architecture
 
@@ -66,7 +66,7 @@ Main/workers architecture&lt;sup&gt;1&lt;/sup&gt;
 responding to user's program, analyze, distributes and schedules works.
 Can be your own computer in *client-mode* or a server in *cluster-mode*.
 If the driver fails, everything fail
-- **Executors** (worker): workhorse of the system. Keep data in memory and 
+- **Executors** (workers): workhorse of the system. Keep data in memory and 
 do the computation. If on top of HDFS, executors and datanode are running on 
 the same machine. If an executors fail, just need some recomputation
 
@@ -83,7 +83,7 @@ the same machine. If an executors fail, just need some recomputation
 
 --
 
-So your data are not on only one machine ! There are spread among your cluster, **WITHOUT REPLICATION**
+So your data are not in only one machine ! They are spread among your cluster, **WITHOUT REPLICATION**
 
 ???
 
@@ -103,9 +103,11 @@ So your data are not on only one machine ! There are spread among your cluster, 
   - Every line must have a value for every column (`null` is ok)
 
 --
+
 - A DF is spread among your cluster
 
 --
+
 - You manipulate the DF like it's only in one machine
 
 --
@@ -129,8 +131,41 @@ class: center, middle
 
   - **Transformation** : takes a dataframe as input and produces another dataframe as output
   - **Action** : takes a dataframe as input and writes it to output data sources (console, file)
-  
-  
+
+
+
+---
+## Key Concepts
+
+### A transformation flow
+
+```python
+# read file
+flightData2015=spark.read.format("json")
+  .option("inferSchema", "true")
+  .csv("file://2015-summary.csv")
+
+#process  file, chaining transformations
+df = flightData2015.groupBy("DEST_COUNTRY_NAME")
+  .sum("count")
+  .withColumnRenamed("sum(count)","destination_total")
+  .sort(desc("destination_total"))
+  .limit(5)
+
+# Print data in console, action
+df.show()
+# write date in file, action
+df.write.format("csv")
+  .save("file://output")
+```
+
+---
+
+class: center, middle
+
+&lt;img src="img/spark/workflow spark.png" class="border" /&gt;
+
+Example of a dataframe transformation flow
 
 ---
 ## Key Concepts
@@ -141,13 +176,17 @@ Wait the very last moment to process computation. You manipulated "hollow" dataf
 
 --
 
+Writing a **transformation** don't run any computation.
+
+--
+
 You chained **transformations** to design your process. And you use an **action** to run it.
 
 ---
 
 ## In a nutshell
 
-&lt;img src="img/meme/plan to dataframe.jpg" style="height: 80%; display: block; margin-left: auto;margin-right: auto" /&gt;
+&lt;img src="img/meme/plan to dataframe.jpg" style="width: 60%; display: block; margin-left: auto;margin-right: auto" /&gt;
 
 
 ---
@@ -173,12 +212,18 @@ Some common transformations :
 ---
 
 class: center, middle
+
 &lt;img src="http://www.quickmeme.com/img/71/71d4f9e6c603698a186bff6dd8ea8c3fd1b5ad9c9fb37455b8d114b1938a735b.jpg" style="height: 80%; display: block; margin-left: auto;margin-right: auto" /&gt;
+
 
 ---
 ## Key Concepts
 
 ### `sql()` : one transformation to rule then all&lt;sup&gt;1&lt;/sup&gt;
+
+.footnote[
+1 : not all it's just for the dramatic effect
+]
 
 Spark understands sql statements !
 
@@ -194,9 +239,6 @@ spark.sql("""
 ```
 
 
-.footnote[
-1 : not all it's just for the dramatic effect
-]
 
 
 ---
@@ -214,8 +256,7 @@ Pros :
 
 Cons :
 
-- Some very complex transformations are harder do to in SQL than in Spark
-
+- Can't do everything with SQL
 
 ---
 
@@ -235,27 +276,135 @@ Common actions :
 - `df.write.format().mode().save()` : write the DF to file
 
 ---
-## What if spark wasn't lazy ?
+## Importing data
 
-- Each line of code could take forever
+Natively Spark can handle :
+- CSV files
+- JSON files
+- Plain-text files
+- Databases connections
+- Data stream
+
+
+
+Can handle compressed file too
+
+
+???
+There is other datasource maintained by the community
+
+
+---
+## Importing data
+
+Always the same basic layout
+
+```python
+df = spark.read.format(file_format) #csv, json
+  .option("mode", [permissive(default), dropMalformed, failFast]) 
+  .option("inferSchema", [True/False(default)]) # Spark read some reccord and infer the schema, 
+  .option("path", "path/to/file") # for local file begin with file://
+  .schema(someSchema) #if you didn't infer it
+  .load() #lazy operation
+  
+df.show()#to print the first 20lines
+```
+
+
+---
+## Importing data
+
+To read a gzip csv file with an header, letting Spark inferring the schema, and failling if
+there is one bad reccord
+
+```python
+df = spark.read.format("csv")
+  .option("mode", "failFast")
+  .option("header", "true") 
+  .option("inferSchema", True) 
+  .option("path", "file://path/to/file.csv.gz") 
+  .load() 
+```
+
+---
+## Importing data
+
+To read a csv file without an header, giving Spark the schama, and accepting bad reccord
+
+```python
+from pysark.sql.types import StructField, StructType, StringType, LongType
+schema = StructType([
+  StructField("col1", StringType(), True),
+  StructField("col2", StringType(), True),
+  StructField("col3", LongType(), True)
+])
+
+df = spark.read.format("csv")
+  .schema(schema)
+  .option("header", "false") 
+  .option("path", "file://path/to/file.csv") # for local file begin with file://
+  .load() 
+```
+
+---
+## Importing data
+
+To read a json file inferring the schema and accepting bad reccord
+
+```python
+df = spark.read.format("json")
+  .option("inferSchema", "True")
+  .option("path", "file://path/to/file.json") # for local file begin with file://
+  .load() 
+```
+
+---
+## Exporting data
+
+Always the same basic layout
+
+```python
+df.write.format(file_format) #csv, json
+  .mode([append/overwrite/errorIfExists(default)/ignore]) 
+  .save("path/to/folder")
+```
 
 --
-- User can be dumb (*filter data at the end*)
+By default, each **executor** write their partition in a different file. 100 executors = 100 files.
+
+--
+
+`.coalesce(1)` is a workaround but on very large data won't work.
+
+---
+## What if spark wasn't lazy ?
+
+- Each line of code could take ages to compute
+
+--
+- Users do not optimize their code (*filter data at the end*)
 
 --
 - Each transformation produce a DF. 10 transformations = 10 DF
 
 --
 
-Only user based optimization
+Only user can optimise the process
+
+???
+
+if one DF takes 10 To of memory, 10 DF ~ 100 To ...
 
 
 ---
 ## Knowledge is power
 
 --
-- Optimizes your transformations chain because it knows all your transformations
+- Spark optimizes your transformations chain because it knows all your transformations
 (*execution plan*)
+
+--
+- Spark can snow its plan with `df.explain()`
 
 --
 - Does not keep useless data in memory (better use of memory)
@@ -269,12 +418,12 @@ We are in a big data situation, and we do not want to keep in memory
 useless data.
 
 ---
-## Lazy excecution : sum up
+## Lazy execution : sum up
 
 --
 - Pros :
-  - Spark optimizes your operations
-  - Data are not kept in memory
+  - Spark optimizes your operations (*caralyst optimizer*)
+  - Data are not kept in memory foreever
 
 --
 - Cons :
@@ -292,15 +441,33 @@ Caching make it possible to store in memory or disk a DF for future reuses.
 - It's a lazy operation (cached only when computed)
 
 --
-- Very useful in a **interactive data science session** ;) ;)
+- Very useful in a **interactive data science session** 😉😉
 
+---
+## To sum up Spark
+
+--
+💻 Only a distributed computation engine. Work better on a cluster than on your pc 
+
+
+--
+👌 Lot's of easy ways to define spark process (python, R, SQL) 
+
+
+--
+💤 Lazy evaluation : transformations chain + action to run computation 
+
+
+--
+🧰 Easy to use, can be hard to install
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
 <script>var slideshow = remark.create({
 "highlightLines": null,
 "ratio": "16:10",
-"scroll": false
+"scroll": false,
+"countIncrementalSlides": false
 });
 if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
   window.dispatchEvent(new Event('resize'));
@@ -340,25 +507,9 @@ if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
     }
     deleted = true;
   });
-})();
-(function() {
-  "use strict"
-  // Replace <script> tags in slides area to make them executable
-  var scripts = document.querySelectorAll(
-    '.remark-slides-area .remark-slide-container script'
-  );
-  if (!scripts.length) return;
-  for (var i = 0; i < scripts.length; i++) {
-    var s = document.createElement('script');
-    var code = document.createTextNode(scripts[i].textContent);
-    s.appendChild(code);
-    var scriptAttrs = scripts[i].attributes;
-    for (var j = 0; j < scriptAttrs.length; j++) {
-      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
-    }
-    scripts[i].parentElement.replaceChild(s, scripts[i]);
-  }
-})();
+})();</script>
+
+<script>
 (function() {
   var links = document.getElementsByTagName('a');
   for (var i = 0; i < links.length; i++) {
@@ -366,7 +517,8 @@ if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
       links[i].target = '_blank';
     }
   }
-})();</script>
+})();
+</script>
 
 <script>
 slideshow._releaseMath = function(el) {
