@@ -60,7 +60,7 @@ knitr::opts_chunk$set(echo = FALSE)
 Main/workers architecture<sup>1</sup>
 
 - **Driver** (main): maintains information about the Spark Application,
-responding to user's program, analyze, distributes and schedules works.
+responding to user's program, analyse, distributes and schedules works.
 Can be your own computer in *client-mode* or a server in *cluster-mode*.
 If the driver fails, everything fail
 - **Executors** (workers): workhorse of the system. Keep data in memory and 
@@ -311,8 +311,8 @@ df.show()#to print the first 20lines
 ---
 ## Importing data
 
-To read a gzip csv file with an header, letting Spark inferring the schema, and failling if
-there is one bad reccord
+To read a gzip csv file with an header, letting Spark inferring the schema, and failing if
+there is one bad record
 
 ```python
 df = spark.read.format("csv")
@@ -326,7 +326,7 @@ df = spark.read.format("csv")
 ---
 ## Importing data
 
-To read a csv file without an header, giving Spark the schama, and accepting bad reccord
+To read a csv file without an header, giving Spark the schema, and accepting bad record
 
 ```python
 from pysark.sql.types import StructField, StructType, StringType, LongType
@@ -346,7 +346,7 @@ df = spark.read.format("csv")
 ---
 ## Importing data
 
-To read a json file inferring the schema and accepting bad reccord
+To read a json file inferring the schema and accepting bad record
 
 ```python
 df = spark.read.format("json")
@@ -432,7 +432,7 @@ useless data.
 --
 - Pros :
   - Spark optimizes your operations (*caralyst optimizer*)
-  - Data are not kept in memory foreever
+  - Data are not kept in memory forever
 
 --
 - Cons :
@@ -512,7 +512,6 @@ Caching make it possible to store in memory or disk a DF for future reuses.
 
 --
 💤 Lazy evaluation : transformations chain + action to run computation 
-
 
 --
 🧰 Easy to use, can be hard to install 
