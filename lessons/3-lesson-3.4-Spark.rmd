@@ -426,6 +426,7 @@ Postgres has one too
 We are in a big data situation, and we do not want to keep in memory
 useless data.
 
+
 ---
 ## Lazy execution : sum up
 
@@ -488,6 +489,15 @@ Caching make it possible to store in memory or disk a DF for future reuses.
 
 
 <img src="img/spark/shell_result.png" style="width: 80%; display: block; margin-left: auto;margin-right: auto" />
+
+
+---
+
+
+##  Example notebook in databricks
+
+
+<img src="img/spark/spark_databricks.png" style="width: 80%; display: block; margin-left: auto;margin-right: auto" />
 
 
 ---
