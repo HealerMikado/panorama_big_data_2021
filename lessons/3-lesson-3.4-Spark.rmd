@@ -64,8 +64,8 @@ responding to user's program, analyze, distributes and schedules works.
 Can be your own computer in *client-mode* or a server in *cluster-mode*.
 If the driver fails, everything fail
 - **Executors** (workers): workhorse of the system. Keep data in memory and 
-do the computation. If on top of HDFS, executors and datanode are running on 
-the same machine. If an executors fail, just need some recomputation
+do the computation. If on top of HDFS, executors and datanodes are running on 
+the same machine. If some executors fail, just need some recomputation
 
 .footnote[1:The real architecture is more complex because of the Resource Management Layer]
 
