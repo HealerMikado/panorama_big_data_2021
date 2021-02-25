@@ -67,8 +67,8 @@ responding to user's program, analyze, distributes and schedules works.
 Can be your own computer in *client-mode* or a server in *cluster-mode*.
 If the driver fails, everything fail
 - **Executors** (workers): workhorse of the system. Keep data in memory and 
-do the computation. If on top of HDFS, executors and datanode are running on 
-the same machine. If an executors fail, just need some recomputation
+do the computation. If on top of HDFS, executors and datanodes are running on 
+the same machine. If some executors fail, just need some recomputation
 
 .footnote[1:The real architecture is more complex because of the Resource Management Layer]
 
@@ -287,7 +287,7 @@ Natively Spark can handle :
 
 
 
-Can handle compressed file too
+Can handle compressed files too
 
 
 ???
@@ -302,7 +302,7 @@ Always the same basic layout
 ```python
 df = spark.read.format(file_format) #csv, json
   .option("mode", [permissive(default), dropMalformed, failFast]) 
-  .option("inferSchema", [True/False(default)]) # Spark read some reccord and infer the schema, 
+  .option("inferSchema", [True/False(default)]) # read some reccord and infer the schema
   .option("path", "path/to/file") # for local file begin with file://
   .schema(someSchema) #if you didn't infer it
   .load() #lazy operation
@@ -376,6 +376,18 @@ By default, each **executor** write their partition in a different file. 100 exe
 
 `.coalesce(1)` is a workaround but on very large data won't work.
 
+
+
+---
+
+class: center, middle
+
+![](img/meme/no coalesce.jpg)
+
+???
+
+coalesce(1) gather all the partition on one executor. No more parallelization. And you executor have to deal with a lot of data
+
 ---
 ## What if spark wasn't lazy ?
 
@@ -389,7 +401,7 @@ By default, each **executor** write their partition in a different file. 100 exe
 
 --
 
-Only user can optimise the process
+Only users can optimise the process
 
 ???
 
@@ -444,6 +456,53 @@ Caching make it possible to store in memory or disk a DF for future reuses.
 - Very useful in a **interactive data science session** 😉😉
 
 ---
+
+## How to run Spark ?
+
+- Interactively :
+
+  - `pyspark` shell
+  - `SparkR` shell / R with `sparklyR`
+  - Notebook
+  
+- Scripts :
+
+  - Submit script with the `spark-submit` commands
+  
+
+???
+- Interactively (good for prototyping script)
+- Scripts (good to run production script)
+
+---
+
+
+##  Example `pyspark` shell
+
+
+&lt;img src="img/spark/shell.png" style="width: 80%; display: block; margin-left: auto;margin-right: auto" /&gt;
+
+
+
+---
+
+
+##  Example `pyspark` shell
+
+
+&lt;img src="img/spark/shell_result.png" style="width: 80%; display: block; margin-left: auto;margin-right: auto" /&gt;
+
+
+---
+
+
+##  Example `spark-submit`
+
+&lt;img src="img/spark/spark_submit.png" style="width: 80%; display: block; margin-left: auto;margin-right: auto" /&gt;
+
+
+---
+
 ## To sum up Spark
 
 --
@@ -459,7 +518,13 @@ Caching make it possible to store in memory or disk a DF for future reuses.
 
 
 --
-🧰 Easy to use, can be hard to install
+🧰 Easy to use, can be hard to install 
+
+---
+
+class: center, middle
+
+![](img/meme/optimization.jpg)
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>

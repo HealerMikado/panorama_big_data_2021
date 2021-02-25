@@ -373,6 +373,18 @@ By default, each **executor** write their partition in a different file. 100 exe
 
 `.coalesce(1)` is a workaround but on very large data won't work.
 
+
+
+---
+
+class: center, middle
+
+![](img/meme/no coalesce.jpg)
+
+???
+
+coalesce(1) gather all the partition on one executor. No more parallelization. And you executor have to deal with a lot of data
+
 ---
 ## What if spark wasn't lazy ?
 
@@ -441,6 +453,53 @@ Caching make it possible to store in memory or disk a DF for future reuses.
 - Very useful in a **interactive data science session** 😉😉
 
 ---
+
+## How to run Spark ?
+
+- Interactively :
+
+  - `pyspark` shell
+  - `SparkR` shell / R with `sparklyR`
+  - Notebook
+  
+- Scripts :
+
+  - Submit script with the `spark-submit` commands
+  
+
+???
+- Interactively (good for prototyping script)
+- Scripts (good to run production script)
+
+---
+
+
+##  Example `pyspark` shell
+
+
+<img src="img/spark/shell.png" style="width: 80%; display: block; margin-left: auto;margin-right: auto" />
+
+
+
+---
+
+
+##  Example `pyspark` shell
+
+
+<img src="img/spark/shell_result.png" style="width: 80%; display: block; margin-left: auto;margin-right: auto" />
+
+
+---
+
+
+##  Example `spark-submit`
+
+<img src="img/spark/spark_submit.png" style="width: 80%; display: block; margin-left: auto;margin-right: auto" />
+
+
+---
+
 ## To sum up Spark
 
 --
@@ -458,3 +517,8 @@ Caching make it possible to store in memory or disk a DF for future reuses.
 --
 🧰 Easy to use, can be hard to install 
 
+---
+
+class: center, middle
+
+![](img/meme/optimization.jpg)
