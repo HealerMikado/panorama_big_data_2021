@@ -209,6 +209,15 @@ Some common transformations :
 ???
 - map : one row = one row
 - flatmap : one row = multiple row
+
+---
+
+class: center, middle
+
+&lt;img src="img/spark/transformation spark.png" class="border" /&gt;
+
+Two types of transformations
+
 ---
 
 class: center, middle
@@ -216,7 +225,10 @@ class: center, middle
 &lt;img src="http://www.quickmeme.com/img/71/71d4f9e6c603698a186bff6dd8ea8c3fd1b5ad9c9fb37455b8d114b1938a735b.jpg" style="height: 80%; display: block; margin-left: auto;margin-right: auto" /&gt;
 
 
+
+
 ---
+
 ## Key Concepts
 
 ### `sql()` : one transformation to rule then all&lt;sup&gt;1&lt;/sup&gt;
@@ -259,6 +271,7 @@ Cons :
 - Can't do everything with SQL
 
 ---
+
 
 ## Key Concepts
 
@@ -526,8 +539,17 @@ Caching make it possible to store in memory or disk a DF for future reuses.
 --
 💤 Lazy evaluation : transformations chain + action to run computation 
 
+
+--
+💣 Your data are distributed some transformations cost more than others (like `groupBy()`, `coalesce()`)
+
+
 --
 🧰 Easy to use, can be hard to install 
+
+???
+
+Some transformation have to move data between executors. That takes time !
 
 ---
 
