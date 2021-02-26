@@ -1,0 +1,187 @@
+---
+title: "Hadoop MapReduce"
+author: "Arthur Katossky & Rémi Pépin"
+date: "18/02/2021"
+output: 
+  xaringan::moon_reader:
+    nature:
+      highlightLines: 
+      ratio: 16:10
+      scroll: false
+      countIncrementalSlides: false
+    css: ["css/xaringan-themer.css", "css/mine.css"]
+
+
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+
+## Hadoop MapReduce in a nutshell
+
+- A widely use computing engine
+- Based on the MapReduce programming model 
+- Part part the Hadoop ecosystem
+- Can process *very large file* 
+- Throughput optimized
+
+
+---
+## The Hadoop Ecosystem
+
+<img src="https://static.packt-cdn.com/products/9781788995092/graphics/c8625da0-2ffb-41b7-bba8-58c33af68a30.png" style="width: 80%; display: block; margin-left: auto;margin-right: auto" />
+---
+
+
+## Key Concepts
+
+### Architecture
+
+ Main/workers architecture
+
+- **JobTracker** (main): accepts MR jobs submitted by clients. Assigns Map and Reduce Tasks to workers, re-execute failed/slow tasks
+- **TaskTrackers** (worker): workhorse of the system. Run tasks, manage storage, send/receive data
+
+--
+
+Usually TaskTrackers are host by the same machine as HDFS DataNode, but it's not an obligation.
+
+---
+
+## Key Concepts
+
+### Two phases process
+
+- **Map** : reads each record and process it. Extract valuable data from each record.
+- **Reduce** : aggregates, summarizes, transforms data with the same output map key
+
+--
+
+Map/Reduce is an old programming paradigm. You can do it in python if you want.
+
+---
+
+## Key Concepts
+
+### The Map phase : Input
+
+Records from the data source (line of a file, row of a DB, documents) as **key:value** pairs. Examples :
+  - filename : line
+  - row index : row
+  - document name : document
+
+Each **TaskTrackers** has a different input.
+  
+---
+## Key Concepts
+
+### The Map phase : Behaviour
+
+Each **TaskTrackers** executes the same code for each input. Example :
+  - split a text into word
+  - filter record
+  
+--
+You can keep track of the past if you want (like the previous record)
+
+---
+## Key Concepts
+
+### The Map phase : Output
+
+Each **TaskTrackers** produces a list of **map_key:map_value** pairs. Examples :
+  - a list of word:word_count
+  - a list of year:max
+  - etc
+  
+  
+---
+## Key Concepts
+
+### The Map phase exemple : max temperature from each year
+
+- **Input**: positional file of the National Climatic Data Center
+  - Position 15-18 : year
+  - Position 87- 92 : temperature
+
+
+
+-**Map function** : Extract the temperature of a line if temperature !=9999
+
+-**Output** : List of year:temperature
+
+---
+## Key Concepts
+
+### The Map phase exemple : max temperature from each year
+
+<img src="img/map reduce/map reduce map.png" class="border" style="width: 60%; display: block; margin-left: auto;margin-right: auto"  />
+
+
+---
+
+## Key Concepts
+
+### The Reduce phase : Input
+
+All the output value of the map tasks with the same key are send to same reduce task.
+
+--
+
+The input of a reduce fonction is a `list(map_key:list(map_value))` 
+
+
+--
+For instance a list of word and how many time they appear in each line.
+
+
+.pull-left[
+Reduce task 1
+```python
+{
+  jasmine:[1],
+  dragon: [1],
+  cabage: [3,4,1,2]
+}
+```
+]
+
+.pull-right[
+Reduce task 2
+```python
+{
+  the:[1,3,5,3],
+  hadoop: [1,1,1],
+  rose: [2,3,4,5,6]
+}
+```
+]
+
+---
+## Key Concepts
+
+### The Reduce phase : Behaviour
+
+Each **TaskTrackers** executes the same code for each input. Usally it's an aggregation by key
+  - sum
+  - average
+  - max/min
+  
+  
+--
+This operation cannot depend of the other received key because you cannot
+controle the *shuffle*.
+
+---
+## Key Concepts
+
+### The Reduce phase : Output
+
+Each **TaskTrackers** produces a list of **map_key:reduce_value** pairs. Examples :
+  - How many time each word are used word:sum_count
+  - The max temperature for each year year:max_temp
+  - etc
+  
+---

@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+  <head>
+    <title>Hadoop MapReduce</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Arthur Katossky &amp; Rémi Pépin" />
+    <link rel="stylesheet" href="css\xaringan-themer.css" type="text/css" />
+    <link rel="stylesheet" href="css\mine.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Hadoop MapReduce
+### Arthur Katossky &amp; Rémi Pépin
+### 18/02/2021
+
+---
+
+
+
+
+
+## Hadoop MapReduce in a nutshell
+
+- A widely use computing engine
+- Based on the MapReduce programming model 
+- Part part the Hadoop ecosystem
+- Can process *very large file* 
+- Throughput optimized
+
+
+---
+## The Hadoop Ecosystem
+
+&lt;img src="https://static.packt-cdn.com/products/9781788995092/graphics/c8625da0-2ffb-41b7-bba8-58c33af68a30.png" style="width: 80%; display: block; margin-left: auto;margin-right: auto" /&gt;
+---
+
+
+## Key Concepts
+
+### Architecture
+
+ Main/workers architecture
+
+- **JobTracker** (main): accepts MR jobs submitted by clients. Assigns Map and Reduce Tasks to workers, re-execute failed/slow tasks
+- **TaskTrackers** (worker): workhorse of the system. Run tasks, manage storage, send/receive data
+
+--
+
+Usually TaskTrackers are host by the same machine as HDFS DataNode, but it's not an obligation.
+
+---
+
+## Key Concepts
+
+### Two phases process
+
+- **Map** : reads each record and process it. Extract valuable data from each record.
+- **Reduce** : aggregates, summarizes, transforms data with the same output map key
+
+--
+
+Map/Reduce is an old programming paradigm. You can do it in python if you want.
+
+---
+
+## Key Concepts
+
+### The Map phase : Input
+
+Records from the data source (line of a file, row of a DB, documents) as **key:value** pairs. Examples :
+  - filename : line
+  - row index : row
+  - document name : document
+
+Each **TaskTrackers** has a different input.
+  
+---
+## Key Concepts
+
+### The Map phase : Behaviour
+
+Each **TaskTrackers** executes the same code for each input. Example :
+  - split a text into word
+  - filter record
+  
+--
+You can keep track of the past if you want (like the previous record)
+
+---
+## Key Concepts
+
+### The Map phase : Output
+
+Each **TaskTrackers** produces a list of **key':value'** pairs. Examples :
+  - a list of word:word_count
+  - a list of year:max_temp
+  - etc
+  
+  
+---
+## Key Concepts
+
+### The Map phase exemple : max temperature from each year
+
+- **Input**: positional file of the National Climatic Data Center
+  - Position 15-18 : year
+  - Position 87- 92 : temperature
+
+
+
+-**Map function** : Extract the temperature of a line if temperature !=9999
+
+-**Output** : List of year:temperature
+
+---
+## Key Concepts
+
+### The Map phase exemple : max temperature from each year
+
+&lt;img src="img/map reduce/map reduce map.png" class="border" style="width: 60%; display: block; margin-left: auto;margin-right: auto"  /&gt;
+
+
+---
+
+## Key Concepts
+
+### The Reduce phase : Input
+
+All the output value of the map tasks with the same key are send to same reduce task.
+
+--
+
+The input of a reduce fonction is a `list(key:list(value))` 
+
+
+--
+For instance a list of word and how many time they appear in each line.
+
+
+.pull-left[
+Reduce task 1
+```python
+{
+  jasmine:[1]
+  dragon: [1]
+  cabage: [3,4,1,2]
+}
+```
+]
+
+.pull-right[
+Reduce task 2
+```python
+{
+  the:[1,3,5,3]
+  hadoop: [1,1,1]
+  rose: [2,3,4,5,6]
+}
+```
+]
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightLines": null,
+"ratio": "16:10",
+"scroll": false,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();</script>
+
+<script>
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
