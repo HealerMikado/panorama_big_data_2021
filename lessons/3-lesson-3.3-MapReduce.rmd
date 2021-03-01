@@ -21,11 +21,18 @@ knitr::opts_chunk$set(echo = FALSE)
 
 ## Hadoop MapReduce in a nutshell
 
-- A widely use computing engine
+- A widely use file processing framework
 - Based on the MapReduce programming model 
 - Part part the Hadoop ecosystem
 - Can process *very large file* 
 - Throughput optimized
+- Highly parallele
+
+???
+
+- Open source
+- Run the best on HDFS
+- batch processing oriented
 
 
 ---
@@ -39,14 +46,10 @@ knitr::opts_chunk$set(echo = FALSE)
 
 ### Architecture
 
- Main/workers architecture
+Build on top of a resource management layer. It's a main/worker architecture.
 
-- **JobTracker** (main): accepts MR jobs submitted by clients. Assigns Map and Reduce Tasks to workers, re-execute failed/slow tasks
-- **TaskTrackers** (worker): workhorse of the system. Run tasks, manage storage, send/receive data
-
---
-
-Usually TaskTrackers are host by the same machine as HDFS DataNode, but it's not an obligation.
+- **Resource Manager** (main) : schedule, orchestrate tasks ;
+- **Node manager** (worker) : run tasks.
 
 ---
 
@@ -61,6 +64,10 @@ Usually TaskTrackers are host by the same machine as HDFS DataNode, but it's not
 
 Map/Reduce is an old programming paradigm. You can do it in python if you want.
 
+--
+
+**Two phases = two code to write**
+
 ---
 
 ## Key Concepts
@@ -72,17 +79,24 @@ Records from the data source (line of a file, row of a DB, documents) as **key:v
   - row index : row
   - document name : document
 
-Each **TaskTrackers** has a different input.
-  
+Each **mapper** has a his own input.
+
+???
+
+Usualy the data source is a file in HDFS, so split in bloc, each mapper reads a block
+
 ---
 ## Key Concepts
 
 ### The Map phase : Behaviour
 
-Each **TaskTrackers** executes the same code for each input. Example :
+Each **mapper** executes the same code for each input. Example :
   - split a text into word
-  - filter record
+  - filter records
+  - extract values
+  - scalar operations
   
+
 --
 You can keep track of the past if you want (like the previous record)
 
@@ -91,31 +105,31 @@ You can keep track of the past if you want (like the previous record)
 
 ### The Map phase : Output
 
-Each **TaskTrackers** produces a list of **map_key:map_value** pairs. Examples :
+Each **mapper** produces a list of **map_key:map_value** pairs. Examples :
   - a list of word:word_count
-  - a list of year:max
+  - a list of year:temperature_exracted
   - etc
-  
-  
+
+
 ---
 ## Key Concepts
 
-### The Map phase exemple : max temperature from each year
+### How to get the max temp for each year in the USA ?
+
+The map phase
 
 - **Input**: positional file of the National Climatic Data Center
   - Position 15-18 : year
   - Position 87- 92 : temperature
 
+- **Map function** : Extract the temperature of a line if temperature !=9999
 
-
--**Map function** : Extract the temperature of a line if temperature !=9999
-
--**Output** : List of year:temperature
+- **Output** : List of year:temperature
 
 ---
 ## Key Concepts
 
-### The Map phase exemple : max temperature from each year
+### How to get the max temp for each year in the USA ?
 
 <img src="img/map reduce/map reduce map.png" class="border" style="width: 60%; display: block; margin-left: auto;margin-right: auto"  />
 
@@ -126,11 +140,11 @@ Each **TaskTrackers** produces a list of **map_key:map_value** pairs. Examples :
 
 ### The Reduce phase : Input
 
-All the output value of the map tasks with the same key are send to same reduce task.
+All the output value of the map tasks with the same key are send to same reduce task (*shuffle*).
 
 --
 
-The input of a reduce fonction is a `list(map_key:list(map_value))` 
+The input of a reduce function is a `list(map_key:list(map_value))` 
 
 
 --
@@ -140,48 +154,187 @@ For instance a list of word and how many time they appear in each line.
 .pull-left[
 Reduce task 1
 ```python
-{
-  jasmine:[1],
-  dragon: [1],
-  cabage: [3,4,1,2]
-}
+[
+  1900 : [320, 123, 234, 120, 165, 246], 
+  1903 : [196]
+]
 ```
 ]
 
 .pull-right[
 Reduce task 2
 ```python
-{
-  the:[1,3,5,3],
-  hadoop: [1,1,1],
-  rose: [2,3,4,5,6]
-}
+[
+  1901 : [245],
+  1902 : [001, 301]
+]
 ```
 ]
 
+
+???
+How the shuffle works it's quite complexe and not very useful
 ---
 ## Key Concepts
 
 ### The Reduce phase : Behaviour
 
-Each **TaskTrackers** executes the same code for each input. Usally it's an aggregation by key
+Each **reducer** executes the same code for each input. Usually it's an aggregation by key
   - sum
   - average
   - max/min
-  
-  
+
+
 --
 This operation cannot depend of the other received key because you cannot
 controle the *shuffle*.
+
 
 ---
 ## Key Concepts
 
 ### The Reduce phase : Output
 
-Each **TaskTrackers** produces a list of **map_key:reduce_value** pairs. Examples :
+Each **reducer** produces a list of **map_key:reduce_value** pairs. Examples :
   - How many time each word are used word:sum_count
   - The max temperature for each year year:max_temp
   - etc
-  
+
+--
+
+This input is written into the file system (increase latency)
+
 ---
+## Key Concepts
+
+### How to get the max temp for each year in the USA ?
+
+The reduce phase
+
+- **Input**: output of the map phase, grouped by key
+
+- **Reduce function** : Get the max value for each key
+
+- **Output** : List of year:max temperature
+
+---
+## Key Concepts
+
+### How to get the max temp for each year in the USA ?
+
+<img src="img/map reduce/map reduce reduce.png" class="border" style="width: 80%; display: block; margin-left: auto;margin-right: auto"  />
+
+
+---
+## Key Concepts
+
+### Full example
+
+<img src="img/map reduce/map reduce full.png" class="border" style="width: 100%; display: block; margin-left: auto;margin-right: auto"  />
+
+
+---
+## Key Concepts
+
+### Some properties
+
+- **Data locality** : MapReduce run map phase where the data are located if possible
+- **Fault tolerance** : if a job fails, MR just rerun the job
+- **Straggler mitigation** : if a task takes to much time, MR launch a *speculative copy*
+
+---
+
+## How to write MapReduce tasks ?
+
+- MR is written in java, complete java API
+- No real python/R API
+
+--
+One solution **Hadoop Streaming**
+
+---
+
+## Hadoop Streaming
+
+- Not about stream processing
+- A workaround to use any language with MapReduce
+
+--
+
+**Hadoop Streaming streams the file in the standard input**
+
+---
+
+## Hadoop Streaming how does it work ?
+
+1. Hadoop read the input file
+2. Write each line in the *standard input*
+3. Your process must read the line in the standard input and write the result back in
+4. Hadoop Streaming read the standard input to get the result
+
+---
+
+## Hadoop Streaming
+
+In python :
+
+```python
+import sys
+
+for line in sys.stdin : #Read the standard input
+    #process data
+
+    print(data, file = sys.stdout) #Write back in the standar output
+```
+
+--
+It's only common python without any special library. **Perfect for process text file**.
+
+
+---
+
+## How to run MapReduce task ?
+
+- No nice GUI by default
+- Have to run with CLI
+- Or install Apache Hue
+
+---
+
+## Pros of MapReduce
+
+- Fault tolerance
+- High throughput
+- Scale easily
+- Lot's of research to optimize the scheduler
+
+---
+
+## Cons of MapReduce
+
+- High latency processing
+- Iterative algorithms are very slow (like ML algorithms)
+- Skew data can be a problem
+
+---
+## When MapReduce is a good choice ?
+
+- When you have HDFS
+- To batch process file
+
+---
+## When MapReduce is a bad choice ?
+
+- If you need interactive session (data exploration)
+- You want to process other things than text file but don't want to learn java
+- To run ML algorithme
+- To process streams
+
+---
+## Keep in mind
+
+- MapReduce is a file processing framework !
+- Throughput oriented
+- Perfect for batch processing
+- No GUI, all CLI ([HUE](https://gethue.com/) can provide a nice GUI)
+- For statistics, ML, interactive sessions you should use **Spark**

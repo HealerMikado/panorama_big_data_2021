@@ -1,6 +1,6 @@
 ---
 title: "Hadoop file system (HDFS)"
-author: "Arthur katossky & Rémi Pépin"
+author: "Arthur Katossky & Rémi Pépin"
 date: "18/02/2021"
 output: 
   xaringan::moon_reader:
@@ -8,6 +8,7 @@ output:
       highlightLines: 
       ratio: 16:10
       scroll: false
+      countIncrementalSlides: false
     css: css/xaringan-themer.css
 
 ---
@@ -78,8 +79,8 @@ knitr::opts_chunk$set(echo = FALSE)
 ### How does it work ?
 
 - Each file are split in **block** (128 Mb by default).
-- Those blocks are stored inDataNodes. To provide high reliability, each blocks are stored on multiple (3 by defaults) DataNode.
-- The NameNode keep in memory how each file is splited and where each block is stored.
+- Those blocks are stored in **DataNodes**. To provide high reliability, each blocks are stored on multiple (3 by defaults) **DataNode**.
+- The **NameNode** keeps in memory how each file is splited and where each block is stored.
 
 ---
 
@@ -102,7 +103,7 @@ knitr::opts_chunk$set(echo = FALSE)
 
 - No network nor process overload for the NameNode
 - The NameNode can handle a lot of request at the same time 
-- Try to select the best DataNode
+- Tries to select the best DataNode
 
 --
 
@@ -120,6 +121,10 @@ knitr::opts_chunk$set(echo = FALSE)
   - Use the [WebHDFS REST API](https://hadoop.apache.org/docs/r2.4.1/hadoop-project-dist/hadoop-hdfs/WebHDFS.html)
 - Install HUE, an GUI for the Hadoop ecosystem
 
+
+???
+
+If your are using python you should use the WebHDFS, it works like a webservice
 
 ---
 ## Pros of HDFS
@@ -160,6 +165,13 @@ knitr::opts_chunk$set(echo = FALSE)
 ## Keep in mind
 
 - HDFS is only a storage solution !
-- There is a framework to process the data called **MapReduce**
+- There are framework to process the data like  **MapReduce** or **Spark**
 - HDFS doesn't have a GUI, it's all command line (CLI)
 - [HUe](https://gethue.com/) can provide a nice GUI
+- Today with cloud provider you can create a big HDFS cluster in a snap
+
+---
+class: center, middle
+
+
+<img src="img/meme/what did it cost.jpg" style="width: 80%;" />

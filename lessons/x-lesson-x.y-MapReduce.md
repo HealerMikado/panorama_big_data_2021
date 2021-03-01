@@ -5,21 +5,21 @@
 
 ### Brainstorm of themes
 
-- [ ] File processing framework. 
-- [ ] Part of the hadoop ecosystem
-- [ ] Two phases
-  - [ ] Map phase : key value -> key value
-  - [ ] Reduce : key value -> key value output write on HDFS
+- [x] File processing framework. 
+- [x] Part of the hadoop ecosystem
+- [x] Two phases
+  - [x] Map phase : key value -> key value
+  - [x] Reduce : key value -> key value output write on HDFS
   - [ ] So two code to write
 - [ ] Theoretically not an obligation hdfs block - map reduce block, but it's the optimum
-- [ ] Data locality
+- [x] Data locality
 - [ ] Example : word count (classic), archive file (only mapper)
 - [ ] Written in java, so more effective in java, but Hadoop Streaming make in compatible with *all language* (like python) (*languages that can read and write on the standard output, the language need to be installed on the cluster to be executed). Suited for text processing
 - [ ] Parallelisation of task
-- [ ] Resilient to failure
+- [x] Resilient to failure
   - [ ] If a map task fail (completed or in-progress) : re-execute
   - [ ] If a reduce task fail (in-progress) : re-execute
-- [ ] Speculative copy
+- [x] Speculative copy
 - [ ] Pro :
   - [ ] Widely used framework
   - [ ] Build on top of HDFS
