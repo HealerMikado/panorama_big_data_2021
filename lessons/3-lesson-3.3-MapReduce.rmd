@@ -249,8 +249,12 @@ The reduce phase
 - MR is written in java, complete java API
 - No real python/R API
 
---
-One solution **Hadoop Streaming**
+
+---
+class: center, middle
+
+
+<img src="img/meme/hadoop streaming.jpg" style="width: 80%;" />
 
 ---
 
@@ -284,7 +288,7 @@ import sys
 for line in sys.stdin : #Read the standard input
     #process data
 
-    print(data, file = sys.stdout) #Write back in the standar output
+    print(data, file = sys.stdout) #Write back in the standard output
 ```
 
 --
@@ -293,7 +297,7 @@ It's only common python without any special library. **Perfect for process text 
 
 ---
 
-## How to run MapReduce task ?
+## How to run MapReduce tasks ?
 
 - No nice GUI by default
 - Have to run with CLI
@@ -338,3 +342,9 @@ It's only common python without any special library. **Perfect for process text 
 - Perfect for batch processing
 - No GUI, all CLI ([HUE](https://gethue.com/) can provide a nice GUI)
 - For statistics, ML, interactive sessions you should use **Spark**
+
+---
+class: center, middle
+
+
+<img src="img/meme/draw25.jpg" style="width: 60%;" />

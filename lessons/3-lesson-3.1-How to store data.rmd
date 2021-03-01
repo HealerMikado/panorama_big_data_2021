@@ -1,6 +1,6 @@
 ---
-title: "How to store data ?"
-author: "Arthur katossky & Rémi Pépin"
+title: "How to store big data ?"
+author: "Arthur Katossky & Rémi Pépin"
 date: "18/02/2021"
 output: 
   xaringan::moon_reader:
@@ -8,7 +8,8 @@ output:
       highlightLines: 
       ratio: 16:10
       scroll: false
-    css: css/xaringan-themer.css
+      countIncrementalSlides: false
+    css: ["css/xaringan-themer.css", "css/mine.css"]
 
 ---
 
@@ -24,7 +25,7 @@ knitr::opts_chunk$set(echo = FALSE)
 
 ## Storage on a machine
 
-<img src="img/storage/storage-average.png" style="width:70%;display: block; margin-left: auto;margin-right: auto" />
+<img src="img/storage/storage-average.png" style="width:70%;display: block; margin-left: auto;margin-right: auto; background:white" />
 
 ---
 
@@ -32,8 +33,9 @@ knitr::opts_chunk$set(echo = FALSE)
 .pull-left[
 <a href="https://www.statista.com/chart/17518/data-created-in-an-internet-minute/" title="Infographic: A Minute on the Internet in 2020 | Statista">
 <img src="https://cdn.statcdn.com/Infographic/images/normal/17518.jpeg" alt="Infographic: A Minute on the Internet in 2020 | Statista" width="80%" height="auto" style="width: 95%; height: auto !important; max-width:960px;-ms-interpolation-mode: bicubic;"/></a> You will find more infographics at <a href="https://www.statista.com/chartoftheday/">Statista</a>]
+
 .pull-right[
-There is no way taht any of this app can store all these data on one single machine
+There is no way that any of those app can store all these data on one single machine
 
 They all need distributed storage !
 ]
@@ -42,13 +44,13 @@ They all need distributed storage !
 
 ## How to store date ?
 
-There is two way to store date :
+There is two way to store data :
 --
 
-- A file system (like the one you use on your computer) to store **file**
+- A file system (like the one you use on your computer) to store **file** (unstructured higly heterogenous data)
 --
 
-- A database to store *formated* data
+- A database to store ***formated data***
 
 ---
 ## File system in a nutshell
@@ -88,7 +90,7 @@ There is two way to store date :
 
   - Transparent for the user, he only see "data"
   - Possibly care about data format (numbers, texts, dates...)
-  - Can handle *homogeneous*, *structured* data
+  - Handles *homogeneous*, *structured* data
 
 --
 
@@ -96,9 +98,13 @@ There is two way to store date :
   - Unique entry point to access data
   - Knows how to read/write data
   - Exposes new tools to manipulate data
-    - Specific lanquage (SQL for instance)
+    - Specific language (SQL for instance)
     - Transactions and concurrency management
     - Models to organize data
+    
+
+???
+Even if unstructured databases exist, the data in a DB are more structured than a file system
 
 ---
 ## Databases in a nutshell
@@ -112,8 +118,261 @@ There is two way to store date :
 - Because your data are database ready
 
 ---
+## Not so simple
+
+Since 2000 the difference became blur between file system and databases (Nosql Movement)
+
+> The difference between a distributed file system and a distributed [database] is that a distributed file system allows files to be accessed using the same interfaces and semantics as local files.
+
+
+--
+So FS and DB will have the same issues to tackle
+
+---
 
 ## Distribution : unlimited storage ?
 <img src="https://media.giphy.com/media/5C472t1RGNuq4/source.gif" style="width:90%;display: block; margin-left: auto;margin-right: auto" />
 
 ---
+
+## The fundamental problems of distribution
+
+
+- **Availability:** you want your data available 24/7
+
+--
+
+  - **Latency**: you don't want to wait for hours to get answered (read and write)
+
+--
+  - **Throughput:** maybe you want to read ALL your data or write GB at once
+
+--
+  - **Fault tolerance:** a single node failure shouldn't make your data unavailable
+
+
+---
+
+## The fundamental problems of distribution
+
+
+- **Coherence:** the same query with the same data return the same result
+
+--
+  - **Atomicity*:** complete entirely or not at all
+
+--
+  - **Durability*:** your data mustn't get corrupted over time
+
+--
+  - **Inter-node consistency:** at the same time, all the node see the same data
+
+---
+
+## The fundamental problems of distribution
+
+
+- **Schema consistency*:** changes affected data only in allowed ways
+
+--
+
+- **Isolation*:** transactions mustn't overlap
+
+--
+
+- **Elasticity/Scalability:**(under constraint of constant / acceptably-increasing request time)
+
+--
+  - can it store more or bigger files ?
+
+--
+  - can it process more requests ? (reads / writes)
+
+--
+  - can I add more nodes ? (_horizontal scaling_)
+
+--
+  - does scaling require a lot of _ad hoc_ work? can the scaling happen automatically? (_elasticity_)
+
+
+???
+
+* are ACID properties
+---
+
+## The fundamental problems of distribution
+
+
+Plus the usual questions of large-scale systems :
+
+- **Confidentiality:** only authorized person can access your data
+- **Data governance:** under which law are your data ?
+- **Environment:** is your system not too big ? Does your system use too much energy ?
+- **Economy:** isn't it too expensive to manage?
+- ...
+
+---
+
+## The fundamental problems of distribution
+
+### Some solutions 
+
+**Redundancy / replication:** keep copies of the data in far away nodes, so that you don't lose information under hardware failure 
+
+- .green[++ availability]
+- .green[++ fault-tolerance]
+- .green[++ durability]
+- .red[-- inter-node consistency]
+- .red[-- schema-consistency]
+- .red[-- cost]
+- .red[-- environment]
+
+---
+
+## The fundamental problems of distribution
+
+### Some solutions 
+**Balancing\rebalancing:** use all your node fairly 
+
+- .red[-- availability now]
+- .green[++ availability later]
+- .green[++ scalability]
+
+---
+
+## The fundamental problems of distribution
+
+### Some solutions 
+**Timestamp-based concurrency control:** use timestamp to resolve conflict (first in first out)  
+
+- .green[++ isolation]
+- .red[-- availability]
+
+---
+
+## The fundamental problems of distribution
+
+### Some solutions 
+**Get the closest data to the client:** if the data are close to the client, there is less network time 
+
+- .green[++ availability]
+- .red[-- inter-node consistency]
+- .red[-- governance] (*edge, fog, mist computing*)
+
+
+---
+
+## The fundamental problems of distribution
+
+### Some solutions 
+
+
+**Have a master:** it organizes the work to avoid conflict 
+
+- .green[++ consistency]
+- .red[-- availability]
+- .red[-- fault-tolerance]
+
+---
+
+## The fundamental problems of distribution
+
+### Some solutions 
+
+**Asynchronous processing:** nodes can accept change locally, and consolidate the transactions only in a second phase 
+- .green[++ availability]
+- .red[-- inter-node consistency]
+
+---
+
+## The fundamental problems of distribution
+
+### Some solutions 
+
+**First-class actions:** you may chose to priviledge reads over writes, or to completely prevent modifying files, for instance 
+
+- .green[++ availability]
+- .green[++ consistency]
+
+???
+
+
+In this part we do not distinguish between file systems and databases.
+
+Homegeneous (all run with the same sowftware / OS) vs. inhomogeneous (diff. software / OS).
+
+
+> Confidentiality, availability and integrity are the main keys for a secure system.
+
+> A server belongs to a rack, a room, a data center, a country, and a continent, in order to precisely identify its geographical location
+> The need to support append operations and allow file contents to be visible even while a file is being written
+> Communication is reliable among working machines: TCP/IP is used with a remote procedure call RPC communication abstraction. TCP allows the client to know almost immediately when there is a problem and a need to make a new connection.
+
+**Source:** https://en.wikipedia.org/wiki/Distributed_file_system_for_cloud
+
+
+> Distributed file systems may aim for "transparency" in a number of aspects. That is, they aim to be "invisible" to client programs, which "see" a system which is similar to a local file system. Behind the scenes, the distributed file system handles locating files, transporting data, and potentially providing other features listed below.
+> 
+
+
+---
+## The CAP theorem
+
+<img src="img/storage/CAP theorem.jpg" style="width: 80%; display: block; margin-left: auto;margin-right: auto" />
+
+???
+
+Brewer's theorem, published as a conjecture in 1999, proved in 2002
+Source : https://en.wikipedia.org/wiki/CAP_theorem
+
+---
+## Transparency requirements
+
+
+Because distribution is a tehcnical solution, it must be transparent for user :
+
+- **Access transparency** : unaware of distribution
+- **Location transparency** : unaware of the physical location
+- **Concurrency transparency** : all client should see the same state
+
+---
+
+## Some big data storage solution
+
+### File system/Object storage
+
+- [Hadoop File System (HDFS)](https://hadoop.apache.org/docs/stable/hadoop-project-dist/hadoop-hdfs/HdfsDesign.html)
+- [Minio](https://min.io/)
+- [Amazon S3](https://aws.amazon.com/fr/s3/)
+- [Google Cloud Storage](https://cloud.google.com/storage?hl=fr)
+
+---
+
+## Some big data  storage solution
+
+### Databases
+
+-  [MongoDB](https://www.mongodb.com/fr) : document oriented
+-  [Amazon DynamoDB](https://aws.amazon.com/fr/dynamodb/) / [Azure Cosmos DB](https://azure.microsoft.com/fr-fr/services/cosmos-db/) / [Google Firestore](https://cloud.google.com/firestore?hl=fr) : document oriented
+-  [Google Bigtable](https://cloud.google.com/bigtable/?hl=fr) / [Amazon Redshif](https://aws.amazon.com/fr/redshift) : column-oriented
+-  [Cassandra](https://cassandra.apache.org/) : column-oriented
+
+---
+
+## How to choose ?
+
+.pull-left[<img src="img/meme/chooseFSDB.jpg" style="width: 75%; display: block; margin-left: auto;margin-right: auto" />]
+
+
+.pull-right[
+- point 1
+- point 2
+]
+
+
+
+---
+## To sum up
+
+- Difference between filesystem and database is very blur
+- Lot of highly specialized tool. You have to pick the better one for your need

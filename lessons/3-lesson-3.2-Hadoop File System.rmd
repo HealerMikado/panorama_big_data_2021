@@ -9,7 +9,7 @@ output:
       ratio: 16:10
       scroll: false
       countIncrementalSlides: false
-    css: css/xaringan-themer.css
+    css: ["css/xaringan-themer.css", "css/mine.css"]
 
 ---
 
