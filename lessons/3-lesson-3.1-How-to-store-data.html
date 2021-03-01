@@ -58,15 +58,14 @@ There is two way to store data :
 ---
 ## File system in a nutshell
 
-- Manages files on storage space (like hard disk)
-
+**Manages files on storage space (like hard disk)**
   - Transparent for users,they only see "file"
   - Can handle very heterogenous unstructured data
   - Only understand *metadata*
 
 
 --
-- Use cases :
+**Principal use cases**
   - Read / write data
   - Security
   - Good for storing, bad for processing
@@ -89,22 +88,24 @@ There is two way to store data :
 
 ## Databases in a nutshell
 
-- Manages files on storage space
-
+**Manages files on storage space**
   - Transparent for the user, he only see "data"
   - Possibly care about data format (numbers, texts, dates...)
-  - Handles *homogeneous*, *structured* data
+  - Handles *homogeneous*, *structured*&lt;sup&gt;1&lt;/sup&gt; data
+  
+.footnote[
+1 : in comparaison to filesystems
+]
 
 --
 
-- Principal use cases :
+**Principal use cases**
   - Unique entry point to access data
   - Knows how to read/write data
-  - Exposes new tools to manipulate data
-    - Specific language (SQL for instance)
-    - Transactions and concurrency management
-    - Models to organize data
+  - Exposes tools to manipulate data (like SQL)
     
+
+
 
 ???
 Even if unstructured databases exist, the data in a DB are more structured than a file system
