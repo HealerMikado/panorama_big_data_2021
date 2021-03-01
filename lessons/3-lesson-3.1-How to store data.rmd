@@ -35,29 +35,29 @@ knitr::opts_chunk$set(echo = FALSE)
 <img src="https://cdn.statcdn.com/Infographic/images/normal/17518.jpeg" alt="Infographic: A Minute on the Internet in 2020 | Statista" width="80%" height="auto" style="width: 95%; height: auto !important; max-width:960px;-ms-interpolation-mode: bicubic;"/></a> You will find more infographics at <a href="https://www.statista.com/chartoftheday/">Statista</a>]
 
 .pull-right[
-There is no way that any of those app can store all these data on one single machine
+There are no way that any of those app can store all these data on one single machine
 
 They all need distributed storage !
 ]
 
 ---
 
-## How to store date ?
+## How to store data ?
 
 There is two way to store data :
 --
 
-- A file system (like the one you use on your computer) to store **file** (unstructured higly heterogenous data)
+- A **file system** (like the one you use on your computer) to store *file* (unstructured higly heterogenous data)
 --
 
-- A database to store ***formated data***
+- A **database** to store *formated data*
 
 ---
 ## File system in a nutshell
 
 - Manages files on storage space (like hard disk)
 
-  - Transparent for the user, he only see "file"
+  - Transparent for users,they only see "file"
   - Can handle very heterogenous unstructured data
   - Only understand *metadata*
 
@@ -142,62 +142,13 @@ So FS and DB will have the same issues to tackle
 
 --
 
-  - **Latency**: you don't want to wait for hours to get answered (read and write)
-
---
-  - **Throughput:** maybe you want to read ALL your data or write GB at once
-
---
-  - **Fault tolerance:** a single node failure shouldn't make your data unavailable
-
-
----
-
-## The fundamental problems of distribution
-
-
-- **Coherence:** the same query with the same data return the same result
-
---
-  - **Atomicity*:** complete entirely or not at all
-
---
-  - **Durability*:** your data mustn't get corrupted over time
-
---
-  - **Inter-node consistency:** at the same time, all the node see the same data
-
----
-
-## The fundamental problems of distribution
-
-
-- **Schema consistency*:** changes affected data only in allowed ways
+- **Consistency:** the same query with the same data return the same result
 
 --
 
-- **Isolation*:** transactions mustn't overlap
-
---
-
-- **Elasticity/Scalability:**(under constraint of constant / acceptably-increasing request time)
-
---
-  - can it store more or bigger files ?
-
---
-  - can it process more requests ? (reads / writes)
-
---
-  - can I add more nodes ? (_horizontal scaling_)
-
---
-  - does scaling require a lot of _ad hoc_ work? can the scaling happen automatically? (_elasticity_)
+- **Partition tolerant:** the system can deal with some failure
 
 
-???
-
-* are ACID properties
 ---
 
 ## The fundamental problems of distribution
@@ -211,89 +162,42 @@ Plus the usual questions of large-scale systems :
 - **Economy:** isn't it too expensive to manage?
 - ...
 
----
 
+---
+## The CAP theorem
+
+<img src="img/storage/CAP theorem.jpg" style="width: 80%; display: block; margin-left: auto;margin-right: auto" />
+
+???
+
+Brewer's theorem, published as a conjecture in 1999, proved in 2002
+Source : https://en.wikipedia.org/wiki/CAP_theorem
+
+---
 ## The fundamental problems of distribution
 
 ### Some solutions 
 
-**Redundancy / replication:** keep copies of the data in far away nodes, so that you don't lose information under hardware failure 
+--
+- **Redundancy / replication:** keep copies of the data in far away nodes, so that you don't lose information under hardware failure 
 
-- .green[++ availability]
-- .green[++ fault-tolerance]
-- .green[++ durability]
-- .red[-- inter-node consistency]
-- .red[-- schema-consistency]
-- .red[-- cost]
-- .red[-- environment]
+--
+- **Balancing\rebalancing:** use all your node fairly 
 
----
+--
+- **Timestamp-based concurrency control:** use timestamp to resolve conflict (first in first out)  
 
-## The fundamental problems of distribution
+--
+- **Get the closest data to the client:** if the data are close to the client, there is less network time 
 
-### Some solutions 
-**Balancing\rebalancing:** use all your node fairly 
+--
+- **Have a main node:** it organizes the work to avoid conflict 
 
-- .red[-- availability now]
-- .green[++ availability later]
-- .green[++ scalability]
+--
+- **Asynchronous processing:** nodes can accept change locally, and consolidate the transactions only in a second phase 
 
----
-
-## The fundamental problems of distribution
-
-### Some solutions 
-**Timestamp-based concurrency control:** use timestamp to resolve conflict (first in first out)  
-
-- .green[++ isolation]
-- .red[-- availability]
-
----
-
-## The fundamental problems of distribution
-
-### Some solutions 
-**Get the closest data to the client:** if the data are close to the client, there is less network time 
-
-- .green[++ availability]
-- .red[-- inter-node consistency]
-- .red[-- governance] (*edge, fog, mist computing*)
-
-
----
-
-## The fundamental problems of distribution
-
-### Some solutions 
-
-
-**Have a master:** it organizes the work to avoid conflict 
-
-- .green[++ consistency]
-- .red[-- availability]
-- .red[-- fault-tolerance]
-
----
-
-## The fundamental problems of distribution
-
-### Some solutions 
-
-**Asynchronous processing:** nodes can accept change locally, and consolidate the transactions only in a second phase 
-- .green[++ availability]
-- .red[-- inter-node consistency]
-
----
-
-## The fundamental problems of distribution
-
-### Some solutions 
-
-**First-class actions:** you may chose to priviledge reads over writes, or to completely prevent modifying files, for instance 
-
-- .green[++ availability]
-- .green[++ consistency]
-
+--
+- **First-class actions:** you may chose to priviledge reads over writes, or to completely prevent modifying files, for instance 
 ???
 
 
@@ -315,21 +219,12 @@ Homegeneous (all run with the same sowftware / OS) vs. inhomogeneous (diff. soft
 > 
 
 
----
-## The CAP theorem
-
-<img src="img/storage/CAP theorem.jpg" style="width: 80%; display: block; margin-left: auto;margin-right: auto" />
-
-???
-
-Brewer's theorem, published as a conjecture in 1999, proved in 2002
-Source : https://en.wikipedia.org/wiki/CAP_theorem
 
 ---
 ## Transparency requirements
 
 
-Because distribution is a tehcnical solution, it must be transparent for user :
+Because distribution is a tehcnical solution, it must be transparent for users :
 
 - **Access transparency** : unaware of distribution
 - **Location transparency** : unaware of the physical location
@@ -361,12 +256,19 @@ Because distribution is a tehcnical solution, it must be transparent for user :
 
 ## How to choose ?
 
-.pull-left[<img src="img/meme/chooseFSDB.jpg" style="width: 75%; display: block; margin-left: auto;margin-right: auto" />]
+.pull-left[<img src="img/meme/chooseFSDB.jpg" style="width: 70%; display: block; margin-left: auto;margin-right: auto" />]
 
 
 .pull-right[
-- point 1
-- point 2
+Not a simple answer.
+
+- if you just want to store data for later : filesystem
+- if you have highly heterogenous data (image + text) : filesystem
+- if you need integrated tools to request data : database
+- json, xml processing : database or filesystem 
+
+
+Maybe you need a file system to store raw input data, and a database to store the cleaned data
 ]
 
 
@@ -375,4 +277,8 @@ Because distribution is a tehcnical solution, it must be transparent for user :
 ## To sum up
 
 - Difference between filesystem and database is very blur
-- Lot of highly specialized tool. You have to pick the better one for your need
+- Lot of highly specialized tools. You have to pick the better one for your need
+- Big data solution are not always needed.
+
+---
+<img src="img/meme/drake end.jpg" style="width: 60%; display: block; margin-left: auto;margin-right: auto" />
