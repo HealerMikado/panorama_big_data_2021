@@ -58,8 +58,8 @@ There is two way to store data :
 ---
 ## File system in a nutshell
 
-**Manages files on storage space (like hard disk)**
-  - Transparent for users,they only see "file"
+**Manages files on storage space (like hard disk, flash drive, memory card)**
+  - Transparent for users, they only see files (no difference between physical solutions)
   - Can handle very heterogenous unstructured data
   - Only understand *metadata*
 
@@ -71,7 +71,7 @@ There is two way to store data :
   - Good for storing, bad for processing
   
 ---
-## Why use file system
+## Why use file system ?
 
 - Because you only want to store data and do not need integrated tools
 - Because your data are very heterogeneous or complex (like photo, video etc)
@@ -120,11 +120,13 @@ Even if unstructured databases exist, the data in a DB are more structured than 
 
 - Because you need some integrated tools to manipulate your data
 - Because your data are database ready
+  - key:value
+  - structured/semi-structured
 
 ---
 ## Not so simple
 
-Since 2000 the difference became blur between file system and databases (Nosql Movement)
+Since 2000 the difference has become blur between file system and databases (Nosql Movement)
 
 &gt; The difference between a distributed file system and a distributed [database] is that a distributed file system allows files to be accessed using the same interfaces and semantics as local files.
 
@@ -134,7 +136,7 @@ So FS and DB will have the same issues to tackle
 
 ---
 
-## Distribution : unlimited storage ?
+## Distribution : unlimited storage at no cost ?
 &lt;img src="https://media.giphy.com/media/5C472t1RGNuq4/source.gif" style="width:90%;display: block; margin-left: auto;margin-right: auto" /&gt;
 
 ---
@@ -153,6 +155,15 @@ So FS and DB will have the same issues to tackle
 - **Partition tolerant:** the system can deal with some failure
 
 
+???
+
+There are more issues but like
+
+- latency
+- durability
+- isolation
+- and more
+
 ---
 
 ## The fundamental problems of distribution
@@ -160,10 +171,10 @@ So FS and DB will have the same issues to tackle
 
 Plus the usual questions of large-scale systems :
 
-- **Confidentiality:** only authorized person can access your data
-- **Data governance:** under which law are your data ?
-- **Environment:** is your system not too big ? Does your system use too much energy ?
-- **Economy:** isn't it too expensive to manage?
+- **Confidentiality :** only authorized person can access your data
+- **Data governance :** under which law are your data ?
+- **Environment :** is your system not too big ? Does your system use too much energy ?
+- **Economy :** isn't it too expensive to manage?
 - ...
 
 
@@ -183,10 +194,10 @@ Source : https://en.wikipedia.org/wiki/CAP_theorem
 ### Some solutions 
 
 --
-- **Redundancy / replication:** keep copies of the data in far away nodes, so that you don't lose information under hardware failure 
+- **Redundancy / replication :** keep copies of the data in far away nodes, so that you don't lose information under hardware failure 
 
 --
-- **Balancing\rebalancing:** use all your node fairly 
+- **Balancing / rebalancing:** use all your node fairly 
 
 --
 - **Timestamp-based concurrency control:** use timestamp to resolve conflict (first in first out)  
@@ -240,10 +251,11 @@ Because distribution is a tehcnical solution, it must be transparent for users :
 
 ### File system/Object storage
 
-- [Hadoop File System (HDFS)](https://hadoop.apache.org/docs/stable/hadoop-project-dist/hadoop-hdfs/HdfsDesign.html)
-- [Minio](https://min.io/)
-- [Amazon S3](https://aws.amazon.com/fr/s3/)
-- [Google Cloud Storage](https://cloud.google.com/storage?hl=fr)
+- [Hadoop File System (HDFS)](https://hadoop.apache.org/docs/stable/hadoop-project-dist/hadoop-hdfs/HdfsDesign.html) : open source distributed file system. Part of the Hadoop Ecosystem
+- [Lustre](https://www.lustre.org/) : open source distrubed file system for High Performance Computing
+- [Aluxio](https://www.alluxio.io/) : Open source data orchestration for analytics and machine learning in any cloud
+- [Minio](https://min.io/) : open source object storage
+- [Amazon S3](https://aws.amazon.com/fr/s3/) / [Google Cloud Storage](https://cloud.google.com/storage?hl=fr) : objet storage as a Service
 
 ---
 
@@ -252,8 +264,8 @@ Because distribution is a tehcnical solution, it must be transparent for users :
 ### Databases
 
 -  [MongoDB](https://www.mongodb.com/fr) : document oriented
--  [Amazon DynamoDB](https://aws.amazon.com/fr/dynamodb/) / [Azure Cosmos DB](https://azure.microsoft.com/fr-fr/services/cosmos-db/) / [Google Firestore](https://cloud.google.com/firestore?hl=fr) : document oriented
--  [Google Bigtable](https://cloud.google.com/bigtable/?hl=fr) / [Amazon Redshif](https://aws.amazon.com/fr/redshift) : column-oriented
+-  [Amazon DynamoDB](https://aws.amazon.com/fr/dynamodb/) / [Azure Cosmos DB](https://azure.microsoft.com/fr-fr/services/cosmos-db/) / [Google Firestore](https://cloud.google.com/firestore?hl=fr) : document oriented as a service
+-  [Google Bigtable](https://cloud.google.com/bigtable/?hl=fr) / [Amazon Redshif](https://aws.amazon.com/fr/redshift) : column-oriented as a service
 -  [Cassandra](https://cassandra.apache.org/) : column-oriented
 
 ---

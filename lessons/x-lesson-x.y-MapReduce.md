@@ -20,10 +20,10 @@
   - [ ] If a map task fail (completed or in-progress) : re-execute
   - [ ] If a reduce task fail (in-progress) : re-execute
 - [x] Speculative copy
-- [ ] Pro :
+- [x] Pro :
   - [ ] Widely used framework
-  - [ ] Build on top of HDFS
-  - [ ] Resilient to failure
+  - [x] Build on top of HDFS
+  - [x] Resilient to failure
   - [ ] The scheduler try to speed up the process with speculative copy
 
 

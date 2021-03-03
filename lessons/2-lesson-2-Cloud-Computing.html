@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+  <head>
+    <title>Cloud Computing</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Arthur Katossky &amp; Rémi Pépin" />
+    <link rel="stylesheet" href="css\xaringan-themer.css" type="text/css" />
+    <link rel="stylesheet" href="css\mine.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Cloud Computing
+### Arthur Katossky &amp; Rémi Pépin
+### 18/02/2021
+
+---
+
+
+
+
+
+
+## A quick history of IT hardware in enterprise
+
+.pull-left[
+**Mainframe era** (1940 - mid 1970)
+  - It's not a super-computer
+  - Commercial, scientific, and large-scale computing only.
+  - Only big enterprise can buy mainframes.
+  - No direct user interaction (no screen nor keyboard), but card punches
+  - Throughtput optimize (I/O operation)
+  - Use case: credit card operation, flight reservation, share market.
+    ]
+
+.pull-right[![](http://www.rhod.fr/images_dossiers/wargames/wargames03.jpg)
+*Source : WarGames, John Badham, 1983*
+]
+
+---
+
+
+## A quick history of IT hardware in enterprise
+
+.pull-left[
+**Fat client era** (Mid 1970 - mid-1990)
+  - Developement of micro-computing, personnal computers become cheaper and cheaper
+  - Instead of one mainframe for data and computing, one server is for the data, and computation are executed on personnal computer (**fat client**)
+  - Fat client are autonomous of each other. They need the data server only to download the data
+
+  ]
+
+.pull-right[&lt;img src="https://img-9gag-fun.9cache.com/photo/a0Rz2rL_700bwp.webp" style="width: 50%; display: block; margin-left: auto;margin-right: auto" /&gt;
+*Source :  Friends Season 2 Episode 8*
+]
+---
+
+## A quick history of IT hardware in enterprise
+
+.pull-left[
+**In-house datacenter era** (mid-1990 - 2010)
+  - mid 1990 : democratization of the Internet
+  - Communication speed increase quickly
+  - Centralisation of data and computing in data datacenter.
+  - Personnal computers for daily tasks (mail, office etc)
+  - Servers for computation
+
+Note : You can go on step further, like at Ensai, and put everything in the server
+
+  ]
+
+.pull-right[&lt;img src="https://leshorizons.net/wp-content/uploads/2019/06/DataCenter.jpg" style="zoom:100%;" /&gt;
+
+*Source : https://leshorizons.net/datacenter/*
+
+]
+
+---
+
+## A quick history of IT hardware in enterprise
+
+.pull-left[
+**Grid Computing** (mid-1990 - 2010) 
+  - what enteprise could afford, could not be done by scientists
+  - idea: using idle machines and make them work together on bigger tasks (**CPU scavenging**)
+  - parallel ideas could now be applied _between_ computers
+  - still use today ([SETI@home](https://setiathome.ssl.berkeley.edu/))
+
+**Source:** Top 500, the List ([link](https://www.top500.org/lists/2019/11))
+  ]
+
+.pull-right[&lt;img src="https://www.lebigdata.fr/wp-content/uploads/2018/02/grid-computing-vs-cluster-computing-1.jpg" style="zoom:100%;" /&gt;
+
+*Source : https://www.lebigdata.fr/wp-content/uploads/2018/02/grid-computing-vs-cluster-computing-1.jpg*
+]
+
+???
+
+  - In November 2019 the best grid's 495 820 computers was computing on average at the rate 30 petaflops (BOINC, Berkeley, [link](https://boinc.berkeley.edu)), same as the 5th fastest supercomputer
+  - for comparison the fastest super computer today (Summit, IBM, [link](https://www.olcf.ornl.gov/olcf-resources/compute-systems/summit)) delivers ~200 petaflops
+
+---
+## A quick history of IT hardware in enterprise
+.pull-left[
+**cloud computing era** (2005-?)
+  - 2002 : amazon web service
+  - 2006 : amazon elastic compute cloud
+  - 2008 : google app engine
+  - 2008 : analyst house Garner claim rise of cloup computing
+  - 2010 : microsoft azure
+
+Cloud compute revenue in 2018 : 182,4 G$, estimation in 2022 331,4 G$ ([Source](https://www.gartner.com/en/newsroom/press-releases/2019-04-02-gartner-forecasts-worldwide-public-cloud-revenue-to-g))
+
+  ]
+
+.pull-right[ ![](https://www.astelis.fr/wp-content/uploads/cloud-maillage.jpg)
+*Source : https://www.astelis.fr/wp-content/uploads/cloud-maillage.jpg*
+]
+
+---
+## A quick history of IT hardware in enterprise
+.pull-left[
+**Edge/fog/mist computing era** (2020?-?)
+  - 2016 : W. Shi, J. Cao, Q. Zhang, Y. Li and L. Xu, "Edge Computing: Vision and Challenges," in IEEE Internet of Things Journal
+  - 2017 : M. Satyanarayanan, "The emergence of egde computing"
+  - 2020 : Fog comuting for arcade gaming [Kotaku](https://kotaku.com/segas-new-streaming-platform-will-turn-japanese-arcades-1843919262)
+    ]
+
+.pull-right[ ![](https://img.alicdn.com/tfs/TB1QdC2KhjaK1RjSZKzXXXVwXXa-3302-1854.png)
+*Source : https://www.alibabacloud.com/fr/knowledge/what-is-edge-computing*
+]
+
+???
+  - 2019 : Jad Darrous, Thomas Lambert, Shadi Ibrahim. On the Importance of Container Image Placementfor Service Provisioning in the Edge
+  - 2019 : Pedro Silva, Alexandru Costan, Gabriel Antoniu. Investigating Edge vs. Cloud Computing Trade-offs for Stream Processing. BigData 2019
+
+---
+## Traditional IT : 1 physical machine = 1 function
+
+  - SMTP (mail) server
+  - DNS
+  - Web server, FTP server
+  - proxy
+  - ...
+
+--
+
+- .green[Pros : security, no middleware]
+- .red[Cons : cost, overdimensioned hardware]
+
+---
+## Virtualization
+
+Idea: one physical machine = multiple virtual machines (VMs).
+
+--
+- Isolated
+
+--
+- Can have their own OS
+
+--
+- Don't know there are other VMs on the same machine
+
+--
+- Have there own resources
+
+
+---
+## Virtualization
+
+.green[Pros :]
+- Mutualization of cost (less machines)
+- Better CPU utilization
+- Independant OS
+- Easy migration and deployment
+- Can run old OS
+
+--
+
+.red[Cons :] 
+- Is the physical machine goes down all VMs go down too
+- There are some security issues
+
+???
+It's not something new. Existe since 1960, but still relevant ! 
+
+---
+## Virtualization
+
+- **OS virtualisation** : Multiple OS on the same machine. Need an **hypervisor** to run mutliple OS on a machine.
+  - Pro : Secured
+  - Con : Heavy (a OS do a lot !). Need a lot of knowledge to start doing things
+
+
+--
+- **Containerization** : package an app and all the need library in a container. Need a runtime engine (like [Docker](https://www.docker.com/))
+  - Pros : lightweight, easy to use, need little to no kwonledge to start
+  - Cons : security issues, can become very complex in no time
+    
+
+---
+## Cloud computing definition
+
+Wikipedia : 
+&gt;Cloud computing  is **Internet-based  computing**,  whereby **shared resources, software, and informationare** provided to computers and  other devices **on demand**, like the electricity  grid. Cloud computing  is a style of computing  in **which dynamically  scalable** and  often **virtualized  resources** are provided  as a **service** over the Internet.
+
+--
+
+In a nutshell :
+- shared physical ressources (mutalization of cost) in remote location
+- Access via the Internet
+- On demand scalable services
+
+---
+## Why cloud computing ?
+
+- The world is changing faster than ever
+
+--
+- Need quick Reponses to new problems
+
+--
+- Building a new datacenter, buying new servers or create new architectures take too much time ! 
+
+--
+- The on demand nature of cloud computing make possible to create new services in no time (or in a coffee break time)
+
+---
+## Why cloud computing ? 
+
+- 💰 Less investment : don't have to buy anything, just pay for what you use
+
+--
+
+- 📈 Easy scalable : "just" pay for more resources
+
+--
+
+- 🤸️ Flexible : create and delete resources in no time
+
+--
+- ️🔧No maintenance cost : it's the responsibility of your cloud provider
+
+--
+
+- 🧱 Reliable : it's the responsibility of your cloud provider
+
+--
+
+- 🔬 : new resources are propose regularly, and you pay for what you use.
+
+---
+## Different services
+
+- **IaaS** (Infrastrucre as a Service) : you rent basics machine. You have basics resources (CPU, RAM, network, storage), and you can build on it. Need a lot of knowldge about IT.
+- **PaaS** (Platform as a Service) : you rent an already build platform like a database, a cluster etc. The basics stuff are done (network, os, installation etc) but you can tune your plateform. Need litle to no knowledge to use.
+- **SaaS** (Software as a Service) : you use an already installed application. You do not know the architecture, but it's not a problem, you just want an easy to use software.
+
+---
+## Different services
+
+
+&lt;img src="img/cloud/cloud services.png" style="width: 90%; display: block; margin-left: auto;margin-right: auto" /&gt;
+
+---
+## Some cloud providers
+
+- Amazon web service
+- Google cloud plateform
+- Microsoft azure
+- OVHcloud
+
+---
+## Principles of IaaS
+
+When it comes to infrastructure as a service, all cloud-providers basically share the same two basic products:
+
+1. normal storage
+2. virtual machines
+
+---
+## Normal storage
+
+This is the place where you put all of your files, script, logs, data or else.
+
+You create as many "buckets" as you wish, where a "bucket" is a unit of storage.
+
+"Normal", in "normal storage" means:
+- slower access than directly from the virtual machine
+- faster than recovery storage
+
+???
+
+(Of course you may want to use database services instead, but let's forget about that for now.)
+
+---
+## Normal storage
+
+- The provider takes charge of preventing potential corruption of your data (*replication*)
+
+- Each resource you store gets a unique URL, that you can refer to from inside or outisde the cloud-provider ecosystem
+
+- Data is usually encrypted server-side (meaning that stealing physically disks from a Google server is useless) but by default, the provider stores the encryption key themselves somewhere.
+
+
+
+---
+## Normal storage
+
+Storage solutions have different names, but similar pricing schemes:
+
+| Provider | Service's  name |      Store |                Write |     Read* |
+|----------|-----------------|------------|----------------------|-----------|
+| Google   | Cloud Storage   | 0,03 $/Go |                 free |      free |
+| Amazon   | S3              | 0,02 $/Go |                 free |   0,09 $/Go |
+| Azure    | Blob Storage    | 0,02 $/Go | 0,00 $ / 10 000 op. | 0.02 $ / 10 000 op. |
+| OVH      | Object Storage  | 0,01  €/Go |                 free |    0,01 €/Go |
+
+Prices are given monthly.
+
+
+**Sources:** GCP ([link](https://cloud.google.com/storage/pricing)), AWS ([link](https://aws.amazon.com/fr/s3/pricing)), Windows ([link](https://azure.microsoft.com/en-us/pricing/details/storage/blobs))OVH ([link](https://www.ovhcloud.com/fr/public-cloud/prices)), visited on 2020/01/18.
+
+---
+## Normal storage
+
+Other forms of storage, beyond "normal" storage, include:
+
+- disks that can be "attached" to a virtual machine (faster, but more expensive)
+- storage whose physical location adapts to usage
+- so-called "cold" storage for unfrequently-accessed storage (less expensive, but you pay reads and writes more)
+- archive solution (inexpensive, but takes min. to hours for access)
+
+---
+## Normal storage, the snowmobile
+
+&lt;img src="https://media.datacenterdynamics.com/media/images/Snowmobile-AWS-truck-data-delivery.original.jpg" style="width: 70%; display: block; margin-left: auto;margin-right: auto" /&gt;
+
+
+More info : https://www.datacenterdynamics.com/en/news/aws-snowmobile-delivers-petabytes-to-the-cloud-by-truck/
+
+---
+## Virtual machines
+
+The other component of a typical IaaS environement are **virtual machines** (VMs).
+
+A VM is made of a combination of components:
+- memory
+- processing units
+- local storage (hard disk)
+- an operating system (FR: système d'exploitation), typically Linux
+
+VMs come in a fixed (but high) number of pre-configured options. Some providers offer tailored configuration, but they are usually more expensive that the closest pre-configured option.
+
+???
+
+Imagine that on cluster C, on rack R, on server S, there is in total 124 CPUs, 14 GPUs, 200Go of memory and 10 To of storage. If the configuration you request for your virutal machine V fits on S, then V will get access to the physical resources there. If V does not fit on V, the orchestrator of the cluster will try to fit in on machine S' in the same rack. Then on an other rack. If it can't find a room, it will maybe try to fit a part of the configuration (say memory and processing units) on S and the rest (local storage) on S'.
+
+---
+## Virtual machines
+
+Virtual machines (VMs) come with little pre-configured software, and _you_ are the one to perform all the rest of the configuration. You may use such machines to :
+
+- rent a over powerful machine with some GPU to train one model
+- try something which need a linux machine or an exotic configuration 
+
+
+--
+**BEWARE!** Holding the pysical resource and doing nothing with it comes at a cost for the provider,  **you will pay for a VM even you do not use it.** 
+
+
+--
+**Shut down your VMs when you don't need them** 
+
+---
+class: center, middle 
+![](img/meme/brain.jpg)
+
+
+---
+## Virtual machines
+
+| Provider | Service's  name  | Processing* |  Memory** | Storage*** |
+|----------|------------------|-------------|-----------|------------|
+| Google   | Compute Engine   |    ~0,03 $ | ~0,004 $ |   ~0,04 $ |
+| Amazon   | EC2              |    ~0,05 $ | ~0,005 $ |          ? |
+| Azure    | Virtual Machines |    ~0.05 $ | ~0.005 $ |   ~0.00 $ |
+| OVH      | Public Cloud     |    ~0,04  € | ~0,002  € |   ~0,00  € |
+
+* (Average) cost per processor (CPU or GPU) per hour
+** (Average) cost per Go (CPU or GPU) per hour
+*** (Average) cost per Go per month
+
+.footnote[**Sources:** GCP, Iowa cluster (links [for processing and memory](https://cloud.google.com/compute/vm-instance-pricing) and [for storage](https://cloud.google.com/compute/disks-image-pricing)) ; AWS, London cluster, own calculation ([link](https://aws.amazon.com/ec2/pricing/on-demand/)) ; Azure, France South cluster ([link](https://azure.microsoft.com/en-us/pricing/details/virtual-machines/linux/)) ; OVH, Gravelines vluster, own calculation ([link](https://www.ovhcloud.com/fr/public-cloud/prices/)) ; all visited on 2020/01/18.]
+
+???
+
+Comparison Azure vs. AWS by Microsoft:
+https://docs.microsoft.com/fr-fr/azure/architecture/aws-professional/
+
+Comparison GCP vs. AWS by Google:
+https://cloud.google.com/docs/compare/aws/
+
+
+
+---
+## Platform as a service
+
+An alreay package platforme. Just need some tuning.
+
+As a statician, services you may come to use are:
+
+- databases
+- data analytics
+- machine-learning
+- serverless computing
+
+.green[++Pros]: scale automatically, less maintenance, easy to access
+
+.red[--Cons]: less configurable, possibly more expensive, cloud provider dependent
+
+Exemple : Hadoop Platform (AWS EMR, GCP Cloud Dataproc, Azure HDInsight)
+
+---
+## Software as a Service, SaaS
+
+
+- Provide to the consumer the capability to use a running application manage by others (application provider)
+
+- The consumer do not control anything, except some user-specific settings
+
+- You must agree some terms and conditions before use
+
+- I heavly discourage using those kind of services for sensible data analysis (specialy if it's a "free" service)
+
+- Exemples : all the Google suite, Github, Binder  ...
+
+---
+## Some exemples of cloud computing success: New York Times
+
+- The need
+  - conversion from TIFF to pdf of all articles from 1851 to 1922
+  - 4TB of input (405,000 very large TIFF images, 3.3 million articles in SGML and 405,000 xml files mapping articles to rectangular regions in the TIFF’s)
+--
+
+- The realization
+  - Run around 100 EC2 instances to create an Hadoop cluster for 24h (estimate cost 800$)
+  - Realized they made a mistake
+  - Rerun the cluster with the fix for 24h (estimate cost 800$)
+
+--
+- Conclusion
+  - Convert to pdf 70 years of newspapers for less than 2000$ in no time!
+
+---
+## Some exemples of cloud computing success: Animoto
+
+Animoto is a cloud-based video creation service (Saas)
+
+- Start-up without any physical server
+- Rents servers (IaaS) to deploy its application
+- Starts with 40 servers
+- Scales up from 40 to 5000 servers in 4 days to meet the growing number of subscriber !
+
+--
+
+Cannot be done with on - datacenter
+
+
+
+---
+# Cloud and ecology
+
+
+
+&lt;img src="https://pbs.twimg.com/media/CbeMAqaUAAEFWZU.png" style="width: 50%; display: block; margin-left: auto;margin-right: auto" /&gt;
+
+---
+## Cloud and ecology
+
+- It's not because you don't own the server that the server does not pollute.
+- The internet causes about 4% of the worldwide emission of GHG
+- Datacenters are reponsible for 25% of it
+- Theoretically, with the mutualization of ressource cloud computing could be greenner than in site datacenter
+- But, because cloud computing become cheaper, more people use it, and are less carefull with the cost. So more servers are running, maybe over dimensionned one, and cloud computing can me more polluting than old school datacente (rebound effect).
+- No real evidence of that.
+
+
+*Source : ADEME, la face caché du numérique, consulté le 19/01/2020 [lien](https://www.ademe.fr/sites/default/files/assets/documents/guide-pratique-face-cachee-numerique.pdf)*
+
+---
+class: center, middle 
+![](img/meme/solution.jpg)
+
+---
+## To sum up
+
+
+- Cloud computing = multiples service :
+  - IaaS : only basic ressources provided. Good for experimented people
+  - PaaS : a packaged plateform. Good if you need a database, a Hadoop cluster etc
+  - Saas : a ready to use service.
+  
+--
+- Beware even if your machines are idle you are still billed
+
+--
+- IaaS and PaaS need some basic knowlege (ssh connection, basic shell commands)
+
+--
+- Cloud computing can be a solution, but not always
+
+---
+## To sum up
+
+&gt; With great power comes great responsabilities
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightLines": null,
+"ratio": "16:10",
+"scroll": false,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();</script>
+
+<script>
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
