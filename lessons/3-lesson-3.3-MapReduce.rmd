@@ -22,8 +22,8 @@ knitr::opts_chunk$set(echo = FALSE)
 ## Hadoop MapReduce in a nutshell
 
 - A widely use file processing framework
-- Based on the MapReduce programming model 
-- Part part the Hadoop ecosystem
+- Based on the `map()` and `reduce()` programming model 
+- Part of the Hadoop ecosystem
 - Can process *very large file* 
 - Throughput optimized
 - Highly parallele
@@ -46,7 +46,7 @@ knitr::opts_chunk$set(echo = FALSE)
 
 ### Architecture
 
-Build on top of a resource management layer. It's a main/worker architecture.
+It's a main/worker architecture.
 
 - **Resource Manager** (main) : schedule, orchestrate tasks ;
 - **Node manager** (worker) : run tasks.
@@ -62,7 +62,7 @@ Build on top of a resource management layer. It's a main/worker architecture.
 
 --
 
-Map/Reduce is an old programming paradigm. You can do it in python if you want.
+`map()` and `reduce()` entReduce is an old programming paradigm. You can do it in python if you want.
 
 --
 
@@ -310,7 +310,7 @@ It's only common python without any special library. **Perfect for process text 
 - Fault tolerance
 - High throughput
 - Scale easily
-- Lot's of research to optimize the scheduler
+- Lot of research to optimize the scheduler
 
 ---
 

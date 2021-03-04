@@ -5,6 +5,7 @@
     <meta charset="utf-8" />
     <meta name="author" content="Arthur Katossky &amp; Rémi Pépin" />
     <link rel="stylesheet" href="css\xaringan-themer.css" type="text/css" />
+    <link rel="stylesheet" href="css\mine.css" type="text/css" />
   </head>
   <body>
     <textarea id="source">
@@ -36,31 +37,31 @@ class: center, middle, inverse, title-slide
 
 ## A little bit of Hadoop history
 
-- 2003 Google release a [paper](https://research.google/pubs/pub51/) about their Google File System (GFS) (Storage)
+- 2003 Google released a [paper](https://research.google/pubs/pub51/) about their Google File System (GFS) (Storage)
 --
 
-- 2004 Google release a [paper](https://research.google/pubs/pub62/) about processing data on large cluster (MapReduce)
+- 2004 Google released a [paper](https://research.google/pubs/pub62/) about processing data on large cluster (MapReduce)
 --
 
 - 2006 first release of Hadoop 0.1.0. Open source implementation of GFS and MapReduce
 --
 
-- 2011 release of Hadoop 1.0.0
+- 2011 released of Hadoop 1.0.0 (HDFS+MapReduce)
 --
 
-- 2013 release of Hadoop 2.2.0 (first sable version of 2.x) (resource management layer)
+- 2013 released of Hadoop 2.2.0 (first sable version of 2.x) (added a resource management layer)
 --
 
-- 2017 release of Hadoop 3.0.0
-- 2021 release of Hadoop 3.2.2 (still an active project)
+- 2017 released of Hadoop 3.0.0
+- 2021 released of Hadoop 3.2.2 (still an active project)
 
 ---
 
-## Why use Hadoop ?
+## Why shoud you use Hadoop ?
 
 - Open-source financed by the Apache Foundation
 - Well spread
-- Well documentation
+- Well documented
 - Lot's of related projects (Spark, Hive, Solr, Kafka)
 
 ---
@@ -81,8 +82,8 @@ class: center, middle, inverse, title-slide
 ### How does it work ?
 
 - Each file are split in **block** (128 Mb by default).
-- Those blocks are stored inDataNodes. To provide high reliability, each blocks are stored on multiple (3 by defaults) DataNode.
-- The NameNode keep in memory how each file is splited and where each block is stored.
+- Those blocks are stored in **DataNodes**. To provide high reliability, each blocks are stored on multiple (3 by defaults) **DataNode**.
+- The **NameNode** keeps in memory how each file is splited and where each block is stored.
 
 ---
 
@@ -97,7 +98,7 @@ class: center, middle, inverse, title-slide
 - A client requests a file to the NameNode 
 - The NameNode selects for each file block a DataNode
 - It sends back to the client where to find each block
-- The client request the DataNode
+- The client request the selected DataNodes and marge back the file
 
 --
 
@@ -105,7 +106,7 @@ class: center, middle, inverse, title-slide
 
 - No network nor process overload for the NameNode
 - The NameNode can handle a lot of request at the same time 
-- Try to select the best DataNode
+- Tries to select the best DataNodes
 
 --
 
@@ -124,12 +125,16 @@ class: center, middle, inverse, title-slide
 - Install HUE, an GUI for the Hadoop ecosystem
 
 
+???
+
+If your are using python you should use the WebHDFS, it works like a webservice
+
 ---
 ## Pros of HDFS
 
 - Fault tolerance :
   - Resilient to DataNode failure
-  - NameNode failure can stop the system for some time, but if the log and the namespace image are still here the system can reboot (that's why they are persist on disk)
+  - NameNode failure can stop the system for some time, but if the log and the namespace image are still here the system can reboot (that's why they are persist on disk). Or you can use multiple NameNode
 - High throughput
 - Scale easily
   - Just add mote DataNode for more storage capacity
@@ -163,10 +168,10 @@ class: center, middle, inverse, title-slide
 ## Keep in mind
 
 - HDFS is only a storage solution !
-- There is a framework to process the data called **MapReduce**
+- There are framework to process the data like  **MapReduce** or **Spark**
 - HDFS doesn't have a GUI, it's all command line (CLI)
-- [HUe](https://gethue.com/) can provide a nice GUI
-- Today with cloud provider you can create a big hadoop cluster in a snap
+- [HUE](https://gethue.com/) can provide a nice GUI
+- Today with cloud provider you can create a big HDFS cluster in a snap
 
 ---
 class: center, middle

@@ -61,7 +61,7 @@ Main/workers architecture<sup>1</sup>
 
 - **Driver** (main): maintains information about the Spark Application,
 responding to user's program, analyse, distributes and schedules works.
-Can be your own computer in *client-mode* or a server in *cluster-mode*.
+Can be your own computer in *client-mode* or a distant machine in *cluster-mode*.
 If the driver fails, everything fail
 - **Executors** (workers): workhorse of the system. Keep data in memory and 
 do the computation. If on top of HDFS, executors and datanodes are running on 
@@ -255,7 +255,7 @@ spark.sql("""
 
 ### `sql()` : one transformation to rule then all
 
-Pros :
+.green[Pros :]
 
 - Easy to understand
 - Return a DF so you can chain it with another transformation
@@ -263,7 +263,7 @@ Pros :
 
 --
 
-Cons :
+.red[Cons :]
 
 - Can't do everything with SQL
 
@@ -317,7 +317,7 @@ df = spark.read.format(file_format) #csv, json
   .schema(someSchema) #if you didn't infer it
   .load() #lazy operation
   
-df.show()#to print the first 20lines
+df.show()#to print the first 20 lines
 ```
 
 
@@ -530,7 +530,7 @@ Caching make it possible to store in memory or disk a DF for future reuses.
 
 
 --
-👌 Lot's of easy ways to define spark process (python, R, SQL) 
+👌 Lot of easy ways to define spark process (python, R, SQL) 
 
 
 --
