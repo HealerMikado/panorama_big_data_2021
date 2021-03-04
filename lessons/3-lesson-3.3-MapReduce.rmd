@@ -38,7 +38,8 @@ knitr::opts_chunk$set(echo = FALSE)
 ---
 ## The Hadoop Ecosystem
 
-<img src="https://static.packt-cdn.com/products/9781788995092/graphics/c8625da0-2ffb-41b7-bba8-58c33af68a30.png" style="width: 80%; display: block; margin-left: auto;margin-right: auto" />
+<img src="https://media.giphy.com/media/EdRgVzb2X3iJW/source.gif" style="width: 80%; display: block; margin-left: auto;margin-right: auto" />
+
 ---
 
 
@@ -310,7 +311,6 @@ It's only common python without any special library. **Perfect for process text 
 - Fault tolerance
 - High throughput
 - Scale easily
-- Lot of research to optimize the scheduler
 
 ---
 
@@ -324,14 +324,14 @@ It's only common python without any special library. **Perfect for process text 
 ## When MapReduce is a good choice ?
 
 - When you have HDFS
-- To batch process file
+- To batch process files
 
 ---
 ## When MapReduce is a bad choice ?
 
 - If you need interactive session (data exploration)
 - You want to process other things than text file but don't want to learn java
-- To run ML algorithme
+- To run ML algorithms
 - To process streams
 
 ---

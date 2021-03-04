@@ -17,7 +17,6 @@ output:
 knitr::opts_chunk$set(echo = FALSE)
 ```
 
-
 ## Spark in a nutshell
 
 - A widely use computing engine
@@ -30,7 +29,7 @@ knitr::opts_chunk$set(echo = FALSE)
 ---
 ## The Hadoop Ecosystem
 
-<img src="https://static.packt-cdn.com/products/9781788995092/graphics/c8625da0-2ffb-41b7-bba8-58c33af68a30.png" style="width: 90%; display: block; margin-left: auto;margin-right: auto" />
+<img src="img/hadoop ecosystem.png" style="width: 90%; display: block; margin-left: auto;margin-right: auto" />
 
 ---
 

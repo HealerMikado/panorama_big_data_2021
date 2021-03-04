@@ -20,7 +20,6 @@ class: center, middle, inverse, title-slide
 
 
 
-
 ## Spark in a nutshell
 
 - A widely use computing engine
@@ -33,7 +32,7 @@ class: center, middle, inverse, title-slide
 ---
 ## The Hadoop Ecosystem
 
-&lt;img src="https://static.packt-cdn.com/products/9781788995092/graphics/c8625da0-2ffb-41b7-bba8-58c33af68a30.png" style="width: 90%; display: block; margin-left: auto;margin-right: auto" /&gt;
+&lt;img src="img/hadoop ecosystem.png" style="width: 90%; display: block; margin-left: auto;margin-right: auto" /&gt;
 
 ---
 
@@ -320,7 +319,7 @@ df = spark.read.format(file_format) #csv, json
   .schema(someSchema) #if you didn't infer it
   .load() #lazy operation
   
-df.show()#to print the first 20lines
+df.show()#to print the first 20 lines
 ```
 
 
@@ -533,7 +532,7 @@ Caching make it possible to store in memory or disk a DF for future reuses.
 
 
 --
-👌 Lot's of easy ways to define spark process (python, R, SQL) 
+👌 Lot of easy ways to define spark process (python, R, SQL) 
 
 
 --
