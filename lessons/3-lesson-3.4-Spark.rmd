@@ -22,7 +22,7 @@ knitr::opts_chunk$set(echo = FALSE)
 - A widely use computing engine
 - *"In memory MapReduce"*
 - Python and R friendly
-- Can process *very large file* 
+- Can process *very large data* 
 - Can run without HDFS or the Hadoop ecosystem
 
 

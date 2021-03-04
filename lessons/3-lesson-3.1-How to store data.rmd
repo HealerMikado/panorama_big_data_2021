@@ -35,7 +35,7 @@ knitr::opts_chunk$set(echo = FALSE)
 <img src="https://cdn.statcdn.com/Infographic/images/normal/17518.jpeg" alt="Infographic: A Minute on the Internet in 2020 | Statista" width="80%" height="auto" style="width: 95%; height: auto !important; max-width:960px;-ms-interpolation-mode: bicubic;"/></a> You will find more infographics at <a href="https://www.statista.com/chartoftheday/">Statista</a>]
 
 .pull-right[
-There are no way that any of those app can store all these data on one single machine
+There are no way that any of those apps can store all these data on one single machine
 
 They all need distributed storage !
 ]
@@ -48,8 +48,8 @@ There is two way to store data :
 --
 
 - A **file system** (like the one you use on your computer) to store *file* (unstructured higly heterogenous data)
---
 
+--
 - A **database** to store *formated data*
 
 ---
@@ -83,9 +83,9 @@ There is two way to store data :
 
 ---
 
-## Databases in a nutshell
+## Database in a nutshell
 
-**Manages files on storage space**
+**Manages data on storage space**
   - Transparent for the user, he only see "data"
   - Possibly care about data format (numbers, texts, dates...)
   - Handles *homogeneous*, *structured*<sup>1</sup> data
@@ -126,6 +126,8 @@ Even if unstructured databases exist, the data in a DB are more structured than 
 Since 2000 the difference has become blur between file system and databases (Nosql Movement)
 
 > The difference between a distributed file system and a distributed [database] is that a distributed file system allows files to be accessed using the same interfaces and semantics as local files.
+
+Source : https://en.wikipedia.org/wiki/Clustered_file_system
 
 
 --
@@ -178,7 +180,7 @@ Plus the usual questions of large-scale systems :
 ---
 ## The CAP theorem
 
-<img src="img/storage/CAP theorem.jpg" style="width: 80%; display: block; margin-left: auto;margin-right: auto" />
+<img src="img/storage/CAP theorem.jpg" style="width: 90%; display: block; margin-left: auto;margin-right: auto" />
 
 ???
 
@@ -233,7 +235,7 @@ Homegeneous (all run with the same sowftware / OS) vs. inhomogeneous (diff. soft
 
 
 ---
-## Transparency requirements
+## Transparency requirement
 
 
 Because distribution is a tehcnical solution, it must be transparent for users :
@@ -241,6 +243,11 @@ Because distribution is a tehcnical solution, it must be transparent for users :
 - **Access transparency** : unaware of distribution
 - **Location transparency** : unaware of the physical location
 - **Concurrency transparency** : all client should see the same state
+
+
+--
+A paradigme shift is occuring and more people think we should drop thi requirement (Wiktorski, Tomasz. 2019. “NOSQL Databases.” In Advanced Information and Knowledge Processing)
+
 
 ---
 
@@ -264,6 +271,7 @@ Because distribution is a tehcnical solution, it must be transparent for users :
 -  [Amazon DynamoDB](https://aws.amazon.com/fr/dynamodb/) / [Azure Cosmos DB](https://azure.microsoft.com/fr-fr/services/cosmos-db/) / [Google Firestore](https://cloud.google.com/firestore?hl=fr) : document oriented as a service
 -  [Google Bigtable](https://cloud.google.com/bigtable/?hl=fr) / [Amazon Redshif](https://aws.amazon.com/fr/redshift) : column-oriented as a service
 -  [Cassandra](https://cassandra.apache.org/) : column-oriented
+-  [H base](https://cassandra.apache.org/) : part of the hadoop ecosystem, column-oriented
 
 ---
 
