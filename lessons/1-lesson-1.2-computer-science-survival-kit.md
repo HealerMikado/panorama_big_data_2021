@@ -1,4 +1,264 @@
 
+
+
+# Computer science survival kit
+
+--
+
+A computer can be abstracted by four key components:
+
+--
+- processing (FR: processeurs)
+
+--
+- memory (FR: mémoire vive)
+
+--
+- storage (FR: stockage)
+
+--
+- wiring / network (FR: connexions / réseau)
+
+???
+
+Ask audience
+
+---
+
+background-image: url(img/cpu.jpg)
+background-size: cover
+
+.pull-right[
+## Processors
+]
+
+???
+
+The processor is the unit responsible for performing the actual computing.
+
+A processor can be called a "core", a "chip"... and can be differentiated into CPU (central processing units), GPU (graphical processing units) and recently TPU (tensor processing units).[^1]
+
+[1]: Formally, the chip is the physical device, and a chip may enclose one or more logical processors, called cores, in its electronic circuits. Multiple CPU cores on the same die share circuit elements, use less energy, exchange information faster (individual signals can be shorter, degrade slower and do not need to be repeated as often).
+
+A processor performence is measured in how many operations it can perform per second, typically measured in FLOP (floating-point operations per second).
+
+---
+
+## Processors
+
+**What is important for us to know?**
+
+--
+- computation happens _physically_
+
+--
+- programs must be converted to machine-code
+
+--
+- instructions are stored sequentially in a stack / thread
+
+--
+- multiple processors may share a stack, or have each their own
+
+--
+- processors can be specialized
+
+???
+
+- the elementary computation (addition, multiplication...) happens through a **physical** process
+- in order to perform higher-level operations (the source code), instructions must be converted to more basal units of computation (the machine code)
+- the low-level instructions are stored sequentially in a stack or thread
+- processors draw from the stack ; multiple processors may all draw from the same stack (multi-tread architecture), or on the contrary have each their own (single-thread)
+- processors can be hard-wired to specialize into doing some types of computation, this is the case of GPUs and TPUs
+
+---
+
+![](img/compution-cost-effectiveness.png)
+
+.footnote[**Source:** Kurzweil ([link](http://www.kurzweilai.net/exponential-growth-of-computing)) via Our World in Data ([link](https://ourworldindata.org/technological-progress))]
+
+???
+
+Processors have made incredible progress over time. And this keeps happening.
+
+---
+
+.height600[![](img/compution-speed.png)]
+
+---
+
+.height600[![](img/compution-moore.png)]
+
+???
+
+"Law" by 1965 by the Intel co-founder Gordon E. Moore.
+
+---
+
+## Processors
+
+**Processing is a limitting factor.**
+
+???
+
+It is costly (it uses energy). One unit can only perform so much operations per second. There is no easy way to combine multiple processors to perform a complex operation.
+
+---
+
+background-image: url(img/ram.jpg)
+background-size: cover
+
+## Memory
+
+???
+
+Memory is the unit where the computer temporarily stores the instructions and the data on which to perform computation.
+
+It is also broadly called "cache" or "RAM"[^2].
+
+Memory efficiency is measured by how much information it can contain and how fast in can be read from or written to.
+
+---
+
+## Memory
+
+**What is important for us to know ?**
+
+--
+- moving data around takes time
+
+--
+- memory is fast (ns)
+
+--
+- memory is volatile
+
+--
+- memory-processor units are **heavily** optimized
+
+???
+
+What is important to know for us:
+- memory is fast, with access time typically measured in nanoseconds
+- memory is volatile, meaning that it is lost in case of power interruption
+- the easiest way to perform a computation is to move all data in memory — where it becomes accessible to the CPU
+
+---
+
+## Memory
+
+**Memory is a limitting factor.**
+
+???
+
+We can readily perform computation only on a chunk of data that can fit into memory. RAM is very costly: it is still expensive to buy RAM but it is also expensive at use time since it needs electricity to persist data.
+
+<!-- graph of the veolution of memory size -->
+
+[2]: Formally, there is intermediate memory between RAM and the processor: the CPU register is closest to the processor, then comes the CPU cache, on which the computer moves data and instructions that need to for efficiency reasons. "Caching" in general refers to the act of copying a piece of information closer to the place it will be used, such as when storing a local copy of website while navigating over the Internet. RAM (random access memory) is the most-used type of memory.
+
+---
+
+background-image: url(img/storage.jpg)
+background-size: contain
+
+## Storage
+
+???
+
+Storage is the unit for long-term storage of information.
+
+It is also called "(disk) space" or "(hard) disk".
+
+Contrary to memory, the disk's non-volatile nature make it suitable to conserving information over long periods. Its first measure of efficiency is thus its size, how long it can retain information without error and how fast you can read from and write on it.
+
+There are other meda of storage, such as... paper, but also digital tapes.
+
+In reality the distinction memory vs. storage is more of a continuum. For instance, SSD disks are faster to read but more expensive to produce.
+
+---
+
+## Storage
+
+**What is important for us to know ?**
+
+--
+- storage is faillible
+
+--
+- writing and reading is slow (ms)
+
+--
+- data is always cached for computation
+
+???
+
+What is important to know for us:
+- storage is faillible: errors do occur and information slowly degrades (phenomenon known as data decay: https://en.wikipedia.org/wiki/Data_degradation ; solid state memory like flash card may be corrupted by current ; magnetic field can corrupt disks, tapes ; scratches and dust can corrupt DVDs ; rotting / overuse can corrupt books etc. ; keeping copies often mitigates the problem, but at the cost of maintaining coherence!)
+- storage is slow, typically measured in milliseconds [^3]
+- computation cannot be performed directly from disk, it has to be temporarily copied into memory (or "cached")
+
+[3]: writing and reading on a disk requires the disk to turn and the reading head to move ; on the top of that, files are split into chunks that are stored at different places and the computer needs a registry to record where what is where
+
+---
+
+## Storage
+
+![](img/xkcd-digital-data.png)
+
+---
+
+## Storage
+
+**Storage is a limitting factor.**
+
+???
+
+On a given computer, we can only store so much. Today's price of disk space does make it less limitting economically. But if data exceeds the size of the disk, data must be split between several disks, which compicates programming (**distributed storage**).
+
+<!-- average storage capacity ; graph of information degradation over time -->
+
+---
+
+.heigth600[![](img/storage-cost.png)]
+
+---
+
+.heigth600[![](img/storage-average.png)]
+
+???
+
+2 more things before we move on: network and compilation / intepretation
+
+---
+
+## Network
+
+???
+
+Shorter == better.
+<!-- Amazon truck for servers. -->
+<!-- Speed vs. cost of services. -->
+
+---
+
+## Interpreting vs. compiling
+
+???
+
+When running a programme written in R or Python, the **source code** is translated into **machine code**.
+
+There are schematically 2 ways to do that:
+
+When **interpreting** the source code, instructions from source code are converted **one by one** into machine code. Say you have an error in your code at line 10. Your programme would execute the first 9 lines then halt with an error.
+
+When **compiling** the source code, instruction from source code are converted **as a whole** into machine code, while performing many optimisation procedures under the hood (ex: multiplying by 2 is just adding an extra 0 to the right in binary ; also you may want to take advantage of the processor pipeline, i.e. the fact that reading the next task from memory can be made to happen *in the same time* than execution of the preceding task). This means that your code with an error would just fail compiling and that "the beginning" (which does not even make sense anymore) will never be executed. Compilation takes time, but it may be worth it if the same programme is run regularly.
+
+Real-world computing is not black and white. For instance most interpreters do perform optimisations on the fly, even though not as thorough as compilers. A common intermediate pattern is **compilation to bytecode**, a platform agnostic language that gets interpreted at run time, or even further compiled to machine code.
+
+
+
+
 ## Making of Computer Science survival kit
 
 ### Brainstorm of themes

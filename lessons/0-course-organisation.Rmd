@@ -1,0 +1,147 @@
+# Forewords
+
+???
+
+This course is in English. You are welcome to ask vocabulary questions at any time.
+Try to ask questions in English, but if you tried and can't, you've done your best and you can switch to English.
+
+---
+
+## Motivation
+
+--
+
+Machine-learning algorithms do not scale well.
+
+--
+- exact solutions do not scale // ex: matrix inversion is of $O(n^3)$ complexity
+
+--
+- approximate solutions do not scale either
+
+???
+
+Some very popular machine-learning algorithms do not scale well.
+
+Exact solutions do not scale: matrix inversion (for instance) is a problem with an algorithmic complexity of $O(n^3)$ ([source](https://en.wikipedia.org/wiki/Computational_complexity_of_mathematical_operations)).
+
+---
+
+background-image: url(img/servers.jpg)
+
+.contrast[ Google's pre-computation of BERT (a neural network for natural language processing) thanks to gradient-descent — a typically non-exact solution — took 4 days on a 64-TPU cluster. ]
+
+.footnote[.contrast[**Source:** [Arxiv](https://arxiv.org/abs/1810.04805) — **Image:** [Wikimedia](https://commons.wikimedia.org/wiki/File:Wikimedia_Foundation_Servers-8055_23.jpg)]]
+
+???
+
+Approximate solutions do not scale either: Lately, Google's pre-computation of BERT (a neural network for natural language processing) thanks to gradient-descent took 4 days on a mesmerizing 64-TPU cluster.
+
+---
+
+## Motivation
+
+Machine-learning algorithms do not scale well.
+
+- exact solutions do not scale // ex: matrix inversion is of $O(n^3)$ complexity
+- approximate solutions do not scale either
+
+--
+
+One would thus consider how these computation procedures may be accellerated.
+
+--
+- Using algorithmic tricks?
+
+--
+- Using more memory?
+
+--
+- Parallelizing on several computers?
+
+--
+- Relaxing our precision requirements? ...
+
+
+--
+
+These are many many solutions... and each of this problems is far from trivial!
+
+--
+
+Computing a median can prove challenging to speed up!
+
+---
+
+## Goal
+
+At the end of this course, you will:
+
+--
+- understand the potential bottlenecks of data-intensive processes
+
+--
+- choose between concurrent solutions for dealing with such bottlenecks
+
+--
+- understand the map-reduce principle and have practical experience with Spark on HDFS
+
+--
+- have an overview of the cloud computing ecosystem and practical experience with one provider (AWS)
+
+--
+- get a glimpse over the *physical*, *ethical*, *economical*, *financial*, *environmental*, *statistical*, *political*... challenges, limitations and dangers of the suggested solutions
+
+???
+
+In this course, we will review the bases of computer science that may be required for accelerating statistical estimation processes.
+
+Ex techniques: sampled vs. exhaustive, sequential vs. parallel, in memory vs. on disk, whole data vs. in chunks, local vs. cloud...
+
+---
+
+## Outline & schedule
+
+--
+
+**Courses:**
+
+- **Course 0:** Introduction to cloud computing (1h30, March 3)
+- **Course 1:** Data-intensive computing in a nutshell (3h, February 18)
+- **Course 2:** Parallelized computing and distributed computing (3h, March 2)
+
+--
+
+**Tutorials:**
+
+- **Tutorial 0:** Hands-on AWS (1h30, March 3)
+- **Tutorial 1:** Hands-on Spark (3h, March 18)
+- **Tutorial 2:** How to optimize a statistical algorithm? (3h, March 4)
+- **Tutorial 3:** How to compute a statistical summary over distributed data? (3h, March 11)
+- **Tutorial 4:** Coping with APIs, data streams and exotic formats (3h, March 25)
+
+???
+
+There will be 6h course + 1h30 presentation of cloud computing solutions:
+
+There will be 9h tutorials + 1h30 hands-on session with AWS:
+
+The course's content this year is the same as 2nd-year students' "Introduction to Big Data". 1 out of the 3 tutorials (How to accelerate a neural network?) is specific to this course.
+
+<!-- TP2: How to speed up the computation of a statistical summary? -->
+
+---
+
+## Evaluation
+
+- Multiple-choice questionnaire at the beginning of every tutorial
+- 1 short tutorial report (tutorial 1)
+- Desk examination (most probably multiple-choice questionnaire)
+
+---
+
+## Material
+
+Course and tutorial material will be available on Moodle.
+
+---
