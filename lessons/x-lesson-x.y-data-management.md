@@ -19,6 +19,8 @@ A checkmark means that the the source has been read and its content has been ext
 **Wikipédia:**
 
 - [ ] https://en.wikipedia.org/wiki/Data_warehouse
+- [ ] https://en.wikipedia.org/wiki/Extract,_transform,_load
+- [x] https://en.wikipedia.org/wiki/Pipeline_(computing)
 
 **Other websites:**
 
