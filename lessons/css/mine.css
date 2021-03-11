@@ -1,9 +1,8 @@
 img.border {
-  margin: 15px 0px;
+  margin: 15px 0;
   background: rgba(255, 255, 255, 0.12);
   border: 4px solid #657b83;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.15); }
-
 
 .green {
     color: green;
@@ -11,4 +10,20 @@ img.border {
 
 .red {
     color: red;
+}
+
+.remark-slide .height500 img{
+    height: 500px;
+}
+
+.remark-slide .height600 img{
+    height: 600px;
+}
+
+.remark-slide .height400 img{
+    height: 400px;
+}
+
+.remark-slide .height450 img{
+    height: 450px;
 }
