@@ -1,3 +1,24 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>1-lesson-1.2-computer-science-survival-kit.utf8</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Arthur Katossky &amp; Rémi Pépin" />
+    <script src="1-lesson-1.2-computer-science-survival-kit_files/header-attrs-2.7/header-attrs.js"></script>
+    <link rel="stylesheet" href="css/xaringan-themer.css" type="text/css" />
+    <link rel="stylesheet" href="css/mine.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# <div class="line-block">Introduction to Big Data<br />
+Lesson 1.2 Computer science survival kit</div>
+### Arthur Katossky &amp; Rémi Pépin
+### Friday, March 12, 2021
+
+---
+
 
 
 
@@ -25,12 +46,12 @@ Ask audience
 
 ---
 
-background-image: url(img/cpu.jpg)
+background-image: url(img/processors/cpu.jpg)
 background-size: cover
 
-.pull-right[
+---
+
 ## Processors
-]
 
 ???
 
@@ -40,7 +61,7 @@ A processor can be called a "core", a "chip"... and can be differentiated into C
 
 [1]: Formally, the chip is the physical device, and a chip may enclose one or more logical processors, called cores, in its electronic circuits. Multiple CPU cores on the same die share circuit elements, use less energy, exchange information faster (individual signals can be shorter, degrade slower and do not need to be repeated as often).
 
-A processor performence is measured in how many operations it can perform per second, typically measured in FLOP (floating-point operations per second).
+A processor performance is measured in how many operations it can perform per second, typically measured in FLOP (floating-point operations per second).
 
 ---
 
@@ -49,19 +70,21 @@ A processor performence is measured in how many operations it can perform per se
 **What is important for us to know?**
 
 --
-- computation happens _physically_
+- computation happens **_physically_** in **transistors**
 
 --
-- programs must be converted to machine-code
+- **programs must be converted to machine-code**, i.e. to a list of formatted instructions that the processor can execute
 
 --
-- instructions are stored sequentially in a stack / thread
+- **instructions are stored sequentially** in one or several stacks / threads / queues
 
 --
-- multiple processors may share a stack, or have each their own
+- multiple processors or cores may share a stack, or have each their own
+--
+- **processors can be specialized** (e.g. GPU)
 
 --
-- processors can be specialized
+- performance is measured in number **operations** or **instructions per second** (FLOPS, IPS)
 
 ???
 
@@ -73,7 +96,7 @@ A processor performence is measured in how many operations it can perform per se
 
 ---
 
-![](img/compution-cost-effectiveness.png)
+![](img/processors/compution-cost-effectiveness.png)
 
 .footnote[**Source:** Kurzweil ([link](http://www.kurzweilai.net/exponential-growth-of-computing)) via Our World in Data ([link](https://ourworldindata.org/technological-progress))]
 
@@ -83,11 +106,11 @@ Processors have made incredible progress over time. And this keeps happening.
 
 ---
 
-.height600[![](img/compution-speed.png)]
+.height600[![](img/processors/compution-speed.png)]
 
 ---
 
-.height600[![](img/compution-moore.png)]
+.height600[![](img/processors/compution-moore.png)]
 
 ???
 
@@ -99,14 +122,21 @@ Processors have made incredible progress over time. And this keeps happening.
 
 **Processing is a limitting factor.**
 
+- processors are **the most expensive part** of the hardware
+- energy consumption of the processors are the **main cost of computation**
+- one core can **only** perform **so many operations** per second
+- it is **non-trivial** problem to **coordinate multiple processors** on the same complex task
+
 ???
 
-It is costly (it uses energy). One unit can only perform so much operations per second. There is no easy way to combine multiple processors to perform a complex operation.
+You can not just "buy more cores" to tackle a problem that takes too long.
 
 ---
 
 background-image: url(img/ram.jpg)
 background-size: cover
+
+---
 
 ## Memory
 
@@ -128,13 +158,16 @@ Memory efficiency is measured by how much information it can contain and how fas
 - moving data around takes time
 
 --
-- memory is fast (ns)
+- memory is **fast** (ns)
 
 --
-- memory is volatile
+- memory is **volatile** (lost in case of power interruption)
 
 --
 - memory-processor units are **heavily** optimized
+
+--
+- processors always access the the hard disk through **memory caching**
 
 ???
 
@@ -145,24 +178,53 @@ What is important to know for us:
 
 ---
 
+.height600[![](img/storage/storage-cost.png)]
+
+---
+
 ## Memory
 
 **Memory is a limitting factor.**
+
+- it is non trivial to work with data that **can't fit into memory**
+- memory is **the second-most expensive part** of a computer
+- memory is **shared** with other programs on the computer
 
 ???
 
 We can readily perform computation only on a chunk of data that can fit into memory. RAM is very costly: it is still expensive to buy RAM but it is also expensive at use time since it needs electricity to persist data.
 
-<!-- graph of the veolution of memory size -->
+&lt;!-- graph of the veolution of memory size --&gt;
 
 [2]: Formally, there is intermediate memory between RAM and the processor: the CPU register is closest to the processor, then comes the CPU cache, on which the computer moves data and instructions that need to for efficiency reasons. "Caching" in general refers to the act of copying a piece of information closer to the place it will be used, such as when storing a local copy of website while navigating over the Internet. RAM (random access memory) is the most-used type of memory.
 
 ---
 
-background-image: url(img/storage.jpg)
+background-image: url(img/storage/storage.png)
 background-size: contain
 
+---
+
 ## Storage
+
+- for long-term storage of information
+
+--
+- can have **multiple forms**: magnetic disk (hard disk, floppy disk), physical engraving (vinyls, CDs, DVDs), magnetic tape, paper (books, punch cards, bar codes, QR codes), biological (DNA), etc.
+
+--
+- commonly referred to as "(disk / storage) space" or "(hard) disk"
+
+--
+- **non-volatile**, contrary to memory
+
+--
+- valuable properties:
+    - **size**
+    - **integrity**, resistance to degradation
+    - **speed**, in read and write
+
+.footnote[The memory (RAM) vs. storage (hard disk) distinction is pedagogical. There are many in-between technologies, such as solid-state drives (SSD).]
 
 ???
 
@@ -180,16 +242,51 @@ In reality the distinction memory vs. storage is more of a continuum. For instan
 
 ## Storage
 
+Storage is evaluated in **bytes** (B) or **octets** (o) and their mutiples:
+
+| Number of bytes | Symbol | Full name | Order of magnitude |
+|---------|----|------------|------------------|
+| `\(10^3\)`  | ko | kilobyte   | a vectorial icon |
+| `\(10^6\)`  | Mo | megabyte   | a high resolution image, a book |
+| `\(10^9\)`  | Go | gigabyte   | a high-resolution video
+| `\(10^{12}\)` | To | terabyte   | the whole Friends series in high-resolution |
+| `\(10^{15}\)` | Po | petabyte   | Spotify database |
+| `\(10^{18}\)` | Eo | exabyte    | monthly Internet traffic |
+
+
+.footnote[
+
+Since `\(2^{10}=1024 \simeq 10^3\)` and since storage is essentially binary, you often find the convention `\(1 \text{Mo} = 2^{10} \text{ko}\)`. The official symbols `\(\text{Kio}\)`, `\(\text{MiB}\)`... never really caught on.
+
+]
+
+---
+
+.height600[![](img/storage/storage-cost.png)]
+
+---
+
+
+.height600[
+
+&lt;a href="https://www.statista.com/statistics/795748/worldwide-seagate-average-hard-disk-drive-capacity/" rel="nofollow"&gt;&lt;img src="https://www.statista.com/graphic/1/795748/worldwide-seagate-average-hard-disk-drive-capacity.jpg" alt="Statistic: Average capacity of Seagate hard disk drives (HDDs) worldwide from FY2015 to FY2021, by quarter (in terabyte per drive) | Statista"/&gt;&lt;/a&gt;
+
+]
+
+---
+
+## Storage
+
 **What is important for us to know ?**
 
 --
-- storage is faillible
+- storage is **faillible**
 
 --
-- writing and reading is slow (ms)
+- writing and reading is **slow** (ms)
 
 --
-- data is always cached for computation
+- **data is always cached** (copied / charged into memory) for computation
 
 ???
 
@@ -204,27 +301,21 @@ What is important to know for us:
 
 ## Storage
 
-![](img/xkcd-digital-data.png)
+**Storage is a limiting factor.**
 
----
+- on a given computer, **you can only store so much**
 
-## Storage
+--
+- dealing with **files distributed over multiple computers** is non-trivial
 
-**Storage is a limitting factor.**
+--
+&lt;br&gt;Cost and speed are usually not an issue.
 
 ???
 
-On a given computer, we can only store so much. Today's price of disk space does make it less limitting economically. But if data exceeds the size of the disk, data must be split between several disks, which compicates programming (**distributed storage**).
+On a given computer, we can only store so much. Today's price of disk space does make it less limiting economically. But if data exceeds the size of the disk, data must be split between several disks, which complicates programming (**distributed storage**).
 
-<!-- average storage capacity ; graph of information degradation over time -->
-
----
-
-.heigth600[![](img/storage-cost.png)]
-
----
-
-.heigth600[![](img/storage-average.png)]
+&lt;!-- average storage capacity ; graph of information degradation over time --&gt;
 
 ???
 
@@ -234,13 +325,22 @@ On a given computer, we can only store so much. Today's price of disk space does
 
 ## Network
 
-???
+- information transfer is **time-consuming**
+- usually not an issue on a personal computer:
+    - processors and memory are **closely integrated** in the same circuits
+    - physical connection between memory and disk is **short** and **fast**
 
-Shorter == better.
-<!-- Amazon truck for servers. -->
-<!-- Speed vs. cost of services. -->
+- becomes an issue with **remote** (or **distributed**) storage (or computing)
 
 ---
+
+## Network
+
+For transferring volumes above 1 Po (1000 To) to their servers, Amazon actually sends a truck, which is faster than a fast Internet connection.
+
+.height400[![](img/storage/snowmobile.png)]
+
+&lt;!--
 
 ## Interpreting vs. compiling
 
@@ -323,7 +423,7 @@ Real-world computing is not black and white. For instance most interpreters do p
 - [ ] awk (pronounced *hawk*) : super fast line by line processing unix command.
 
 
-- [ ] Extract a max from gzip fixed length file. Awk is around two time faster than python. If we parallelize python it become faster than awk, but parallelized awk is still two time faster than parallelized  python. It's not really "big data processing" but for large, but not big data large file, there is simple way to speed up the process. Here is only $\mathcal{O}(n)$ process 
+- [ ] Extract a max from gzip fixed length file. Awk is around two time faster than python. If we parallelize python it become faster than awk, but parallelized awk is still two time faster than parallelized  python. It's not really "big data processing" but for large, but not big data large file, there is simple way to speed up the process. Here is only `\(\mathcal{O}(n)\)` process 
 |                     | Small sample (30 files, 4.8 Mo) | Bigger sample (41 files, 1.2 Go) | Even bigger sample (48 files, 3Go) |
 | ------------------- | ------------------------------- | -------------------------------- | ---------------------------------- |
 | awk                 | 0.23 sec                        | 35 sec                           | 101 sec                            |
@@ -342,7 +442,7 @@ benchmark done with a :
   - [ ] Read/write from disk. A common HDD 30-150 MB/sec, SSD 500+ MB/sec. So switching to SSD can improve performances. Your disk are a bottleneck only when you use it a lot.
   - [ ] Network. Transfer very large data through a network take time. So just get what you need
   - [ ] CPU. You are doing to much computations, and your CPU are at its max capacity. No easy solution here. Parallelization, approximation, GPU are leads
-  - [ ] Memory bottleneck. You do not have enough RAM -> crash. Increase your RAM, or be smart
+  - [ ] Memory bottleneck. You do not have enough RAM -&gt; crash. Increase your RAM, or be smart
 
   You can monitor your system with tools like windows tasks manager.
 
@@ -369,3 +469,112 @@ A checkmark means that the the source has been read and its content has been ext
 - [ ] A course
 
 ### Structure
+
+--&gt;
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightLines": null,
+"ratio": "16:10",
+"scroll": false,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

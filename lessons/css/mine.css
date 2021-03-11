@@ -12,3 +12,19 @@ img.border {
 .red {
     color: red;
 }
+
+.remark-slide .height500 img{
+    height: 500px;
+}
+
+.remark-slide .height600 img{
+    height: 600px;
+}
+
+.remark-slide .height400 img{
+    height: 400px;
+}
+
+.remark-slide .height450 img{
+    height: 450px;
+}
