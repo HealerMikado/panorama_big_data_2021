@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="" xml:lang="">
   <head>
-    <title>1-lesson-1.2-computer-science-survival-kit.utf8</title>
+    <title>lkdlkdl</title>
     <meta charset="utf-8" />
     <meta name="author" content="Arthur Katossky &amp; Rémi Pépin" />
     <script src="1-lesson-1.2-computer-science-survival-kit_files/header-attrs-2.7/header-attrs.js"></script>
@@ -12,8 +12,7 @@
     <textarea id="source">
 class: center, middle, inverse, title-slide
 
-# <div class="line-block">Introduction to Big Data<br />
-Lesson 1.2 Computer science survival kit</div>
+# lkdlkdl
 ### Arthur Katossky &amp; Rémi Pépin
 ### Friday, March 12, 2021
 
@@ -347,143 +346,13 @@ For transferring volumes above 1 Po (1000 To) to their servers, Amazon actually 
 Each of the basic components of a computer can cause issues.
 
 - disk space is a limiting factor -&gt; consider **distributed storage**
+- even when data is relatively small, computation can be a challenge
 - memory size and number of processors are a limiting factor -&gt; consider **distributed computing**
 
-But distribution is **non-trivial** and often not needed. Always consider first:
+But distribution is **non-trivial** (future lesson) and often not needed. Always consider first:
 
 - consider simple **good practices** (next section)
 - consider commercial **remote**, **cloud-based services** (future lesson)
-
-
-&lt;!--
-
-## Interpreting vs. compiling
-
-When running a programme written in R or Python, the **source code** is translated into **machine code**.
-
-There are schematically 2 ways to do that:
-
-When **interpreting** the source code, instructions from source code are converted **one by one** into machine code. Say you have an error in your code at line 10. Your programme would execute the first 9 lines then halt with an error.
-
-When **compiling** the source code, instruction from source code are converted **as a whole** into machine code, while performing many optimisation procedures under the hood (ex: multiplying by 2 is just adding an extra 0 to the right in binary ; also you may want to take advantage of the processor pipeline, i.e. the fact that reading the next task from memory can be made to happen *in the same time* than execution of the preceding task). This means that your code with an error would just fail compiling and that "the beginning" (which does not even make sense anymore) will never be executed. Compilation takes time, but it may be worth it if the same programme is run regularly.
-
-Real-world computing is not black and white. For instance most interpreters do perform optimisations on the fly, even though not as thorough as compilers. A common intermediate pattern is **compilation to bytecode**, a platform agnostic language that gets interpreted at run time, or even further compiled to machine code.
-
-
-
-
-## Making of Computer Science survival kit
-
-### Brainstorm of themes
-
-- [ ] Code profiling to prioritize optimization. Do not spend time to reduce the computation time of a function by 0.5 sec if another function take 10min. Try to optimize the slowest part of your code. 
-
-  - [ ] Python profiling : `cProfile`. Give a lot of information, maybe too much. You have to filter to get only the high level function. An easier solution is to use `time.time`. You could use `timeit`, but it's a bad idea. `timeit` is for benchmarking, not profiling.
-
-    ```python
-    import time
-    import cProfile
-    import pstats
-    from pstats import SortKey
-    #----------------------------------------------------------------------
-    def fast():
-        """"""
-        print("I run fast!")
-        
-    #----------------------------------------------------------------------
-    def slow():
-        """"""
-        time.sleep(3)
-        print("I run slow!")
-        
-    #----------------------------------------------------------------------
-    def medium():
-        """"""
-        time.sleep(0.5)
-        print("I run a little slowly...")
-        
-    #----------------------------------------------------------------------
-    def main():
-        """"""
-        fast()
-        slow()
-        medium()
-        
-    if __name__=="__main__":
-        
-        cProfile.run('main()', 'restats')
-        p = pstats.Stats('restats')
-        p.sort_stats(SortKey.TIME).print_stats(10).print_stats('profiling.py')
-    ```
-
-    
-
-- [ ] Good programming practices/tips :
-  - [ ] Python :
-    - [ ] Multithreading/multiprocessing are not so hard if the processes are independents
-    - [ ] Use queue to pass data from one thread to another
-    - [ ] Do not append to pandas dataframes ! Append to list then generate a DF from it
-    - [ ] Open your resources once !
-  - [ ] Do I really need all those 150 columns  ?
-  - [ ] Filter before any computation
-  - [ ] Proceed a very large dataset but I have independent problem ? Parallelization 
-  - [ ] On big request to a db is better than 1000 small. Even the smallest request take time. This time cannot be reduce, so small time * 1000 = not so small time.
-  - [ ] Do not download data If you do not need them. For example if your data are on a distance server, run the computation on the server THEN download the result. If you download the data on your computer then run the computation :
-    - [ ] The downloading slow down the process
-    - [ ] Your computer is likely to be less powerful than the distant server.
-  - [ ] Low level language (like C/C++) are faster than high level one (python, java, R). But, there are more difficult to learn and usually code optimization is enough. But for easy tasks, knowing a little of bash is a good thing.
-  
-- [ ] awk (pronounced *hawk*) : super fast line by line processing unix command.
-
-
-- [ ] Extract a max from gzip fixed length file. Awk is around two time faster than python. If we parallelize python it become faster than awk, but parallelized awk is still two time faster than parallelized  python. It's not really "big data processing" but for large, but not big data large file, there is simple way to speed up the process. Here is only `\(\mathcal{O}(n)\)` process 
-|                     | Small sample (30 files, 4.8 Mo) | Bigger sample (41 files, 1.2 Go) | Even bigger sample (48 files, 3Go) |
-| ------------------- | ------------------------------- | -------------------------------- | ---------------------------------- |
-| awk                 | 0.23 sec                        | 35 sec                           | 101 sec                            |
-| awk parallelized    | 0.07 sec                        | 8 sec                            | 18 sec                             |
-| python sequential   | 0.45 sec                        | 77 sec                           | 174 sec                            |
-| python parallelized | 0.24 sec                        | 17 sec                           | 40 sec                             |
-
-benchmark done with a :
-
-- 12 logical core
-- 16 Go Ram 
-- Ubuntu 16.04
-
-- [ ] Keep in mind some common bottlenecks :
-
-  - [ ] Read/write from disk. A common HDD 30-150 MB/sec, SSD 500+ MB/sec. So switching to SSD can improve performances. Your disk are a bottleneck only when you use it a lot.
-  - [ ] Network. Transfer very large data through a network take time. So just get what you need
-  - [ ] CPU. You are doing to much computations, and your CPU are at its max capacity. No easy solution here. Parallelization, approximation, GPU are leads
-  - [ ] Memory bottleneck. You do not have enough RAM -&gt; crash. Increase your RAM, or be smart
-
-  You can monitor your system with tools like windows tasks manager.
-
-### Documents
-
-A checkmark means that the the source has been read and its content has been extracted in the brainstorm section.
-
-**Wikipédia:**
-
-- [ ] awk : https://en.wikipedia.org/wiki/AWK
-
-**Other websites:**
-
-- [ ] Python profiler : https://docs.python.org/3/library/profile.html
-- [ ] https://www.blog.pythonlibrary.org/2014/03/20/python-102-how-to-profile-your-code/
-- [ ] https://towardsdatascience.com/finding-performance-bottlenecks-in-python-4372598b7b2c
-
-**Books:**
-
-- [ ] Hadoop the definitive guide (Chapter 2, analysing data with unix tools)
-
-**Courses:**
-
-- [ ] A course
-
-### Structure
-
---&gt;
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>

@@ -1,0 +1,208 @@
+---
+title: | 
+    | Introduction to Big Data
+    | Lesson 1.3 High-performance computing without distribution
+author: "Arthur Katossky & Rémi Pépin"
+date: "Friday, March 12, 2021"
+output: 
+  xaringan::moon_reader:
+    nature:
+      highlightLines: 
+      ratio: 16:10
+      scroll: false
+      countIncrementalSlides: false
+    css: ["css/xaringan-themer.css", "css/mine.css"]
+---
+
+# High-performance computing without distribution
+
+---
+
+## Shift focus to relative precision
+
+Shift focus away from absolute precision to **relative** or **marginal precision** :
+
+- per additional observation
+- per additional second of computation
+- per additional dollar used
+
+???
+
+In classification, accuracy. In regression, mean squared error.
+
+---
+
+## Profile code
+
+Try to identify **bottlenecks** in **memory use**, **computing time**, network exchange, etc. and how they evolve with the problem size.
+
+---
+
+## Analyse code
+
+After having identified a bottleneck, especially in computing time
+
+- algorithmic analysis can confirm the profiling ( $O(n^2)$, $O(n\ln(n))$,  $O(p\ln(n))$, etc.)
+- known problems have known approximations: matrix inversion, matrix cross product, spectral decomposition, etc.
+
+???
+
+For instance you can replace XX' with XP PX' (P symmetric) or XX-1 with XQ QX-1 (Q orthogonal)
+
+---
+
+## Use approximate solutions
+
+Algorithmic approximation errors are often orders of magnitude smaller than:
+
+- rounding floating-point errors
+- statistical uncertainty
+
+---
+
+## Down-size
+
+- selecting (columns) and filtering (rows)
+- sampling
+
+???
+
+This is usually very effective for every step of the process:
+
+- network, storage, memory, computation
+- do you need these 100 columns? (in computation, in storage? do you need them simultaneouly?)
+- filter close-to-identical observations in a regression setting ; focus on information-rich subsets
+
+An advantage of sampling + bootstrapping is that you get an statistical idea of the uncertainty.
+
+---
+
+## Shift from memory to disk
+
+- you usually have much more disk space
+
+???
+
+[ ] biglm
+
+---
+
+## Store or process data in chunks
+
+Traditional **batch processing** consists in processing a whole data set simultaneously.
+
+When this causes issues, shift to processing data in **chunks** (per smaller groups of observations) or in **streams** (one at a time).
+
+- comes at no cost with **associative symetrical operations** (like summation) but requires substantial rewriting for other algorithms
+
+- **online algorithms** (that can be updated one element at a time) are typical examples
+
+.footnote[There is an ambiguity with the word **batch** that sometimes refer to the whole data set, sometimes to a subset.]
+
+???
+
+[ ] In scikit learn, how do you write batch size?
+
+---
+
+## Take advantage of sparcity
+
+A **sparse** data set is a data set with low information content.
+
+In storage, you can have default values for each column and **only store the positions and values of non-defaults**. Or you can use integers to represent a fixed number of character strings, like factors do in R.
+
+```{r echo=TRUE}
+char <- sample(
+  size = 2000, replace = T,
+  c("A first quite long string", "Each string takes serval octets to store")
+)
+
+object.size(char)
+object.size(factor(char))
+```
+
+---
+
+## Take advantage of sparcity
+
+In computation, it is possible to perform **sparse matrix operations** very effectively.
+
+---
+
+## Go low-level
+
+Python, R or spreadsheets are **high-level programs**
+
+- tailored for human understanding (**expressive power**)
+
+- abstract away the actual processing by the machine (**transparency**)
+
+However, you also lose control on the fine details of execution
+
+???
+
+Usually not a problem, but sometimes you want greater control.
+
+---
+
+## Go low-level
+
+Other languages, most notably **C**, **C++** and **Fortran**, are much closer to machine code and allow better control over the flow of information between the disk, the memory and the processors.
+
+R or Python allow you to write functions directly in these languages, with often vast speed improvements.
+
+---
+
+## Go low-level
+
+**Command line** code, also known as **batch** or **shell**, is a way to take advantage of very effective low-level functions.
+
+You can execute command line code from R with `system(...)` or with Python through `os.system(...)` or `subprocess.run(...)`.
+
+A usually impressively fast data but hard-to-learn processing command line is the infamous [**`awk`**](https://www.shellunix.com/awk.html).
+
+---
+
+## Compilation
+
+The lowest-level code is **machine code**, specific to each machine and **high-level programs have to be translated** into machine code :
+
+1. either **interpreting** the source code : instructions from source code are converted **one by one** into machine code
+
+2. or **compiling** the source code : instruction from source code are converted **as a whole** into machine code, while performing many optimisation procedures under the hood
+
+.footnote[The real world is not black and white. For instance most interpreters do perform optimisations on the fly, even though not as thorough as compilers.]
+
+???
+
+When running a program written in R or Python, the **source code** is translated into **machine code**.
+
+There are schematically 2 ways to do that:
+
+When **interpreting** the source code, instructions from source code are converted **one by one** into machine code. Say you have an error in your code at line 10. Your programme would execute the first 9 lines then halt with an error.
+
+When **compiling** the source code, instruction from source code are converted **as a whole** into machine code, while performing many optimisation procedures under the hood (ex: multiplying by 2 is just adding an extra 0 to the right in binary ; also you may want to take advantage of the processor pipeline, i.e. the fact that reading the next task from memory can be made to happen *in the same time* than execution of the preceding task). This means that your code with an error would just fail compiling and that "the beginning" (which does not even make sense anymore) will never be executed. Compilation takes time, but it may be worth it if the same programme is run regularly.
+
+Real-world computing is not black and white. For instance most interpreters do perform optimisations on the fly, even though not as thorough as compilers. A common intermediate pattern is **compilation to bytecode**, a platform agnostic language that gets interpreted at run time, or even further compiled to machine code.
+
+---
+
+## Go low-level : compilation
+
+A common intermediate pattern is **compilation to bytecode**, a platform agnostic language that gets interpreted at run time, or even further compiled to machine code.
+
+Compiled code often faster than non-compiled one but compiling also takes time. It is usually worth it only for production code.
+
+---
+
+## Move computing at the data source
+
+- with remote data, filter, select and sample at a distance
+- if possible execute code distantly and return results
+- results usually have smaller size than data
+
+For instance, most SQL servers have (limited) statistical abilities for mean, sum, percentiles, variance, standard error, etc. More recently, many have moved to allow execution of [arbitrary scripts in R and Python](https://docs.microsoft.com/fr-fr/sql/machine-learning/sql-server-machine-learning-services).
+
+???
+
+When data is not located on the local computer, moving the computing to the source and returning the results instead of transfering the data to exectute the computation is often faster, since results are probably smaller than .

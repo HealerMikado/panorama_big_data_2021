@@ -27,3 +27,8 @@ img.border {
 .remark-slide .height450 img{
     height: 450px;
 }
+
+.footnote{
+  font-size: 80%;
+}
+}
