@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="" xml:lang="">
   <head>
-    <title>1-lesson-1.3-how-to-avoid-distribution.utf8</title>
+    <title>1-lesson-1.3-high-performance-computing-without-distribution.utf8</title>
     <meta charset="utf-8" />
     <meta name="author" content="Arthur Katossky &amp; Rémi Pépin" />
-    <script src="1-lesson-1.3-how-to-avoid-distribution_files/header-attrs-2.7/header-attrs.js"></script>
+    <script src="1-lesson-1.3-high-performance-computing-without-distribution_files/header-attrs-2.7/header-attrs.js"></script>
     <link rel="stylesheet" href="css/xaringan-themer.css" type="text/css" />
     <link rel="stylesheet" href="css/mine.css" type="text/css" />
   </head>
@@ -165,6 +165,20 @@ Usually not a problem, but sometimes you want greater control.
 
 ## Go low-level
 
+High-level programs:
+
+- deliver good human experience (column names, error messages, warnings)
+- perform a lot a checks and formatting operations
+- have lower-level sub-functions that only accept very standardized inputs
+
+&lt;small&gt;In R, the `lm()` function is actually only tests and formatting, the actual computation taking inside a call to `lm.fit()`, which itself calls the C function `Cdqrls`.&lt;/small&gt;
+
+**Skipping formatting and tests can increase the speed!** &lt;small&gt;Especially if you call such functions multiple times.&lt;/small&gt;
+
+---
+
+## Go low-level
+
 Other languages, most notably **C**, **C++** and **Fortran**, are much closer to machine code and allow better control over the flow of information between the disk, the memory and the processors.
 
 R or Python allow you to write functions directly in these languages, with often vast speed improvements.
@@ -213,6 +227,12 @@ Compiled code often faster than non-compiled one but compiling also takes time. 
 
 ---
 
+## Go low-level : building chips
+
+**Building a new electronic component** is the lowest-level one can go.
+
+---
+
 ## Move computing at the data source
 
 - with remote data, filter, select and sample at a distance
@@ -224,6 +244,59 @@ For instance, most SQL servers have (limited) statistical abilities for mean, su
 ???
 
 When data is not located on the local computer, moving the computing to the source and returning the results instead of transfering the data to exectute the computation is often faster, since results are probably smaller than .
+
+---
+
+## Pipeline i/o operations
+
+- moving data around takes time, even inside a computer
+- reading (load) and writing (save) operations may be bottlenecks
+- is possible, perform readings / writings in parallel to earlier / later tasks, aka. **pipelining**
+
+&lt;small&gt;A common mistake is printing messages inside a fast loop. The printing actually slows down the whole process. Printing once every `\(k\)` steps may be preferable.&lt;/small&gt;
+
+---
+
+## Use cache
+
+- avoid downloading / reading data twice
+- avoid performing the same computation twice
+- save results that you want to reuse later
+
+.footnote[In the cloud]
+
+---
+
+## Use cache
+
+
+```r
+library(memoise)
+
+fib &lt;- function(x) {
+  if (x == 0) return(0)
+  if (x == 1) return(1)
+  Recall(x - 1) + Recall(x - 2) # recursive
+}
+
+fib &lt;- memoise(fib)
+
+system.time(fib(30)) # first call isn't cached
+```
+
+```
+##    user  system elapsed 
+##   1.641   0.010   1.653
+```
+
+```r
+system.time(fib(30)) # second called is
+```
+
+```
+##    user  system elapsed 
+##   0.019   0.000   0.019
+```
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>

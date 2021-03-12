@@ -147,6 +147,20 @@ Usually not a problem, but sometimes you want greater control.
 
 ## Go low-level
 
+High-level programs:
+
+- deliver good human experience (column names, error messages, warnings)
+- perform a lot a checks and formatting operations
+- have lower-level sub-functions that only accept very standardized inputs
+
+<small>In R, the `lm()` function is actually only tests and formatting, the actual computation taking inside a call to `lm.fit()`, which itself calls the C function `Cdqrls`.</small>
+
+**Skipping formatting and tests can increase the speed!** <small>Especially if you call such functions multiple times.</small>
+
+---
+
+## Go low-level
+
 Other languages, most notably **C**, **C++** and **Fortran**, are much closer to machine code and allow better control over the flow of information between the disk, the memory and the processors.
 
 R or Python allow you to write functions directly in these languages, with often vast speed improvements.
@@ -195,6 +209,12 @@ Compiled code often faster than non-compiled one but compiling also takes time. 
 
 ---
 
+## Go low-level : building chips
+
+**Building a new electronic component** is the lowest-level one can go.
+
+---
+
 ## Move computing at the data source
 
 - with remote data, filter, select and sample at a distance
@@ -206,3 +226,48 @@ For instance, most SQL servers have (limited) statistical abilities for mean, su
 ???
 
 When data is not located on the local computer, moving the computing to the source and returning the results instead of transfering the data to exectute the computation is often faster, since results are probably smaller than .
+
+---
+
+## Pipeline i/o operations
+
+- moving data around takes time, even inside a computer
+- reading (load) and writing (save) operations may be bottlenecks
+- is possible, perform readings / writings in parallel to earlier / later tasks, aka. **pipelining**
+
+<small>A common mistake is printing messages inside a fast loop. The printing actually slows down the whole process. Printing once every $k$ steps may be preferable.</small>
+
+---
+
+## Use cache
+
+- avoid downloading / reading data twice
+- avoid performing the same computation twice
+- save results that you want to reuse later
+
+.footnote[In the cloud, you actually pay for most data transfers!]
+
+---
+
+## Use cache
+
+```{r}
+
+library(memoise)
+
+fib <- function(x) {
+  if (x == 0) return(0)
+  if (x == 1) return(1)
+  Recall(x - 1) + Recall(x - 2) # recursive
+}
+
+fib <- memoise(fib)
+
+system.time(fib(30)) # first call isn't cached
+system.time(fib(30)) # second called is
+
+```
+
+---
+
+## Know your language

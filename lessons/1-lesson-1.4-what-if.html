@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>1-lesson-1.4-what-if.utf8</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Arthur Katossky &amp; Rémi Pépin" />
+    <script src="1-lesson-1.4-what-if_files/header-attrs-2.7/header-attrs.js"></script>
+    <link rel="stylesheet" href="css/xaringan-themer.css" type="text/css" />
+    <link rel="stylesheet" href="css/mine.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# <div class="line-block">Introduction to Big Data<br />
+Lesson 1.4 What if … ?</div>
+### Arthur Katossky &amp; Rémi Pépin
+### Friday, March 12, 2021
+
+---
+
+
+## What if ... ?
+
+???
+
+We have to distinguish between estimation of a statistical model (always the same call, happen seldom, often only once or twice), developement/research (many requests, often very different from each other) and model in production, for instance for prediction (usually lighter computations, but happen possibly very often). It is rare to be in the case where you both want a very intense computation and you wan to perform it often, exceptions being for instance 3D rendering.
+
+---
+
+## What if data is too big to fit in memory ?
+
+.pull-right[![](https://image.flaticon.com/icons/png/512/906/906794.png)]
+
+--
+1. do less (filter, select, sample)
+
+--
+2. buy more/bigger memory
+
+--
+3. do things in chunks / stream
+
+--
+4. distribute the data
+
+---
+
+## What if ... ?
+
+---
+
+## What if your file is too big for your local file system ?
+
+.pull-right[![](https://image.flaticon.com/icons/png/512/906/906794.png)]
+
+--
+1. update file system
+
+--
+2. import less data (filter, select, sample)
+
+--
+3. cut file into pieces and process in chunks&lt;br&gt;&lt;small&gt;for instance 1 file per day&lt;/small&gt;
+
+--
+4. if you file is slight structured, go onto databases, that's what they are made for
+
+--
+5. rent a remote cloud-based service, they will abstract the problem away from you
+
+???
+
+Sometimes you don't have the choice. You get data you have to read before you can filter.
+
+---
+
+## What if your file is too big for your local file system ?
+
+![](img/cloud/limit-size-aws.png)
+
+---
+
+## What if your file is too big for your local file system ?
+
+![](img/cloud/limit-size-azure.png)
+
+---
+
+## What if your file is too big for your local file system ?
+
+![](img/cloud/limit-size-gcp.png)
+
+---
+
+## What if ... ?
+
+---
+
+## What if data is too big to fit on disk ?
+
+.pull-right[![](https://image.flaticon.com/icons/png/512/906/906794.png)]
+
+--
+1. store less (filter, select, sample)
+
+--
+2. buy bigger physical disk
+
+--
+3. buy your own storage server
+
+--
+4. rent storage space (file space or database) in the cloud
+
+--
+5. distribute data yourself on several nodes in a cluster
+
+???
+
+Database may be helpful, but won't solve the issue of not enough space on the disk.
+
+---
+
+## What if ... ?
+
+---
+
+## What if computation takes ages ?
+
+
+.pull-right[![](https://image.flaticon.com/icons/png/512/906/906794.png)]
+
+--
+1. do less (filter, select, sample), especially in development stages
+
+--
+2. do less (less tests, less formatting)
+
+--
+3. go low-level (compile, use C or C++, use command shells ... or build chips!)
+
+--
+4. profile your code (how does it scale ? where are the bottlenecks?)
+
+--
+5. buy bigger or more cores
+
+--
+6. rent cores on the cloud
+
+--
+7. avoid i/o or network operations
+
+--
+8. **parallelise on non-local nodes**
+
+]
+
+---
+
+## What if ... ?
+
+---
+
+## What if computation / storage is too expensive ?
+
+.pull-right[![](https://image.flaticon.com/icons/png/512/906/906794.png)]
+
+--
+1. store or compute less (filter, select, sample)
+
+--
+2. consider cloud computing&lt;br&gt;&lt;small&gt;Not always cheaper, though!&lt;/small&gt;
+
+--
+3. be careful with databases requests
+
+--
+4. go from RAM (expensive) to disk (cheap)
+
+--
+5. use smaller but many computing units (ex: scientific grids)
+
+???
+
+4. stream, caveat: more communication between disk and memory
+
+---
+
+## What if ... ?
+
+---
+
+## What if data i/o is too fast ?
+
+.pull-right[![](https://image.flaticon.com/icons/png/512/906/906794.png)]
+
+--
+1. for computing: pipeline (overlapping chunk processing), stream (never-ending one-by-one processing)
+
+--
+2. for storage: fast databases
+
+---
+
+## What if ... ?
+
+---
+
+## What if data i/o is too varied ?
+
+.pull-right[![](https://image.flaticon.com/icons/png/512/906/906794.png)]
+
+--
+1. dedicated file systems and databases
+
+This is not ultimately not a computation issue.
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightLines": null,
+"ratio": "16:10",
+"scroll": false,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
