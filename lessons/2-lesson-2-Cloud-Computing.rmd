@@ -6,7 +6,7 @@ output:
   xaringan::moon_reader:
     nature:
       highlightLines: 
-      ratio: 16:10
+      ratio: 16:9
       scroll: false
       countIncrementalSlides: false
     css: ["css/xaringan-themer.css", "css/mine.css"]

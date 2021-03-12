@@ -6,7 +6,7 @@ output:
   xaringan::moon_reader:
     nature:
       highlightLines: 
-      ratio: 16:10
+      ratio: 16:9
       scroll: false
       countIncrementalSlides: false
     css: ["css/xaringan-themer.css", "css/mine.css"]
@@ -29,7 +29,7 @@ knitr::opts_chunk$set(echo = FALSE)
 ---
 ## The Hadoop Ecosystem
 
-<img src="img/hadoop ecosystem.png" style="width: 90%; display: block; margin-left: auto;margin-right: auto" />
+<img src="img/hadoop ecosystem.png" style="width: 80%; display: block; margin-left: auto;margin-right: auto" />
 
 ---
 
@@ -139,7 +139,7 @@ class: center, middle
 # read file
 flightData2015=spark.read.format("json")
   .option("inferSchema", "true")
-  .csv("file://2015-summary.csv")
+  .load("file://2015-summary.json")
 
 #process  file, chaining transformations
 df = flightData2015.groupBy("DEST_COUNTRY_NAME")
@@ -182,7 +182,7 @@ You chained **transformations** to design your process. And you use an **action*
 
 ## In a nutshell
 
-<img src="img/meme/plan to dataframe.jpg" style="width: 60%; display: block; margin-left: auto;margin-right: auto" />
+<img src="img/meme/plan to dataframe.jpg" style="width: 50%; display: block; margin-left: auto;margin-right: auto" />
 
 
 ---
@@ -444,7 +444,7 @@ useless data.
 
 --
 - Pros :
-  - Spark optimizes your operations (*caralyst optimizer*)
+  - Spark optimizes your operations (*catalyst optimizer*)
   - Data are not kept in memory forever
 
 --
