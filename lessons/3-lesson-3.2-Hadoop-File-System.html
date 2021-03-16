@@ -13,7 +13,6 @@ class: center, middle, inverse, title-slide
 
 # Hadoop file system (HDFS)
 ### Arthur Katossky &amp; Rémi Pépin
-### 18/02/2021
 
 ---
 
@@ -32,28 +31,7 @@ class: center, middle, inverse, title-slide
 ---
 ## The Hadoop Ecosystem
 
-&lt;img src="https://static.packt-cdn.com/products/9781788995092/graphics/c8625da0-2ffb-41b7-bba8-58c33af68a30.png" style="width: 80%; display: block; margin-left: auto;margin-right: auto" /&gt;
----
-
-## A little bit of Hadoop history
-
-- 2003 Google released a [paper](https://research.google/pubs/pub51/) about their Google File System (GFS) (Storage)
---
-
-- 2004 Google released a [paper](https://research.google/pubs/pub62/) about processing data on large cluster (MapReduce)
---
-
-- 2006 first release of Hadoop 0.1.0. Open source implementation of GFS and MapReduce
---
-
-- 2011 released of Hadoop 1.0.0 (HDFS+MapReduce)
---
-
-- 2013 released of Hadoop 2.2.0 (first sable version of 2.x) (added a resource management layer)
---
-
-- 2017 released of Hadoop 3.0.0
-- 2021 released of Hadoop 3.2.2 (still an active project)
+&lt;img src="img/hadoop ecosystem.png" style="width: 80%; display: block; margin-left: auto;margin-right: auto" /&gt;
 
 ---
 
@@ -72,7 +50,7 @@ class: center, middle, inverse, title-slide
 
  Main/workers architecture
 
-- **NameNode** (main): manage the file system. Doesn't store any file. It store *on disk* only the namespace image and edit logs. It keep in *memory* the physical location of the data block.
+- **NameNode** (main): manage the file system. Doesn't store any file. It store *in disk* only the namespace image and edit logs. It keep in *memory* the physical location of the data block.
 - **DataNode** (worker): workhorse of the system. They store and retrieve blocks when they are told to.
 
 ---
@@ -98,7 +76,7 @@ class: center, middle, inverse, title-slide
 - A client requests a file to the NameNode 
 - The NameNode selects for each file block a DataNode
 - It sends back to the client where to find each block
-- The client request the selected DataNodes and marge back the file
+- The client request the selected DataNodes and merge the blocks back together
 
 --
 
@@ -112,10 +90,10 @@ class: center, middle, inverse, title-slide
 
 **Con**:
 
-- NameNode single point of failure (there is solution)
+- NameNode single point of failure (there are solutions)
 
 ---
-## How to use HDFS ?
+## How to use HDFS 
 
 - You need a cluster with HDFS to store file (obviously) 
 - HDFS doesn't provide a fancy GUI to interact with  :
@@ -148,31 +126,31 @@ If your are using python you should use the WebHDFS, it works like a webservice
 - Can't handle lots of small file
 - No concurrent write for the same file
 - No arbitrary modification of a file. Can only add content at the end
+- Not elastic
 
 ---
-## When HDFS is a good choice ?
+## HDFS is a good choice when you want to
 
-- To store very big files
-- To store read only files
-- To build all the Hadoop stack on top
-- To store file for batch processing
+- store very big files
+- store read only files
+- build all the Hadoop stack on top
+- store file for batch processing (as opposed to interactive processing)
 
 ---
-## When HDFS is a bad choice ?
+## HDFS is a bad choice when you want to
 
-- To store a lots of small files
-- To store files that are edited a lot
-- To store file used by system which need low latency
+- store a lots of small files
+- store files that are edited a lot
+- store file used by system which need low latency
 
 ---
 ## Keep in mind
 
 - HDFS is only a storage solution !
-- There are framework to process the data like  **MapReduce** or **Spark**
+- There are frameworks to process data like  **MapReduce** or **Spark**
 - HDFS doesn't have a GUI, it's all command line (CLI)
-- [HUE](https://gethue.com/) can provide a nice GUI
 - Today with cloud provider you can create a big HDFS cluster in a snap
-
+- Cloud providers have they own storage solution (S3, Azure blob, Google Cloud Storage) (usually cheaper)
 ---
 class: center, middle
 
@@ -183,7 +161,7 @@ class: center, middle
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
 <script>var slideshow = remark.create({
 "highlightLines": null,
-"ratio": "16:10",
+"ratio": "16:9",
 "scroll": false,
 "countIncrementalSlides": false
 });

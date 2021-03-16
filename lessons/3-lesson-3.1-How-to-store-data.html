@@ -22,20 +22,22 @@ class: center, middle, inverse, title-slide
 
 ## Storage cost
 
-&lt;img src="img/storage/storage-cost.png" style="width:70%;display: block; margin-left: auto;margin-right: auto" /&gt;
+&lt;img src="img/storage/storage-cost.png" style="width:60%;display: block; margin-left: auto;margin-right: auto" /&gt;
 
 ---
 
 ## Storage on a machine
 
-&lt;img src="img/storage/storage-average.png" style="width:70%;display: block; margin-left: auto;margin-right: auto; background:white" /&gt;
+&lt;img src="img/storage/storage-average.png" style="width:60%;display: block; margin-left: auto;margin-right: auto; background:white" /&gt;
 
 ---
 
 ## Data production
 .pull-left[
 &lt;a href="https://www.statista.com/chart/17518/data-created-in-an-internet-minute/" title="Infographic: A Minute on the Internet in 2020 | Statista"&gt;
-&lt;img src="https://cdn.statcdn.com/Infographic/images/normal/17518.jpeg" alt="Infographic: A Minute on the Internet in 2020 | Statista" width="80%" height="auto" style="width: 95%; height: auto !important; max-width:960px;-ms-interpolation-mode: bicubic;"/&gt;&lt;/a&gt; You will find more infographics at &lt;a href="https://www.statista.com/chartoftheday/"&gt;Statista&lt;/a&gt;]
+&lt;img src="https://cdn.statcdn.com/Infographic/images/normal/17518.jpeg" alt="Infographic: A Minute on the Internet in 2020 | Statista" width="80%" height="auto" style="width: 80%; height: auto !important; max-width:960px;-ms-interpolation-mode: bicubic;"/&gt;&lt;/a&gt; 
+
+You will find more infographics at &lt;a href="https://www.statista.com/chartoftheday/"&gt;Statista&lt;/a&gt;]
 
 .pull-right[
 There are no way that any of those apps can store all these data on one single machine
@@ -80,7 +82,7 @@ There is two way to store data :
 
 ## File system in a nutshell
 
-&lt;img src="img/storage/filesystem.jpg" style="width:90%;display: block; margin-left: auto;margin-right: auto" /&gt;
+&lt;img src="img/storage/filesystem.png" style="width:90%;display: block; margin-left: auto;margin-right: auto" /&gt;
 
 
 
@@ -112,7 +114,7 @@ Even if unstructured databases exist, the data in a DB are more structured than 
 
 ---
 ## Databases in a nutshell
-&lt;img src="img/storage/database.jpg" style="width:90%;display: block; margin-left: auto;margin-right: auto" /&gt;
+&lt;img src="img/storage/database.png" style="width:90%;display: block; margin-left: auto;margin-right: auto" /&gt;
 
 ---
 
@@ -134,12 +136,12 @@ Source : https://en.wikipedia.org/wiki/Clustered_file_system
 
 
 --
-So FS and DB will have the same issues to tackle
+**So FS and DB will have the same issues to tackle**
 
 ---
 
 ## Distribution : unlimited storage at no cost ?
-&lt;img src="https://media.giphy.com/media/5C472t1RGNuq4/source.gif" style="width:90%;display: block; margin-left: auto;margin-right: auto" /&gt;
+&lt;img src="https://media.giphy.com/media/5C472t1RGNuq4/source.gif" style="width:80%;display: block; margin-left: auto;margin-right: auto" /&gt;
 
 ---
 
@@ -183,7 +185,7 @@ Plus the usual questions of large-scale systems :
 ---
 ## The CAP theorem
 
-&lt;img src="img/storage/CAP theorem.jpg" style="width: 90%; display: block; margin-left: auto;margin-right: auto" /&gt;
+&lt;img src="img/storage/CAP theorem.jpg" style="width: 80%; display: block; margin-left: auto;margin-right: auto" /&gt;
 
 ???
 
@@ -238,7 +240,7 @@ Homegeneous (all run with the same sowftware / OS) vs. inhomogeneous (diff. soft
 
 
 ---
-## Transparency requirements
+## Transparency requirement
 
 
 Because distribution is a tehcnical solution, it must be transparent for users :
@@ -248,13 +250,10 @@ Because distribution is a tehcnical solution, it must be transparent for users :
 - **Concurrency transparency** : all client should see the same state
 
 
---
-A paradigme shift is occuring and more pepole think we should drop thie requirements (Wiktorski, Tomasz. 2019. “NOSQL Databases.” In Advanced Information and Knowledge Processing)
 
 
 ---
-
-## Some big data storage solution
+## Some big data storage solutions
 
 ### File system/Object storage
 
@@ -262,24 +261,25 @@ A paradigme shift is occuring and more pepole think we should drop thie requirem
 - [Lustre](https://www.lustre.org/) : open source distrubed file system for High Performance Computing
 - [Aluxio](https://www.alluxio.io/) : Open source data orchestration for analytics and machine learning in any cloud
 - [Minio](https://min.io/) : open source object storage
-- [Amazon S3](https://aws.amazon.com/fr/s3/) / [Google Cloud Storage](https://cloud.google.com/storage?hl=fr) : objet storage as a Service
+- [Amazon S3](https://aws.amazon.com/fr/s3/) / [Google Cloud Storage](https://cloud.google.com/storage?hl=fr) / [Azure Blob storage](https://azure.microsoft.com/fr-fr/services/storage/blobs/): objet storage as a Service
 
 ---
 
-## Some big data  storage solution
+## Some big data storage solutions
 
 ### Databases
 
 -  [MongoDB](https://www.mongodb.com/fr) : document oriented
 -  [Amazon DynamoDB](https://aws.amazon.com/fr/dynamodb/) / [Azure Cosmos DB](https://azure.microsoft.com/fr-fr/services/cosmos-db/) / [Google Firestore](https://cloud.google.com/firestore?hl=fr) : document oriented as a service
 -  [Google Bigtable](https://cloud.google.com/bigtable/?hl=fr) / [Amazon Redshif](https://aws.amazon.com/fr/redshift) : column-oriented as a service
--  [Cassandra](https://cassandra.apache.org/) : column-oriented
+-  [Cassandra](https://cassandra.apache.org/) : column-oriented, distributed without master
+-  [H base](https://cassandra.apache.org/) : part of the hadoop ecosystem, column-oriented
 
 ---
 
 ## How to choose ?
 
-.pull-left[&lt;img src="img/meme/chooseFSDB.jpg" style="width: 70%; display: block; margin-left: auto;margin-right: auto" /&gt;]
+.pull-left[&lt;img src="img/meme/chooseFSDB.jpg" style="width: 65%; display: block; margin-left: auto;margin-right: auto" /&gt;]
 
 
 .pull-right[
@@ -304,13 +304,13 @@ Maybe you need a file system to store raw input data, and a database to store th
 - Big data solution are not always needed.
 
 ---
-&lt;img src="img/meme/drake end.jpg" style="width: 60%; display: block; margin-left: auto;margin-right: auto" /&gt;
+&lt;img src="img/meme/drake end.jpg" style="width: 50%; display: block; margin-left: auto;margin-right: auto" /&gt;
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
 <script>var slideshow = remark.create({
 "highlightLines": null,
-"ratio": "16:10",
+"ratio": "16:9",
 "scroll": false,
 "countIncrementalSlides": false
 });

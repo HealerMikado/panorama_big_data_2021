@@ -1,12 +1,11 @@
 ---
 title: "Hadoop MapReduce"
 author: "Arthur Katossky & Rémi Pépin"
-date: "18/02/2021"
 output: 
   xaringan::moon_reader:
     nature:
       highlightLines: 
-      ratio: 16:10
+      ratio: 16:9
       scroll: false
       countIncrementalSlides: false
     css: ["css/xaringan-themer.css", "css/mine.css"]
@@ -26,7 +25,7 @@ knitr::opts_chunk$set(echo = FALSE)
 - Part of the Hadoop ecosystem
 - Can process *very large file* 
 - Throughput optimized
-- Highly parallele
+- Highly parallel
 
 ???
 
@@ -38,7 +37,7 @@ knitr::opts_chunk$set(echo = FALSE)
 ---
 ## The Hadoop Ecosystem
 
-<img src="https://media.giphy.com/media/EdRgVzb2X3iJW/source.gif" style="width: 80%; display: block; margin-left: auto;margin-right: auto" />
+<img src="img/hadoop ecosystem.png" style="width: 80%; display: block; margin-left: auto;margin-right: auto" />
 
 ---
 
@@ -63,7 +62,7 @@ It's a main/worker architecture.
 
 --
 
-`map()` and `reduce()` entReduce is an old programming paradigm. You can do it in python if you want.
+`map()` and `reduce()` are an old programming paradigm. You can do it in python if you want.
 
 --
 
@@ -75,12 +74,12 @@ It's a main/worker architecture.
 
 ### The Map phase : Input
 
-Records from the data source (line of a file, row of a DB, documents) as **key:value** pairs. Examples :
+Records from the data source (line of a file, row of a DB, documents) as is a `{key1:value, key2:value, ...}`. Examples :
   - filename : line
-  - row index : row
+  - reccord index : reccord
   - document name : document
 
-Each **mapper** has a his own input.
+Each **mapper** has a its own input.
 
 ???
 
@@ -91,24 +90,20 @@ Usualy the data source is a file in HDFS, so split in bloc, each mapper reads a 
 
 ### The Map phase : Behaviour
 
-Each **mapper** executes the same code for each input. Example :
-  - split a text into word
+Each **mapper** executes the same code for each reccord Example :
+  - split a line into word
   - filter records
   - extract values
   - scalar operations
   
-
---
-You can keep track of the past if you want (like the previous record)
-
 ---
 ## Key Concepts
 
 ### The Map phase : Output
 
-Each **mapper** produces a list of **map_key:map_value** pairs. Examples :
-  - a list of word:word_count
-  - a list of year:temperature_exracted
+Each **mapper** produces `{key_map1:value, key_map2:value, ...}` pairs. Examples :
+  - word count : `{to:1, be:1, or:1, not:1, to:1, be:1}`
+  - max temperature : `{1990:320, 1900:123, 1901:235}`
   - etc
 
 
@@ -136,16 +131,28 @@ The map phase
 
 
 ---
+### The Shuffle phase
+
+Because **mapper** and **reducer** are distinct, need to transfer data between then.
+
+
+--
+Output map keys are randomly assigned to **reducer** and all related values are transfered to them.
+
+
+---
 
 ## Key Concepts
 
 ### The Reduce phase : Input
+The input of a reduce function is
 
-All the output value of the map tasks with the same key are send to same reduce task (*shuffle*).
-
---
-
-The input of a reduce function is a `list(map_key:list(map_value))` 
+```
+{
+  map_key1:[value1, value2..],
+  map_key2:[value3, value4..],
+...}
+```
 
 
 --
@@ -155,20 +162,20 @@ For instance a list of word and how many time they appear in each line.
 .pull-left[
 Reduce task 1
 ```python
-[
+{
   1900 : [320, 123, 234, 120, 165, 246], 
   1903 : [196]
-]
+}
 ```
 ]
 
 .pull-right[
 Reduce task 2
 ```python
-[
+{
   1901 : [245],
   1902 : [001, 301]
-]
+}
 ```
 ]
 
@@ -196,9 +203,16 @@ controle the *shuffle*.
 
 ### The Reduce phase : Output
 
-Each **reducer** produces a list of **map_key:reduce_value** pairs. Examples :
-  - How many time each word are used word:sum_count
-  - The max temperature for each year year:max_temp
+Each **reducer** produces a list of 
+```
+{
+  reduce_key1:value1,
+  reduce_key1:value2,
+...}
+```
+pairs. Examples :
+  - Word count : `{to:2, be:2, or:1, not:1}`
+  - The max temperature for each year `{1900:320, 1901:245, 1902:301, 1903:196 }`
   - etc
 
 --
@@ -245,59 +259,6 @@ The reduce phase
 
 ---
 
-## How to write MapReduce tasks ?
-
-- MR is written in java, complete java API
-- No real python/R API
-
-
----
-class: center, middle
-
-
-<img src="img/meme/hadoop streaming.jpg" style="width: 80%;" />
-
----
-
-## Hadoop Streaming
-
-- Not about stream processing
-- A workaround to use any language with MapReduce
-
---
-
-**Hadoop Streaming streams the file in the standard input**
-
----
-
-## Hadoop Streaming how does it work ?
-
-1. Hadoop read the input file
-2. Write each line in the *standard input*
-3. Your process must read the line in the standard input and write the result back in
-4. Hadoop Streaming read the standard input to get the result
-
----
-
-## Hadoop Streaming
-
-In python :
-
-```python
-import sys
-
-for line in sys.stdin : #Read the standard input
-    #process data
-
-    print(data, file = sys.stdout) #Write back in the standard output
-```
-
---
-It's only common python without any special library. **Perfect for process text file**.
-
-
----
-
 ## How to run MapReduce tasks ?
 
 - No nice GUI by default
@@ -316,9 +277,9 @@ It's only common python without any special library. **Perfect for process text 
 
 ## Cons of MapReduce
 
+Write your ouput in the file system
 - High latency processing
 - Iterative algorithms are very slow (like ML algorithms)
-- Skew data can be a problem
 
 ---
 ## When MapReduce is a good choice ?
@@ -339,8 +300,9 @@ It's only common python without any special library. **Perfect for process text 
 
 - MapReduce is a file processing framework !
 - Throughput oriented
+- *Write once read many* philosophy
 - Perfect for batch processing
-- No GUI, all CLI ([HUE](https://gethue.com/) can provide a nice GUI)
+- No GUI, only CLI 
 - For statistics, ML, interactive sessions you should use **Spark**
 
 ---
