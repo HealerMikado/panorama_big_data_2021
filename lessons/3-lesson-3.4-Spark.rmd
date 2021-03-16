@@ -1,7 +1,6 @@
 ---
 title: "Spark"
 author: "Arthur Katossky & Rémi Pépin"
-date: "18/02/2021"
 output: 
   xaringan::moon_reader:
     nature:
@@ -168,7 +167,7 @@ Example of a dataframe transformation flow
 
 ### Lazy evaluation
 
-Wait the very last moment to process computation. You manipulated "hollow" dataframe
+Wait the very last moment to process computation. You manipulate "hollow" dataframe
 
 --
 
@@ -176,7 +175,7 @@ Writing a **transformation** don't run any computation.
 
 --
 
-You chained **transformations** to design your process. And you use an **action** to run it.
+You chaine **transformations** to design your process. And you use an **action** to run it.
 
 ---
 
@@ -239,7 +238,7 @@ Spark understands sql statements !
 
 ```SQL
 spark.sql("""
-	SELECT user_id, deartement, first_name
+	SELECT user_id, departement, first_name
 	FROM professors
     WHERE departement IN
     	(SELECT name FROM departement WHERE created_date >= '2016-01-01')
@@ -525,11 +524,11 @@ Caching make it possible to store in memory or disk a DF for future reuses.
 ## To sum up Spark
 
 --
-💻 Only a distributed computation engine. Work better on a cluster than on your pc 
+💻 Only a distributed computation engine. Works better on a cluster than on your pc 
 
 
 --
-👌 Lot of easy ways to define spark process (python, R, SQL) 
+👌 Lot of easy ways to define spark processes (python, R, SQL) 
 
 
 --
