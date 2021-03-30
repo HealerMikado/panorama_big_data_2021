@@ -17,18 +17,16 @@ output:
 knitr::opts_chunk$set(echo = FALSE)
 ```
 
-
-
 ## A quick history of IT hardware in enterprise
 
 .pull-left[
 **Mainframe era** (1940 - mid 1970)
   - It's not a super-computer
-  - Commercial, scientific, and large-scale computing only.
-  - Only big enterprise can buy mainframes.
+  - Commercial, scientific, and large-scale computing only
+  - Only big enterprise can buy mainframes
   - No direct user interaction (no screen nor keyboard), but card punches
   - Throughtput optimize (I/O operation)
-  - Use case: credit card operation, flight reservation, share market.
+  - Use case: credit card operation, flight reservation, share market
     ]
 
 .pull-right[![](http://www.rhod.fr/images_dossiers/wargames/wargames03.jpg)
@@ -42,9 +40,9 @@ knitr::opts_chunk$set(echo = FALSE)
 
 .pull-left[
 **Fat client era** (Mid 1970 - mid-1990)
-  - Developement of micro-computing, personnal computers become cheaper and cheaper
-  - Instead of one mainframe for data and computing, one server is for the data, and computation are executed on personnal computer (**fat client**)
-  - Fat client are autonomous of each other. They need the data server only to download the data
+  - Development of micro-computing, personal computers become cheaper and cheaper
+  - Instead of one mainframe for data and computing, one server is for the data, and computation are executed on personal computer (**fat client**)
+  - Fat clients are independent of each other (server here only in order to download the data)
 
   ]
 
@@ -57,39 +55,42 @@ knitr::opts_chunk$set(echo = FALSE)
 
 .pull-left[
 **In-house datacenter era** (mid-1990 - 2010)
-  - mid 1990 : democratization of the Internet
+  - Democratisation of the Internet
   - Communication speed increase quickly
-  - Centralisation of data and computing in data datacenter.
-  - Personnal computers for daily tasks (mail, office etc)
-  - Servers for computation
-
-Note : You can go on step further, like at Ensai, and put everything in the server
+  - Centralisation of data and computing in data datacenters
+  - Personal computers for daily tasks (mail, office etc)
+  - Servers for storage and computation
 
   ]
 
 .pull-right[<img src="https://leshorizons.net/wp-content/uploads/2019/06/DataCenter.jpg" style="zoom:100%;" />
 
-*Source : https://leshorizons.net/datacenter/*
+*Source : [Les Horizons](https://leshorizons.net/datacenter/)*
 
 ]
+
+???
+
+You can go on step further, like at Ensai, and put everything in the server
 
 ---
 
 ## A quick history of IT hardware in enterprise
 
 .pull-left[
-**Grid Computing** (mid-1990 - 2010) 
-  - what enteprise could afford, could not be done by scientists
-  - idea: using idle machines and make them work together on bigger tasks (**CPU scavenging**)
-  - parallel ideas could now be applied _between_ computers
-  - still use today ([SETI@home](https://setiathome.ssl.berkeley.edu/))
+**Grid Computing** (mid-1990 - 2010)
 
-**Source:** Top 500, the List ([link](https://www.top500.org/lists/2019/11))
-  ]
+  - Scientists can't afford in-house datacenters
+  -  Use idle machines and make them work together on bigger tasks (**CPU scavenging**)
+  - Parallel computing ideas, originally developed for a single computer, can be applied _between_ computers
+  - Many still in use today ([SETI@home](https://setiathome.ssl.berkeley.edu/))
+
+.footnote[**Source:** Top 500, the List ([link](https://www.top500.org/lists/2019/11))]
+]
 
 .pull-right[<img src="https://www.lebigdata.fr/wp-content/uploads/2018/02/grid-computing-vs-cluster-computing-1.jpg" style="zoom:100%;" />
 
-*Source : https://www.lebigdata.fr/wp-content/uploads/2018/02/grid-computing-vs-cluster-computing-1.jpg*
+*Source : [Le Big Data](https://www.lebigdata.fr/wp-content/uploads/2018/02/grid-computing-vs-cluster-computing-1.jpg)*
 ]
 
 ???
@@ -100,40 +101,51 @@ Note : You can go on step further, like at Ensai, and put everything in the serv
 ---
 ## A quick history of IT hardware in enterprise
 .pull-left[
-**cloud computing era** (2005-?)
-  - 2002 : amazon web service
-  - 2006 : amazon elastic compute cloud
-  - 2008 : google app engine
-  - 2008 : analyst house Garner claim rise of cloup computing
-  - 2010 : microsoft azure
 
-Cloud compute revenue in 2018 : 182,4 G$, estimation in 2022 331,4 G$ ([Source](https://www.gartner.com/en/newsroom/press-releases/2019-04-02-gartner-forecasts-worldwide-public-cloud-revenue-to-g))
+**The Cloud Computing Era** (2005-?)
 
-  ]
+- 2002 : Amazon Web Service
+- 2006 : Amazon Elastic Compute Cloud (EC2)
+- 2008 : Google App Engine (now Google Cloud Platform)
+- 2008 : Analysts at Gartner claim the rise of cloud-computing
+- 2010 : Microsoft Azure
+
+Cloud compute revenue in 2018 : 182,4 G$  
+Estimated revenue in 2022: 331,4 G$  
+
+.footnote[Source: [Gartner](https://www.gartner.com/en/newsroom/press-releases/2019-04-02-gartner-forecasts-worldwide-public-cloud-revenue-to-g)]
+]
 
 .pull-right[ ![](https://www.astelis.fr/wp-content/uploads/cloud-maillage.jpg)
-*Source : https://www.astelis.fr/wp-content/uploads/cloud-maillage.jpg*
+*Source : [Astelis](https://www.astelis.fr/wp-content/uploads/cloud-maillage.jpg)*
 ]
 
 ---
+
 ## A quick history of IT hardware in enterprise
 .pull-left[
-**Edge/fog/mist computing era** (2020?-?)
-  - 2016 : W. Shi, J. Cao, Q. Zhang, Y. Li and L. Xu, "Edge Computing: Vision and Challenges," in IEEE Internet of Things Journal
-  - 2017 : M. Satyanarayanan, "The emergence of egde computing"
-  - 2020 : Fog comuting for arcade gaming [Kotaku](https://kotaku.com/segas-new-streaming-platform-will-turn-japanese-arcades-1843919262)
+
+**Edge/fog/mist computing era**
+
+- 2016 : W. Shi, J. Cao, Q. Zhang, Y. Li and L. Xu, "Edge Computing: Vision and Challenges," in IEEE Internet of Things Journal
+- 2017 : M. Satyanarayanan, "The emergence of egde computing"
+- 2020 : Fog comuting for arcade gaming [Kotaku](https://kotaku.com/segas-new-streaming-platform-will-turn-japanese-arcades-1843919262)
     ]
 
-.pull-right[ ![](https://img.alicdn.com/tfs/TB1QdC2KhjaK1RjSZKzXXXVwXXa-3302-1854.png)
-*Source : https://www.alibabacloud.com/fr/knowledge/what-is-edge-computing*
+.pull-right[
+![](https://img.alicdn.com/tfs/TB1QdC2KhjaK1RjSZKzXXXVwXXa-3302-1854.png)
+.footnote[*Source : [Alibabacloud](https://www.alibabacloud.com/fr/knowledge/what-is-edge-computing)*]
 ]
 
 ???
+
   - 2019 : Jad Darrous, Thomas Lambert, Shadi Ibrahim. On the Importance of Container Image Placementfor Service Provisioning in the Edge
   - 2019 : Pedro Silva, Alexandru Costan, Gabriel Antoniu. Investigating Edge vs. Cloud Computing Trade-offs for Stream Processing. BigData 2019
 
 ---
-## Traditional IT : 1 physical machine = 1 function
+## Traditional IT
+
+💡 **1 physical machine** = **1 function**
 
   - SMTP (mail) server
   - DNS
@@ -149,10 +161,10 @@ Cloud compute revenue in 2018 : 182,4 G$, estimation in 2022 331,4 G$ ([Source](
 ---
 ## Virtualization
 
-Idea: one physical machine = multiple virtual machines (VMs).
+💡 **1 physical machine** = **multiple virtual machines** (**VMs**).
 
 --
-- Isolated
+- VMs are isolated from each other
 
 --
 - Can have their own OS
@@ -184,31 +196,32 @@ Idea: one physical machine = multiple virtual machines (VMs).
 It's not something new. Existe since 1960, but still relevant ! 
 
 ---
-## Virtualization
 
-- **OS virtualisation** : Multiple OS on the same machine. Need an **hypervisor** to run mutliple OS on a machine.
-  - Pro : Secured
-  - Con : Heavy (a OS do a lot !). Need a lot of knowledge to start doing things
+## Containerization
 
+Operating Systems generally do much more than what you need for a specific application.
 
---
-- **Containerization** : package an app and all the need library in a container. Need a runtime engine (like [Docker](https://www.docker.com/))
-  - Pros : lightweight, easy to use, need little to no kwonledge to start
-  - Cons : security issues, can become very complex in no time
-    
+💡 Use **only the libraries required** for your specific app
+
+- Needs a runtime engine (like [Docker](https://www.docker.com/))
+- Pros : lightweight, easy to use, little prior knowledge required
+- Cons : security issues, can become very complex
 
 ---
 ## Cloud computing definition
 
 Wikipedia : 
->Cloud computing  is **Internet-based  computing**,  whereby **shared resources, software, and informationare** provided to computers and  other devices **on demand**, like the electricity  grid. Cloud computing  is a style of computing  in **which dynamically  scalable** and  often **virtualized  resources** are provided  as a **service** over the Internet.
+>Cloud computing  is Internet-based  computing,  whereby shared resources, software, and informationare provided to computers and  other devices on demand, **like the electricity grid**. Cloud computing  is a style of computing  in which dynamically  scalable and  often virtualized  resources are provided  as a service over the Internet.
 
 --
 
 In a nutshell :
-- shared physical ressources (mutalization of cost) in remote location
-- Access via the Internet
-- On demand scalable services
+
+- **Shared** physical ressources (mutalization of cost)
+- In **remote** location (access via the Internet)
+- **On-demand**, **scalable** services
+
+The contrary to cloud-computing is **on-premise** or **self-hosted** computing.
 
 ---
 ## Why cloud computing ?
@@ -216,13 +229,13 @@ In a nutshell :
 - The world is changing faster than ever
 
 --
-- Need quick Reponses to new problems
+- Need quick responses to new problems
 
 --
-- Building a new datacenter, buying new servers or create new architectures take too much time ! 
+- Building a new datacenter, buying new servers or creating new architectures takes too much time ! 
 
 --
-- The on demand nature of cloud computing make possible to create new services in no time (or in a coffee break time)
+- On-demand means it is possible to create new projects in a coffee-break time
 
 ---
 ## Why cloud computing ? 
@@ -231,14 +244,14 @@ In a nutshell :
 
 --
 
-- 📈 Easy scalable : "just" pay for more resources
+- 📈 Easily scalable : "just" pay for more resources
 
 --
 
 - 🤸️ Flexible : create and delete resources in no time
 
 --
-- ️🔧No maintenance cost : it's the responsibility of your cloud provider
+- ️🔧 No extra maintenance and operation costs : it's the responsibility of your cloud provider
 
 --
 
@@ -246,14 +259,19 @@ In a nutshell :
 
 --
 
-- 🔬 : new resources are propose regularly, and you pay for what you use.
+- 🔬 Up-to-date : new services are propose regularly, and you pay for what you use
 
 ---
-## Different services
 
-- **IaaS** (Infrastrucre as a Service) : you rent basics machine. You have basics resources (CPU, RAM, network, storage), and you can build on it. Need a lot of knowldge about IT.
-- **PaaS** (Platform as a Service) : you rent an already build platform like a database, a cluster etc. The basics stuff are done (network, os, installation etc) but you can tune your plateform. Need litle to no knowledge to use.
-- **SaaS** (Software as a Service) : you use an already installed application. You do not know the architecture, but it's not a problem, you just want an easy to use software.
+## Different categories of cloud services
+
+⚠️ *The following distinction is not exact science! Some services may fall in-between categories.*
+
+- **IaaS** (**Infrastructure as a Service**) : you rent a bare virtual machine. You must build everything from basic components: processing, memory, storage, network. The cheapest and most flexible service, but requires a fair amount of knowledge.
+
+- **PaaS** (**Platform as a Service**) : you rent an already build platform like a database, a cluster, a scheduler, etc. Everything comes pre-installed: network configuration, OS, libraries, etc. You often can tune settings. Little knowledge is required.
+
+- **SaaS** (**Software as a Service**) : you use a pre-configured application, like a Slack or Discord instance, a database interface or a statistical software such as R Studio. You don't control at all how things are implemented. No knowledge required.
 
 ---
 ## Different services
@@ -265,9 +283,11 @@ In a nutshell :
 ## Some cloud providers
 
 - Amazon web service
-- Google cloud plateform
+- Google cloud platform
 - Microsoft azure
-- OVHcloud
+- OVH Cloud (French)
+
+.footnote[There are many others: Alibaba, IBM, etc. Smaller companies are specialised in IaaT, such as [Vultr](https://www.vultr.com) or [Linode](https://www.linode.com) while some other are specialised into Paas such as [Heroku]() or [DataBricks](https://databricks.com/fr/). Some go for both, such as [DigitalOcean](https://www.digitalocean.com/). Later arrivers usually have cleaner interfaces.]
 
 ---
 ## Principles of IaaS
@@ -280,13 +300,13 @@ When it comes to infrastructure as a service, all cloud-providers basically shar
 ---
 ## Normal storage
 
-This is the place where you put all of your files, script, logs, data or else.
-
-You create as many "buckets" as you wish, where a "bucket" is a unit of storage.
+**Normal storage** is the place where you put all of your files, script, logs, data or else: **anything that is worth saving.**
 
 "Normal", in "normal storage" means:
 - slower access than directly from the virtual machine
 - faster than recovery storage
+
+Normal storage is organised into units often called "buckets".
 
 ???
 
@@ -295,20 +315,18 @@ You create as many "buckets" as you wish, where a "bucket" is a unit of storage.
 ---
 ## Normal storage
 
-- The provider takes charge of preventing potential corruption of your data (*replication*)
+- The provider takes charge of the **integrity** and **availability** of your files (through **replication**)
 
-- Each resource you store gets a unique URL, that you can refer to from inside or outisde the cloud-provider ecosystem
+- Each resource you store gets **a unique URI** (≈ URL), that you can refer to from inside or outside the cloud-provider ecosystem
 
-- Data is usually encrypted server-side (meaning that stealing physically disks from a Google server is useless) but by default, the provider stores the encryption key themselves somewhere.
-
-
+- Data is usually **encrypted server-side** : stealing physically disks from a Google server is useless but by default, the provider stores the encryption key themselves somewhere, and the communication between you and the ecosystem is not encrypted
 
 ---
 ## Normal storage
 
 Storage solutions have different names, but similar pricing schemes:
 
-| Provider | Service's  name |      Store |                Write |     Read* |
+| Provider | Service's  name |      Store |                Write |     Read |
 |----------|-----------------|------------|----------------------|-----------|
 | Google   | Cloud Storage   | 0,03 $/Go |                 free |      free |
 | Amazon   | S3              | 0,02 $/Go |                 free |   0,09 $/Go |
@@ -317,15 +335,14 @@ Storage solutions have different names, but similar pricing schemes:
 
 Prices are given monthly.
 
-
-**Sources:** GCP ([link](https://cloud.google.com/storage/pricing)), AWS ([link](https://aws.amazon.com/fr/s3/pricing)), Windows ([link](https://azure.microsoft.com/en-us/pricing/details/storage/blobs))OVH ([link](https://www.ovhcloud.com/fr/public-cloud/prices)), visited on 2020/01/18.
+.footnote[**Sources:** GCP ([link](https://cloud.google.com/storage/pricing)), AWS ([link](https://aws.amazon.com/fr/s3/pricing)), Windows ([link](https://azure.microsoft.com/en-us/pricing/details/storage/blobs)), OVH ([link](https://www.ovhcloud.com/fr/public-cloud/prices)), visited on 2020/01/18.]
 
 ---
 ## Normal storage
 
 Other forms of storage, beyond "normal" storage, include:
 
-- disks that can be "attached" to a virtual machine (faster, but more expensive)
+- disks that can be "attached" to and "detached" from a virtual machine (faster, but more expensive)
 - storage whose physical location adapts to usage
 - so-called "cold" storage for unfrequently-accessed storage (less expensive, but you pay reads and writes more)
 - archive solution (inexpensive, but takes min. to hours for access)
@@ -335,6 +352,7 @@ Other forms of storage, beyond "normal" storage, include:
 
 <img src="https://media.datacenterdynamics.com/media/images/Snowmobile-AWS-truck-data-delivery.original.jpg" style="width: 70%; display: block; margin-left: auto;margin-right: auto" />
 
+???
 
 More info : https://www.datacenterdynamics.com/en/news/aws-snowmobile-delivers-petabytes-to-the-cloud-by-truck/
 
@@ -360,37 +378,42 @@ Imagine that on cluster C, on rack R, on server S, there is in total 124 CPUs, 1
 
 Virtual machines (VMs) come with little pre-configured software, and _you_ are the one to perform all the rest of the configuration. You may use such machines to :
 
-- rent a over powerful machine with some GPU to train one model
+- rent a over powerful machine with some GPU to train one machine-learning model
 - try something which need a linux machine or an exotic configuration 
-
-
---
-**BEWARE!** Holding the pysical resource and doing nothing with it comes at a cost for the provider,  **you will pay for a VM even you do not use it.** 
-
-
---
-**Shut down your VMs when you don't need them** 
-
----
-class: center, middle 
-![](img/meme/brain.jpg)
-
 
 ---
 ## Virtual machines
 
-| Provider | Service's  name  | Processing* |  Memory** | Storage*** |
+⚠️ Holding the physical resource and doing nothing with it comes at a cost for the provider,so **you will pay for a reserved VM even when you do not use it.** 
+
+---
+## Virtual machines
+
+**SHUT DOWN**
+
+--
+
+**YOUR VMs**
+
+--
+
+**WHEN YOU'RE DONE**
+
+---
+## Virtual machines
+
+| Provider | Service's  name  | Processing\* |  Memory\*\* | Storage\*\*\* |
 |----------|------------------|-------------|-----------|------------|
 | Google   | Compute Engine   |    ~0,03 $ | ~0,004 $ |   ~0,04 $ |
 | Amazon   | EC2              |    ~0,05 $ | ~0,005 $ |          ? |
 | Azure    | Virtual Machines |    ~0.05 $ | ~0.005 $ |   ~0.00 $ |
 | OVH      | Public Cloud     |    ~0,04  € | ~0,002  € |   ~0,00  € |
 
-* (Average) cost per processor (CPU or GPU) per hour
-** (Average) cost per Go (CPU or GPU) per hour
-*** (Average) cost per Go per month
+\* (Average) cost per processor (CPU or GPU) per hour  
+\*\* (Average) cost per Go (CPU or GPU) per hour  
+\*\*\* (Average) cost per Go per month
 
-.footnote[**Sources:** GCP, Iowa cluster (links [for processing and memory](https://cloud.google.com/compute/vm-instance-pricing) and [for storage](https://cloud.google.com/compute/disks-image-pricing)) ; AWS, London cluster, own calculation ([link](https://aws.amazon.com/ec2/pricing/on-demand/)) ; Azure, France South cluster ([link](https://azure.microsoft.com/en-us/pricing/details/virtual-machines/linux/)) ; OVH, Gravelines vluster, own calculation ([link](https://www.ovhcloud.com/fr/public-cloud/prices/)) ; all visited on 2020/01/18.]
+.footnote[**Sources:** GCP, Iowa cluster (links [for processing and memory](https://cloud.google.com/compute/vm-instance-pricing) and [for storage](https://cloud.google.com/compute/disks-image-pricing)) ; AWS, London cluster, own calculation ([link](https://aws.amazon.com/ec2/pricing/on-demand/)) ; Azure, France South cluster ([link](https://azure.microsoft.com/en-us/pricing/details/virtual-machines/linux/)) ; OVH, Gravelines cluster, own calculation ([link](https://www.ovhcloud.com/fr/public-cloud/prices/)) ; all visited on 2020/01/18.]
 
 ???
 
@@ -400,12 +423,15 @@ https://docs.microsoft.com/fr-fr/azure/architecture/aws-professional/
 Comparison GCP vs. AWS by Google:
 https://cloud.google.com/docs/compare/aws/
 
+---
+## Virtual machines
 
+![](img/meme/brain.jpg)
 
 ---
-## Platform as a service
+## Platform as a service (PaaS)
 
-An alreay package platforme. Just need some tuning.
+An already package platforme. Just need some tuning.
 
 As a statician, services you may come to use are:
 
@@ -414,58 +440,58 @@ As a statician, services you may come to use are:
 - machine-learning
 - serverless computing
 
-.green[++Pros]: scale automatically, less maintenance, easy to access
+.green[Pros]: scale automatically, less maintenance, easy to access
 
-.red[--Cons]: less configurable, possibly more expensive, cloud provider dependent
+.red[Cons]: less configurable, possibly more expensive, cloud provider dependent
 
-Exemple : Hadoop Platform (AWS EMR, GCP Cloud Dataproc, Azure HDInsight)
+**Exemples :** Hadoop Platform (AWS EMR, GCP Cloud Dataproc, Azure HDInsight)
 
 ---
 ## Software as a Service, SaaS
 
 
-- Provide to the consumer the capability to use a running application manage by others (application provider)
-
+- Provide the capability to use an application, managed by the provider (application provider)
 - The consumer do not control anything, except some user-specific settings
-
 - You must agree some terms and conditions before use
+- Usually not appropriate for sensitive data (especially if the service is "free")
 
-- I heavly discourage using those kind of services for sensible data analysis (specialy if it's a "free" service)
-
-- Exemples : all the Google suite, Github, Binder  ...
-
----
-## Some exemples of cloud computing success: New York Times
-
-- The need
-  - conversion from TIFF to pdf of all articles from 1851 to 1922
-  - 4TB of input (405,000 very large TIFF images, 3.3 million articles in SGML and 405,000 xml files mapping articles to rectangular regions in the TIFF’s)
---
-
-- The realization
-  - Run around 100 EC2 instances to create an Hadoop cluster for 24h (estimate cost 800$)
-  - Realized they made a mistake
-  - Rerun the cluster with the fix for 24h (estimate cost 800$)
-
---
-- Conclusion
-  - Convert to pdf 70 years of newspapers for less than 2000$ in no time!
+**Exemples :** Gmail, Github, Binder... (most the services you use as an individual)
 
 ---
-## Some exemples of cloud computing success: Animoto
+## Some exemples of cloud computing success
+
+### The New York Times
+
+.pull-left[**The need**
+
+- conversion from TIFF to pdf of all articles from 1851 to 1922
+- 4TB of input (405,000 very large TIFF images, 3.3 million articles in SGML and 405,000 xml files mapping articles to rectangular regions in the TIFF’s)]
+
+--
+
+.pull-right[**The realization**
+
+- Run around 100 EC2 instances to create an Hadoop cluster for 24h (estimate cost 800$)
+- Realized they made a mistake
+- Rerun the cluster with the fix for 24h (estimate cost 800$)]
+
+--
+
+**Summary**
+
+- Convert to pdf 70 years of newspapers for less than 2000$ in approx. 1 day!
+
+---
+## Some exemples of cloud computing success
+
+### Animoto
 
 Animoto is a cloud-based video creation service (Saas)
 
-- Start-up without any physical server
+- Does not possess any physical server
 - Rents servers (IaaS) to deploy its application
-- Starts with 40 servers
-- Scales up from 40 to 5000 servers in 4 days to meet the growing number of subscriber !
-
---
-
-Cannot be done with on - datacenter
-
-
+- Started with 40 servers
+- Scaled from 40 up to 5000 servers in 4 days to meet the growing number of subscriber !
 
 ---
 # Cloud and ecology
@@ -478,12 +504,10 @@ Cannot be done with on - datacenter
 ## Cloud and ecology
 
 - It's not because you don't own the server that the server does not pollute.
-- The internet causes about 4% of the worldwide emission of GHG
-- Datacenters are reponsible for 25% of it
-- Theoretically, with the mutualization of ressource cloud computing could be greenner than in site datacenter
-- But, because cloud computing become cheaper, more people use it, and are less carefull with the cost. So more servers are running, maybe over dimensionned one, and cloud computing can me more polluting than old school datacente (rebound effect).
-- No real evidence of that.
-
+- The internet causes about 4% of the worldwide emissions of GHG
+- Datacenters are responsible for 25% of emissions
+- Mutualisation of resources thanks to cloud computing could be greener than on-premise computing
+- But, cheaper resources also means increased usage (**rebound effect**)
 
 *Source : ADEME, la face caché du numérique, consulté le 19/01/2020 [lien](https://www.ademe.fr/sites/default/files/assets/documents/guide-pratique-face-cachee-numerique.pdf)*
 
@@ -494,17 +518,19 @@ class: center, middle
 ---
 ## To sum up
 
-
-- Cloud computing = multiples service :
+- Cloud computing = multiple services :
   - IaaS : only basic ressources provided. Good for experimented people
   - PaaS : a packaged plateform. Good if you need a database, a Hadoop cluster etc
   - Saas : a ready to use service.
-  
+
+--
+- Hardware is accessible through VMs or containers, not directly, and is shared with other users
+
 --
 - Beware even if your machines are idle you are still billed
 
 --
-- IaaS and PaaS need some basic knowlege (ssh connection, basic shell commands)
+- IaaS and PaaS need some basic knowledge (ssh connection, basic shell commands)
 
 --
 - Cloud computing can be a solution, but not always
@@ -513,4 +539,3 @@ class: center, middle
 ## To sum up
 
 > With great power comes great responsabilities
-
