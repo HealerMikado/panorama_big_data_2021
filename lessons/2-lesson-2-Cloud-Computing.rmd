@@ -46,7 +46,7 @@ knitr::opts_chunk$set(echo = FALSE)
 
   ]
 
-.pull-right[<img src="https://img-9gag-fun.9cache.com/photo/a0Rz2rL_700bwp.webp" style="width: 50%; display: block; margin-left: auto;margin-right: auto" />
+.pull-right[<img src="https://img-9gag-fun.9cache.com/photo/a0Rz2rL_700bwp.webp" style="width: 40%; display: block; margin-left: auto;margin-right: auto" />
 *Source :  Friends Season 2 Episode 8*
 ]
 ---
@@ -134,7 +134,7 @@ Estimated revenue in 2022: 331,4 G$
 
 .pull-right[
 ![](https://img.alicdn.com/tfs/TB1QdC2KhjaK1RjSZKzXXXVwXXa-3302-1854.png)
-.footnote[*Source : [Alibabacloud](https://www.alibabacloud.com/fr/knowledge/what-is-edge-computing)*]
+*Source : [Alibabacloud](https://www.alibabacloud.com/fr/knowledge/what-is-edge-computing)*
 ]
 
 ???
@@ -277,7 +277,8 @@ The contrary to cloud-computing is **on-premise** or **self-hosted** computing.
 ## Different services
 
 
-<img src="img/cloud/cloud services.png" style="width: 90%; display: block; margin-left: auto;margin-right: auto" />
+<img src="img/cloud/cloud services.png" style="width: 80%; disp8ay: block; margin-left: auto;margin-right: auto" />
+
 
 ---
 ## Some cloud providers

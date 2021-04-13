@@ -15,23 +15,21 @@ Ce TP a pour but de vous familiariser avec l'interface d'Amazon Web Service (AWS
 
 Suivez les instructions à partir du mail AWS Educate reçu sur votre adresse ENSAI. Créez vous bien un "starter account". Cela vous permettra d'utiliser la plateforme AWS, mais sans jamais utiliser votre carte de crédit, et donc sans risque de devoir payer quoi que ce soit. Dans le processus de création, vous allez recevoir deux mails. Un premier pour vous demander de confirmer votre mail, un un second (qui arrivera quelques minutes plus tard) qui vous permettra de finaliser la création de votre compte. 
 
-Une fois votre compte créé, connectez vous à la plateforme AWS Educate, et cliquez sur "Classroom & Credit" (*note : toutes les images proviennent d'un compte avec l"accès "Educator", il est possible que les interfaces ou que la marche à suivre soient un peu différentes.*)
+![](img/connexion educate.png)
 
-![](../img/educate/Screenshot_2020-01-23 Home.png)
-
-Sur la page suivante cliquez sur "Go to classroom"![](../img/educate/Screenshot_2020-01-23 My Classrooms.png)
+![](img/aws account.png)
 
 Une fenêtre va s'ouvrir, cliquez sur "Continue"
 
-![](../img/educate/Screenshot_2020-01-23 My Classrooms(1).png)
+![](img/Screenshot_2020-01-23 My Classrooms(1).png)
 
 Vous serez ainsi redirigé vers "Vocareum", l'application tierce qui gère les "classrooms". Sélectionnez le bon cours. 
 
-![](../img/educate/Screenshot_2020-01-23 Vocareum Labs.png)
+![](img/Screenshot_2020-01-23 Vocareum Labs.png)
 
 Enfin sur la dernière fenêtre, cliquzsur "AWS console". Cela vous redirigera vers la plateforme AWS. Il vous est rappelé d'utiliser le compte AWS qui vous est fourni de manière responsable. C'est à dire de penser à éteindre toutes les instances que vous créez une fois qu'elles ne sont plus utilisées.
 
-![](../img/educate/Screenshot_2020-01-23 Workbench.png)
+![](img/Screenshot_2020-01-23 Workbench.png)
 
 Le compte AWS que vous allez utiliser pour les TP est localisé en Virginie du Nord. Ne changez pas cela ! Comme votre compte est à but purement scolaire, vous ne disposez pas de l'intégralité des services de la plateforme (vous n'avez pas accès aux information de facturation par exemple). De même votre compte est un compte généré par Vocareum, et vous ne pouvez pas y accéder sans passez par ce service. Il est donc inutile de le noter. Pour des connections futures à AWS dans le cadre scolaire, passez toujours par le portail AWS Educate, puis Vocareum. ·
 
