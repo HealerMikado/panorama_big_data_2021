@@ -1,0 +1,215 @@
+
+## Historical area — DO NOT TREPASS!
+
+
+
+## 8. Parallel, batch and online processing
+
+Before we turn to parallel-computing with Spark on a distributed data set with HDFS (next tutorial), let us rapidly discuss **parallel computing on a local machine**. As you noticed at the beginning of this tutorial, your computer possesses several processors, typically 4 or 8. But at the same time, R often uses only one at a time. This is partly good, since processing resources stay available for the OS and for other programs, but also partly bad, since R is limited to so-many operations per unit of time. There exists several ways to ask the computer to use more than one, that we are going to discuss. We then need to tackle some algorithmic considerations that allow for parallelization.
+
+<small>⚙️ Contrary to with distributed data, on most personal computer, all the processors share the same memory. Shared memory architectures are not as simple at it may seem — we won't discuss it further — but at least we can discard discussions about transferring data between processors, something that will become an major issue distributed architectures.</small>
+
+Parallelization does not only solve problems, it also introduces new ones like: coordination between cores, memory access, pseudo-random numbers generation, etc.
+
+### 8.1 Jobs
+
+In R Studio, you can "run code as a job". A "job" is an independent peace of code that can run by itself. Jobs are executed "in the background", that it, by any idle processor. A "job" may be temporarily interrupted if any other processes on the computer suddenly need processing capacities. One cun run several jobs at once, that will be treated when resources are available.
+
+**ZX.** Run the following regression as a job. You probably want to "run with a copy of the global environment" (otherwise `predictand` and `predictors` don't exist) and you also probably want to "copy job results to: environment" (in order to have access to the results of the call).
+
+```{r, echo=TRUE, eval=FALSE}
+results <- lm(predictand ~ ., data = predictors)
+```
+
+Jobs are useful for: installing and updating packages, downloading data sets, running benchmarks, cross-validation, exploring a grid of meta-parameters, etc. Sometimes you don't need any reference to the global environment or to return anything (like for package or file management).
+
+### 8.2 Embarassingly-parallel problems
+
+An **embarrassingly parallel problem** is a situation where some computation is repeated several times, and where each repetition does not depend at all on what is happening in the other occurrences. For instance running the same general-purpose otpimization algorithm with different starting values in order to test for robustness.
+
+In R, you can use multicore treatment.
+
+```{r, echo=TRUE, eval=FALSE}
+
+library(foreach)
+library(doParallel)
+library(bench)
+library(parallel)
+
+n <- 1000
+r <- 1000  # number of replications
+
+registerDoParallel(3) # start an implicit cluster with 3 processors
+
+bench::mark(
+  memory = FALSE, # bench::mark cannot track memory use in parallel
+  check = FALSE, # random numbers
+  # samples_seq = replicate(sample(1:n, size=n), n = r),
+  # samples_fea = foreach(i=1:r, .combine='cbind') %do% sample(1:n, size=n),
+  samples_0 = runif(100),
+  samples_1 = mclapply(rep(1,100), runif, mc.cores=1),
+  samples_2 = mclapply(rep(1,100), runif, mc.cores=2),
+  samples_3 = mclapply(rep(1,100), runif, mc.cores=3),
+)
+
+stopImplicitCluster() # stop the cluster
+```
+
+## 6.3 GPU
+
+A very efficient way to speed up computation of matrix operations — such as in linear regression — is to use your GPU instead of your CPU. Indeed, GPUs are very efficient at making vectorial and matricial operations. The downside is that using the GPU mechanically increases the communication between the GPU and the CPU, and transfering very big arrays is not always worht it. Typical operations that are perfectly suited for GPU are recursive vectorial or matricial operations such as calculating a matrix power, minimizing a cost function, etc.
+
+Alas:
+
+1. the cluster at ENSAI does not have accessible GPUs
+2. the most recent Mac computers use GPUs that are not compatible with the two most used GPU programming interfaces, CUDA and OpenCL[^9] and no R library exists for performing GPU computations on Mac computers
+3. R's high-level GPU-based libraries, such as `gpuR`, are poorly maintained, and learning actual GPU programming for using low-level packages is not in the scope of the tutorial
+
+GPU computing is thus mainly mentionned for the records. However, we could have used a cloud provider here, since we can rent virtual machines that do have a GPU with the proper programming interfaces.
+
+[^9]: Nvidia, the main GPU manufacturer, develops a language called CUDA, whereas contenders tend to prefer the open standard OpenCL. However, since 2018 Apple favors its own language, Metal.
+
+<!-- maybe too difficult to configure -->
+
+
+### 8.2 Online approaches
+
+### 8.3 Parallelized linear regression
+
+library(biglm)
+
+
+system("lscpu")
+# system("sysctl") # sur mac
+library(parallel)
+detectCores()
+
+library(microbenchmark)
+
+x <- iris[which(iris[,5] != "setosa"), c(1,5)]
+trials <- seq(1, 1000)
+
+boot_fx <- function(trial) {
+  ind <- sample(100, 100, replace=TRUE)
+  result1 <- glm(x[ind,2]~x[ind,1], family=binomial(logit))
+  r <- coefficients(result1)
+  res <- rbind(data.frame(), r) # BAD
+}
+
+boot_fx2 <- function(trial) {
+  ind <- sample(100, 100, replace=TRUE)
+  result1 <- glm(x[ind,2]~x[ind,1], family=binomial(logit))
+  coefficients(result1)
+}
+
+microbenchmark(
+  #parallel2 = mclapply(trials, boot_fx, mc.cores = 2),
+  #parallel3 = mclapply(trials, boot_fx, mc.cores = 3),
+  parallel4 = mclapply(trials, boot_fx, mc.cores = 4),
+  parallel4b = mclapply(trials, boot_fx2, mc.cores = 4),
+  sequential = lapply(trials, boot_fx),
+  sequentialb = lapply(trials, boot_fx2)
+, times=1)
+
+# https://nceas.github.io/oss-lessons/parallel-computing-in-r/parallel-computing-in-r.html
+
+library(foreach)
+library(doParallel)
+
+
+registerDoParallel(4)
+
+microbenchmark(
+  foreach4 = foreach(i=trials, .combine=rbind) %dopar% boot_fx(i), times=1
+)
+
+stopImplicitCluster()
+
+# https://ljdursi.github.io/beyond-single-core-R
+
+
+https://stats.stackexchange.com/questions/6920/efficient-online-linear-regression
+
+
+<!-- ### 4.4 An alternative algorithm: the gradient descent
+Note that the gradient descent algorithm does not guarantee to find an exact solution.  -->
+
+## F. Statistical and computational uncertainty
+
+When you solve numerical problems, computational uncertainty adds to the statistical uncertainty.
+
+### F.a. Finite computation precision
+
+Most computer operations are finite: since space is limited, only a certain number of figures can be stored. It is possible, but not straightforward, to reach a precision beyond the machine limit. However, most of the time you the machine precision is enough. This "finite" version of arithmetic is known as **floating-point arithmetic**, and the details are beyond the scope of this tutorial.
+
+`.Machine$double.eps` gives you the minimal increment R can record. It does _not_ mean that R cannot count lower than that number, since `1e-30` is a valid R number. It means that you should expect that `a==b` to return `true` if $|a-b|<\varepsilon$ or, said differently, that R won't add together a number $a$ and an other $b$ that is less than $\varepsilon \times b$.
+
+There are two direct consequences of this:
+
+1. **Some very common algorithmic strategies, like accumulators, may start failing** when you reach a certain point: it is not straightforward to add a big-enough series of small-enough values. _(Alas, it is often what you want to do in optimization, for example when you successively add gradients in any gradient-based technique.)_
+2. As a general rule, **it is unwise to expect a lower margin of error that was is reachable directly with floating point computation.** _(Of course you may find convoluted ways to go beyond a $\varepsilon$ precision but ask yourself twice if you really need this level of precision before you continue.)_
+
+**R0.** What is the value of `.Machine$double.eps` on your computer?
+
+**R1.** Run the following code. Make it clear why the three approaches should in theory give the same answer.
+
+```{r}
+m <- 1000000000
+
+# method 1
+sum1 <- 0
+for(i in 1:m) sum1 <- sum1+i
+
+# method 2
+sum2 <- 0
+for(i in m:1) sum2 <- sum2+i
+
+# method 3
+sum3 <- m*(m+1)/2
+
+# method 4
+sum4 <- sum(1:m)
+```
+
+**R2.** Are the three values equal? _(Use an equality test: the default `print()` method may not print all the actual numbers.)_ Is there an accurate answer among the three?
+
+### 5.2 The precision / complexity trade-off
+
+There are several sources of imprecision in our 
+
+### 5.3 Sampling
+
+A good illustration of the precision / complexity trade-off is sampling. Imagine that what we really want is to find the beta coefficient for the first predictor. Since we work with simulated value, we know its true value ($=1$). We can thus stop whenever we reach the `.Machine$double.eps` limit.
+
+```{r, echo=TRUE, eval=FALSE}
+library(ggplot2)
+library(dplyr)
+library(forcats)
+
+benchmark_results$b1 <- sapply(benchmark_results$result, function(x) x$coefficients['X1'])
+
+
+benchmark_results$result <- NULL
+benchmark_results$rmse <- sapply(benchmark_results$result, function(x) sqrt(mean((x$residuals)^2)))
+
+p1 <- ggplot(benchmark_results) +
+  geom_hline(yintercept=1, col='red') +
+  geom_line(aes(x=n,y=b1,group=p,color=fct_rev(ordered(p)))) +
+  scale_x_log10()
+
+p2 <- benchmark_results %>%
+  filter(n>1000) %>% ggplot() +
+  geom_hline(yintercept=1, col='red') +
+  geom_line(aes(x=n,y=b1,group=p,color=fct_rev(ordered(p)))) +
+  scale_x_log10()
+```
+
+<!--straightforward consequence of floating-point precision is that we do not need to pretend being more precise than $\varepsilon$. In particular, we may be in a position where sampling[^3] is a good option, as the precision / complexity trade-off may not be a trade-off at all.
+
+[^3]: We often say "down-sampling" in opposition with other strategies such as bootstrap that may use "up-sampling".
+
+It does not hurt **at all** using sampling as long as our estimates do not vary from any computationally-significant difference, since the error from sampling is inferior to the error from computing.-->
+
+
+
+**S0.** Explain why sampling is n

@@ -1,15 +1,73 @@
----
-title: "Big Data IT tools"
-author: "Arthur Katossky & Rémi Pépin"
-date: "March 2020"
-output: pdf_document
-subtitle: Tutorial 2  — How to optimize a statistical algorithm?
-institute: ENSAI (Rennes, France)
----
+
+
+
+
+
+
+
+
+
+
+
+
+
+In this tutorial, you are going to optimize the familiar **linear regression**. In a a first section, we will study the behaviour of the lm() function, both in term of computation time and memory use, and both for increasing numbers of observations (increase in _n_) and of covariates (increase in _p_). We will uncover where exactly the time and memory is used in the algorithm.
+
+In a second section, we will uncover **the actual computation behind the `lm()` function** in R, and what other algorithms we could have thought of. We will compute the actual complexity of these algorithms.
+
+In a third section, we will try to experiment with techniques for speeding up the computation :
+  
+  - going low-level
+- algorithmic tricks
+- programming tricks
+- parallelizing computation
+- using GPU
+
+In the third and last section, we will consider what happens when the data is too big to fit in memory, and is hosted on the disk, on a database or a cluster of computers.
+
+## 1. Profiling
+
+```{r}
+library(dplyr)
+library(tidyr)
+ns <- floor(exp(7:16)/20)
+ps <- floor((2:10)^2)
+N <- max(ns)
+P <- max(ps)
+XY <- replicate(P, runif(N))
+colnames(XY) <- paste0("x", 1:P)
+XY <- bind_cols(XY, y = rowSums(XY)) # fomat: tibble
+```
+
+```{r}
+press(
+  n = ns,
+  p = ps,
+  {
+    rows <- 1:n
+    cols <- c(paste0("x", 1:p), "y")
+    XY_small <-  XY[ rows, cols ]
+    bench::mark(
+      lm(y ~ ., data = XY_small)
+    )
+  }
+)
+```
+
+
+<small>**Garbage collection.** In some languages, the memory allocated is explicitly managed by the programmer. In higher-level languages, such as R and Python, the programmer usually does not care about how exactly each part of the memory is allocated to each variable in the programme. This is not important until the memory limit is hit. At that moment, R or Python would typically run a "garbage collection" routine (🇫🇷: ramasse-miette), consisting into making room for new data in memory. The process would typically consider as useless any variable that is not used subsequently, and the move blocks of data around until no wholes between data blocks is left, effectively creating space for new variables. (Exactly like on a hard disk, memory have slots at which the data is stored. Deleting a variable leaves an empty space that can only be filled up by smaller amounts of data. Reclaiming all the free space between the blocks thus means moving the block.) The whole process takes time.</small>
+  
+  As you can see, it can be quite time consuming, so we are going to run our scripts in the background as a "job". In that way, you are going to be able to optimize.
+
+
+## 1. Scaling, 
+
+
+(in R, "<-" is costly, and its cost increases with the size of the copied object ; for loops are constly)
 
 <!--
-TO DO:
-[ ] add title
+  TO DO:
+  [ ] add title
 [ ] add sample section
 [ ] merge the two pages into one
 [ ] change "sliding mean" to "moving average"
@@ -181,8 +239,8 @@ betas[,1:10]
 2.1. Run the code.
 
 2.2. Does it take time ? Any idea why ?
-
-2.3. Find a way to make it run quickly
+  
+  2.3. Find a way to make it run quickly
 
 # 3. Time-complexity and profiling
 
@@ -197,10 +255,10 @@ Now that the code is running, we will try to find how much time each part takes 
 3.4. You can perform all that in one step with R-Studio (Profile > Start profiling), the advantage beeing that you get the internal details of each execution.
 
 3.5. What are the parts you would optimize in priority ?
-
-You will find resources about profiling in R and R-Studio here:
-
-- https://adv-r.hadley.nz/perf-measure.html
+  
+  You will find resources about profiling in R and R-Studio here:
+  
+  - https://adv-r.hadley.nz/perf-measure.html
 - https://rstudio.github.io/profvis/index.html
 - https://adv-r.hadley.nz/names-values.html
 - https://cran.r-project.org/web/packages/profmem/vignettes/profmem.html
@@ -209,14 +267,14 @@ You will find resources about profiling in R and R-Studio here:
 # 4. Data-transfer optimisation
 
 4.1. In the SQL querry, do we really need to do the following?
-
-```{SQL, eval=FALSE}
- SELECT * FROM flight
+  
+  ```{SQL, eval=FALSE}
+SELECT * FROM flight
 ```
 
 4.2. Can we transfer some treatments done in R to the database ? If so, update the code. *Google is your friend!*
-
-4.3. Let's focus on the total number of flights by month.
+  
+  4.3. Let's focus on the total number of flights by month.
   
   a. Can you optimmize the computation with (faster) R statements? Compare as many solutions as you can think of with `bench::mark()`.
   b. Can you perform the computation with SQL statements?
@@ -233,42 +291,42 @@ You will find resources about profiling in R and R-Studio here:
 6.1. Think about how rolling averages work. Are we not performing just 5 times or 10 times the computations needed? How can you change the code to optimize it ?
 
 6.2. Why is it a bad idea to recode the linear regression? Using `bench::mark()` compare our regression estimates with `lm()`. Why is it so much faster? _You may want to inspect the code, the real code is really short, most of if is just tests and warnings!_ <!-- lm.fit calls a QR decomposition in C, z <- .Call(C_Cdqrls, x, y, tol, FALSE) ; I don't think QR decomposition is particularly faster than matrix inversion — however, it is numerically much more stable! ; and C code is much faster than R code. -->
-
-You will find here the algorithmic complexity of many common mathematical operations:
-
-- https://en.wikipedia.org/wiki/Computational_complexity_of_mathematical_operations
+  
+  You will find here the algorithmic complexity of many common mathematical operations:
+  
+  - https://en.wikipedia.org/wiki/Computational_complexity_of_mathematical_operations
 
 # 7. Parallelisation
 
 7.1. Do the regressions depend of each other ? Thus, suggest a way to accelerate this part of the procedure.
 
 7.2 You may use the `doParallel` package to declare and use more than one core. A typical exemples runs like this:
-
-```{r, eval=FALSE}
+  
+  ```{r, eval=FALSE}
 library(foreach)               # Parallel for loops
 library(parallel)              # Interface between R and multiple cores
 library(doParallel)            # Interface between foreach and parallel
 detectCores()                  # How many cores are available ?
 registerDoParallel(cores=2)    # Number of cores you want to work with
 foreach(i=1:10) %dopar% function(i) # Parallel for loop
-```
+  ```
 
 Try to increase one by one the number of cores. Plot the number of cores vs. time. Is the speed-up proportionnal to the number of cores?
-
-7.2 One regression is basically a bunch of matrix operations. How can we theoretically speed that up? <!-- by performing computation on GPU -->
-
-# 8. Sampling
-
-We do not need to perform the actual complete computation if we are ready to accept some imprecision. But there is a trade-off between computation-time and precision. **For simplification of the problem, let's assume we are only interested with the average number of passenger per flight.**
+  
+  7.2 One regression is basically a bunch of matrix operations. How can we theoretically speed that up? <!-- by performing computation on GPU -->
+  
+  # 8. Sampling
+  
+  We do not need to perform the actual complete computation if we are ready to accept some imprecision. But there is a trade-off between computation-time and precision. **For simplification of the problem, let's assume we are only interested with the average number of passenger per flight.**
 
 Let's assume that a sample is taken from a (potentially infinite) population with a (known or knowable) data-generating process. An approach to the measure of uncertainty is **asymptotical inference**.
 
 8.1. In this context, recall the asymptotical distribution of the mean estimator of a random sample of size $n$, as n tends to infinity. How can you estimate the distribution? <!-- you need an estimation of the variance -->
+  
+  8.2. Modify the database request, so that it returns a _random_ sample of size $n$. You may try first with $n=40$ then wrap your code in a function for arbitrary $n$. <!-- ORDER BY random() LIMIT 40 -->
+  
+  8.3 On the same graph, draw violin plots of the estimated distribution for sub-samples of size $40 \times 2^k$ for $k=1,...,10$ from the downloaded sample. You may want to complete the following code.
 
-8.2. Modify the database request, so that it returns a _random_ sample of size $n$. You may try first with $n=40$ then wrap your code in a function for arbitrary $n$. <!-- ORDER BY random() LIMIT 40 -->
-
-8.3 On the same graph, draw violin plots of the estimated distribution for sub-samples of size $40 \times 2^k$ for $k=1,...,10$ from the downloaded sample. You may want to complete the following code.
-    
 ```{r, eval=FALSE}
 library(dplyr)
 library(tictoc)
@@ -278,7 +336,7 @@ probs     <- tibble() # an empty data frame with dplyr package
 estimates <- tibble()
 
 for(k in 1:10){
-
+  
   n <- 40*2^k
   
   tic()
@@ -302,12 +360,12 @@ probs %>% ggplot(aes(x=x, y=f, group=k, color=k)) + geom_violin() + guides(color
 ```
 
 8.4. Make a plot of $\hat{\sigma}$ against computation time. What would be an acceptable level of precision here?
-
-8.5. In case of more complex estimators (such as a rolling average, or rolling regression) the derivation of confidence bounds is not as straightforward. What else can be used? Could it be computed efficiently? <!-- bootstrap ; it is an embarassingly parallel problem and can thus be parallelized -->
-
-# 9 Scaling up: a bigger machine
-
-Create a powerful EC2 instance to run you code (like a m5.2xlarge with 8 cores and 32 GB or Ram) to run your code and see if there is a big difference. To do this you have to
+  
+  8.5. In case of more complex estimators (such as a rolling average, or rolling regression) the derivation of confidence bounds is not as straightforward. What else can be used? Could it be computed efficiently? <!-- bootstrap ; it is an embarassingly parallel problem and can thus be parallelized -->
+  
+  # 9 Scaling up: a bigger machine
+  
+  Create a powerful EC2 instance to run you code (like a m5.2xlarge with 8 cores and 32 GB or Ram) to run your code and see if there is a big difference. To do this you have to
 
 9.1. Create an EC2 instance with ubuntu on it
 
@@ -343,10 +401,10 @@ sudo passwd rstudio-user
 You will find all the steps and explanation in the previous practical session. The main differences are :
 
 - you don't create an EMR cluster, just an EC2 instance
-- you have to connect to the EC2 instance with it DNS public address
-
-# 10 Scaling out: more machines
-
-Create a spark cluster, install Rstudio-server on it (see TP 0) and update the code to use spark function. Run the code.
-
-More documentation : https://spark.rstudio.com
+                                      - you have to connect to the EC2 instance with it DNS public address
+                                      
+                                      # 10 Scaling out: more machines
+                                      
+                                      Create a spark cluster, install Rstudio-server on it (see TP 0) and update the code to use spark function. Run the code.
+                                      
+                                      More documentation : https://spark.rstudio.com
