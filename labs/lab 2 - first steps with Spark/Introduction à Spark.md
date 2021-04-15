@@ -9,6 +9,8 @@
 
 # Création d'un cluster Spark sur AWS
 
+First: **DO NOT FORGET TO TURN YOUR CLUSTER OFF A THE END OF THIS TUTORIAL!**
+
 - [ ] Une fois connecté à la console AWS cherchez le service EMR pour *Elastic Map Reduce*. C'est la *Plateforme as a Service* qui permet de créer un cluster Hadoop dans AWS. Vous allez juste choisir la configuration de votre cluster, et AWS va créer toutes les VM, les mettre en réseau et installer toutes les applications choisie pour vous. Créer un cluster Hadoop à la main est laborieux et n'est pas réellement intéressant, c'est pourquoi les divers fournisseurs de services cloud proposent de telles PaaS 
 
 - [ ] Vous allez arriver sur un écran similaire à celui-ci
@@ -88,6 +90,11 @@
   ![](img/notebook_spark.png)
 
 Pour des questions de sécurité, les liens vers l'interface Spark (*Spark UI*) et les journaux du driver (*Driver log*) ne fonctionnent pas. Il faut pour y accéder réaliser une connexion SSH + un transfert de port.
+
+
+
+**DO NOT FORGET TO TURN YOUR CLUSTER OFF A THE END OF THIS TUTORIAL!**
+
 
 # First steps with Spark
 
@@ -387,3 +394,6 @@ df.groupBy("col1").agg(
 <!-- one exercice more ? -->
 
 <!-- I can help with that tomorrow, but can we add a (short) exercise on the principle of parallelised computation, like last year with the sum and / or the meand ? It can be a purely theoretical exercice. -->
+
+
+**DO NOT FORGET TO TURN YOUR CLUSTER OFF!**
