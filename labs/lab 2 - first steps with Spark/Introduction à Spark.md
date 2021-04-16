@@ -114,7 +114,7 @@ The simplest syntaxes to load a json or a csv file are :
 
 ```python
 # JSON
-json_df. = spark.read.json([location of the file])
+json_df = spark.read.json([location of the file])
 # csv
 csv_df = spark.read.csv([location of the file])
 
@@ -127,14 +127,12 @@ In the future, you may consult the [Data Source documentation](https://spark.apa
 **✍Hands-on 1 ** 
 
 - Load the json file store here : `s3://mon-super-bucket-06042021/tweets/tweets20210414-142842.jsonl.gz` and name you data frame `df_tweet_small`
-    
+
     <small> ⚙️ This file is an a `JSONL` (JSON-line) format, which means that each line of it is a JSON object. A JSON object is just a Python dictionary or a JavaScript object and looks like this: `{ key1: value1, key2: ["array", "of", "many values]}`). This file has been compressed into a `GZ` archive, hence the `.jsonl.gz` ending. Also this file is not magically appearing in your S3 storage. It is hosted on one of your teacher's bucket and has been made public, so that you can access it.</small>
-    
+  
 - It's possible to load multiple file a unique DF. It's useful when you have daily files and want to process them all. It's the same syntax as the previous one, just specify a folder. Like `s3://mon-super-bucket-06042021/tweets/`. name you data frame `df_tweet_big`
 
----
-
-Now you have two dataframes 🎉.
+Now you have two data frames 🎉.
 
 Remember that **Spark is lazy**, in the sense that it will avoid at all cost to perform unnecessary operations and wait to the last moment for performing only the duly requested computations. (Maybe you remember that R is lazy in that sense, but Spark is one degree more lazy than R.)
 
@@ -149,8 +147,7 @@ Sparks has very loose constraints on what you can actually store in a data frame
 Also, **data frames are distributed over the cluster**: they are split into blocks, ill-named **partitions**[^partition], that are stored separately in the memory of the workers nodes. Since Spark is lazy evaluation, all reading and intermediary computation is only kept in memory as your data are being processed.
 
 [^partition]: In mathematics and data science, the "partition" of set $E$ is usually any collection of subsets whose union makes $E$ and whose 2-by-2 intersections are empty. But in Spark a "partition" refers to **one** block, not the set of blocks. And even if we consider the set, when replication is enforced, intersections between blocks are not necessarily empty. However, the union of all the blocks do produce the full original set.
-
-### DataFrame basic manipulations
+### Data frame basic manipulations
 
 If data frames are immutable, they can however be **_transformed_** in other data frames, in the sense that a modified copy is returned. Such **transformations** include: filtering, sampling, dropping columns, selecting columns, adding new columns...
 
@@ -187,26 +184,10 @@ df_with_less_rows = df\
   .limit(100)
 ```
 
-
 <!-- take() collect() limit() first() show() -->
 <!-- lien vers la doc https://spark.apache.org/docs/3.1.1/api/python/reference/pyspark.sql.html#dataframe-apis -->
 
----
-
-**✍Hands-on 2 ** 
-
-- Define a data frame `tweet_author_hashtags`  with only the `auteur` and `hashtags` columns
-- Print (few lines of) a data frame with only the `auteur`, `mentions`, and `urls` columns. (`mentions` and `urls` are both nested columns in `entities`.)
-- Filter your first data frame and keep only tweets with more than 1 like. Give a name for this new, transformed data frame and print. Print (few lines of) it.
-
----
-
 ### Lazy evaluation
-
-<!-- certains trucs de cette section sont redondants avec ce qu'il y avait avant -->
-
-- What happens when you run `df_tweet_small`, like you would do in Python or R? Why?
-- When you defined `tweet_author_hashtags` did you get any result at all? Did any of the instructions cause computation to actually happen? 
 
 This is because Spark has what is known as **lazy evaluation**, in the sense that it will wait as much as it can before performing the actual computation. Said otherwise, when you run an instruction such as:
 
@@ -216,7 +197,7 @@ tweet_author_hashtags = df_tweet_big.select("auteur","hashtags")
 
 ... you are not executing anything! Rather, you are building an **execution plan**, to be realised later.
 
-Spark is quite extreme in its lazyness, since only a handful of methods called **actions**, by opposition to **transformations**, will trigger an execution. The most notable are:
+Spark is quite extreme in its laziness, since only a handful of methods called **actions**, by opposition to **transformations**, will trigger an execution. The most notable are:
 
 1. `collect()`, explicitly asking Spark to fetch the resulting rows instead of to lazily wait for more instructions,
 2. `take(n)`, asking for `n` first rows
@@ -228,6 +209,17 @@ Spark is quite extreme in its lazyness, since only a handful of methods called *
 [^5]: `first()` is exactly `take(1)` ([ref]( https://stackoverflow.com/questions/37495039/difference-between-spark-rdds-take1-and-first)) and show prints the result instead of returning it as a list of rows ([ref](https://stackoverflow.com/questions/53884994/what-is-the-difference-between-dataframe-show-and-dataframe-take-in-spark-t))
 
 **This has advantages:** on huge data, you don't want to accidently perform a computation that is not needed. Also, Spark can optimize each **stage** of the execution in regard to what comes next. For instance, filters will be executed as early as possible, since it diminishes the number of rows on which to perform later operations. On the contrary, joins are very computation-intense and will be executed as late as possible. The resulting **execution plan** consists in a **directed acyclic graph** (DAG) that contains the tree of all required actions for a specific computation, ordered in the most effective fashion.
+
+---
+
+**✍Hands-on 2 ** 
+
+- Define a data frame `tweet_author_hashtags`  with only the `auteur` and `hashtags` columns
+- Print (few lines of) a data frame with only the `auteur`, `mentions`, and `urls` columns. (`mentions` and `urls` are both nested columns in `entities`.)
+- Filter your first data frame and keep only tweets with more than 1 like. Give a name for this new, transformed data frame and print. Print (few lines of) it.
+---
+
+
 
 **This has also drawbacks.** Since the computation is optimized for the end result, the intermediate stages are discarded by default. For instance, in the following:
 
@@ -260,6 +252,7 @@ overconfident_carriers = flights\
 
 ```
 
+<<<<<<< HEAD
 The column created by `withColumn()` can have multiple values for the same line. For example you can split an array of values to have one value per line. To do that you should use the `explode()` function. For instance :
 
 ```python
@@ -274,6 +267,14 @@ See [here](https://spark.apache.org/docs/3.1.1/api/python/reference/pyspark.sql.
 
 - Define a data frame with a column names `interaction_count`. This column is the sum of `like_count`, `reply_count` and `retweet_count`.
 - Update the data frame you imported at the beginning of this lab and drop the `other` column
+=======
+**✍Hands-on 3** 
+
+- Define a dataframe with a column names `interaction_count`. This column is the sum of `like_count`, `reply_count` and `retweet_count`.
+- Update the dataframe you imported at the beginning of this lab and drop the `other` column
+
+### Advance DataFrame column manipulation 
+>>>>>>> 20690fc (TP wip)
 
 #### Array manipulation
 
@@ -291,15 +292,30 @@ All this function must be imported first :
 
 ```python
 from pyspark.sql.functions import split, explode, size, array_contains
+<<<<<<< HEAD
+=======
+```
+
+Do not forget, to create a new column, you should use `withColumn()`. For example : 
+
+```python
+df.withColumn("new column", explode("array"))
+>>>>>>> 20690fc (TP wip)
 ```
 
 **✍Hands-on 4** 
 
+<<<<<<< HEAD
 - Keep all the tweets with hashtags and for each remaining line, split the hashtag text into an array of hashtags
 - Create a new column with the number of words of the `contenu` column. (Use `split()` + `size()`)
 - Count how many tweet contain the `#COVID19` hashtag.
+=======
+- Filter all the tweets without hashtags and for each remained lines, split its hashtag to only get one hashtag by line. 
+- Create a new column with the number of words of the `contenu` column (split + size)
+- Count how many tweets contain the COVID19 hashtag (use the `count()` action)
+>>>>>>> 20690fc (TP wip)
 
-#### User definied function
+#### User defined function
 
 For more advanced column manipulation you will need Spark's `udf()` function (user defined function). For instance, with only the previous syntax you cannot run complex processes like natural language processing over your tweets,<!-- I am not sure this is true anymore, see https://spark.apache.org/docs/3.1.1/api/python/reference/api/pyspark.ml.feature.Tokenizer.html#pyspark.ml.feature.Tokenizer ; but nevertheless true for "advanced, not implemented features" -->, even if you already have your function defined in python. For instance :
 
@@ -342,7 +358,11 @@ df_tweet_small\
 
 **✍Hands-on 5** 
 
+<<<<<<< HEAD
 - Create an user defined function that counts how many words a tweet contains.
+=======
+- Create an udf that count how many words a tweet contains. (your function will return an `IntegerType` and not a `StringType`)
+>>>>>>> 20690fc (TP wip)
 
 ### Aggregation functions
 
@@ -353,21 +373,21 @@ Spark offer a variety of aggregation function :
 - `countDisctinct(column : string)` and `approx_count_distinct(column : string, percent_error: float)`. If the exact number is irrelevant, `approx_count_distinct()`should be preferred <!-- can we have a sense for why? -->
 
   ```python
-  from pyspark.sql.function import count, countDistinct, approx_count_distinct
+  from pyspark.sql.functions import count, countDistinct, approx_count_distinct
   
   df.select(count("col1")).show()
   df.select(countDistinct("col1")).show()
-  df.select(approx_count_distinct("col1")).show()
+  df.select(approx_count_distinct("col1"), 0.1).show()
   ```
 
-- You have access to all other common functions `min()`, `max()`, `first()`, `last()`, `sum()`, `sumDistinct()`, `avg()` etc
+- You have access to all other common functions `min()`, `max()`, `first()`, `last()`, `sum()`, `sumDistinct()`, `avg()` etc (you should import them first `from pyspark.sql.functions import min, max, avg, first, last, sum, sumDistinct`) 
 
 ---
 
 **✍Hands-on 6**
 
-- What is the min, max, average of `interaction_count`
-- How many tweets have hashtags ? Distinct hashtags ? Try the approximative count with 0.1, 0.01 and 0.001 as maximum estimation error allowed.
+- What are the min, max, average of `interaction_count`
+- How many tweets have hashtags ? Distinct hashtags ? Try the approximative count with 0.1 and 0.01as maximum estimation error allowed.
 
 ### Grouping functions
 
@@ -388,8 +408,44 @@ df.groupBy("col1").agg(
 
 ---
 
-**✍Hands-on 6**
+**✍Hands-on 7**
 
+- Compute a daframe with the min, max and average retweet of each `auteur`. Then order it by the max number of retweet in descending order by . To do that you can use the following syntax
+
+  ```python
+  from pyspark.sql.functions import desc
+  def.orderBy(desc("col"))
+  ```
+
+### Spark SQL
+
+Spark understand SQL statement. It's not a hack or a workaround to use SQL in Spark, it's one a the more powerful feature in Spark. To use SQL in you need :
+
+1. Register a view poiting to your dataframe
+
+    ```python
+    my_df.createOrReplaceTempView(viewName : str)
+    ```
+    
+2. Use the sql function
+
+    ```python
+    spark.sql("""
+    You sql statment
+    """)
+    ```
+
+    You could manipulate every registered dataframe by their view name.
+
+In fact you can do most of this tutorial without any knowledge in pySpark, by only knowing the SQL language and how to use it in Spark. 
+
+**✍Hands-on 8**
+
+- How many tweets have hashtags ? Distinct hashtags ? 
+
+- Compute a daframe with the min, max and average retweet of each `auteur` using Spark SQL
+
+<<<<<<< HEAD
 - Compute a data frame with the min, max and average retweet of each author. Then sort it (using the `sort(column : string)` method) and print it.
 <!-- one exercice more ? -->
 
@@ -397,3 +453,5 @@ df.groupBy("col1").agg(
 
 
 **DO NOT FORGET TO TURN YOUR CLUSTER OFF!**
+=======
+>>>>>>> 20690fc (TP wip)
