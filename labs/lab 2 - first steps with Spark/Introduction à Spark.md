@@ -29,7 +29,7 @@ First: **DO NOT FORGET TO TURN YOUR CLUSTER OFF A THE END OF THIS TUTORIAL!**
 
   - [ ] Libérée (Release en VO) : `emr-5.31.0`, donc l'avant dernière version 5.XX. La dernière à des problèmes pour l'utilisation de notebook.
 
-  - [ ] Type d'instance : des `m5.xlarge` conviennent parfaitement. Si vous voulez vous pouvez essayer des machines plus puissantes, mais cela ne va pas impacter fortement les temps de calculs.
+  - [ ] Type d'instance : https://pickerwheel.com/pw?id=sNKV2 des `m5.xlarge` conviennent parfaitement. Si vous voulez vous pouvez essayer des machines plus puissantes, mais cela ne va pas impacter fortement les temps de calculs.
 
   - [ ] Nombre d'instance :  `3`, mais vous pouvez essayer avec plus d'instance (limitez vous à 6). 
 
@@ -98,11 +98,11 @@ Pour des questions de sécurité, les liens vers l'interface Spark (*Spark UI*) 
 
 # First steps with Spark
 
-👋 **3.1  Your first DataFrame —** Spark's main object class is the DataFrame, which is a distributed table. It is analogous to R's or Python (Pandas)'s data frames: one row represents an observation, one column represents a variable. But contrary to R or Python, Spark's DataFrames can be distributed over hundred of nodes.
-
 ### Data importation
 
-Spark support multiple data formats, and ways to load them.
+Spark's main object class is the DataFrame, which is a distributed table. It is analogous to R's or Python (Pandas)'s data frames: one row represents an observation, one column represents a variable. But contrary to R or Python, Spark's DataFrames can be distributed over hundred of nodes.
+
+Spark support multiple data formats, and multiple  ways to load them.
 
 - data format : csv, json, parquet (an open source column oriented format)
 - can read archive files
@@ -131,6 +131,8 @@ In the future, you may consult the [Data Source documentation](https://spark.apa
     <small> ⚙️ This file is an a `JSONL` (JSON-line) format, which means that each line of it is a JSON object. A JSON object is just a Python dictionary or a JavaScript object and looks like this: `{ key1: value1, key2: ["array", "of", "many values]}`). This file has been compressed into a `GZ` archive, hence the `.jsonl.gz` ending. Also this file is not magically appearing in your S3 storage. It is hosted on one of your teacher's bucket and has been made public, so that you can access it.</small>
   
 - It's possible to load multiple file a unique DF. It's useful when you have daily files and want to process them all. It's the same syntax as the previous one, just specify a folder. Like `s3://mon-super-bucket-06042021/tweets/`. name you data frame `df_tweet_big`
+
+---
 
 Now you have two data frames 🎉.
 
@@ -163,7 +165,7 @@ You can select columns with the `select()` method. It takes as argument a list o
 
 ```python
 df_with_less_columns = df\
-  .select("variable3","variable_four","variable-6")\
+  .select("variable3","variable_four","variable-6")
 
 # Yes, you do need the ugly \ at the end of the line,
 # if you want to chain methods between lines in Python
@@ -171,7 +173,7 @@ df_with_less_columns = df\
 
 You can get nested columns easily with :
 
-```py
+```python
 df.select("parentField.nestedField")
 ```
 
@@ -181,7 +183,7 @@ To filter data you could use the `filter()` method. It take as input an expressi
 df_with_less_rows = df\
   .sample(fraction=0.001)\
   .filter(df.variable1=="value")\
-  .limit(100)
+  .show(10)
 ```
 
 <!-- take() collect() limit() first() show() -->
@@ -219,11 +221,7 @@ Spark is quite extreme in its laziness, since only a handful of methods called *
 - Filter your first data frame and keep only tweets with more than 1 like. Give a name for this new, transformed data frame and print. Print (few lines of) it.
 ---
 
-
-
-**This has also drawbacks.** Since the computation is optimized for the end result, the intermediate stages are discarded by default. For instance, in the following:
-
-<!-- SOMETHING MISSING -->
+**This has also drawbacks.** Since the computation is optimized for the end result, the intermediate stages are discarded by default. So if you need a DataFrame multiple times, you have to cache it in memory because if you don't Spark will recompute it every single time. 
 
 ### Basic DataFrame column manipulation 
 
@@ -241,25 +239,14 @@ You can add/update/rename column of a dataframe with spark :
 
 For example
 
-<!-- l'exemple avec flights ne fonctionne pas -> remplacer par un ex. sur les tweets ? -->
-
 ```python
-overconfident_carriers = flights\
+tweet_df_with_like_rt_ratio = tweet_df\
   .withColumn(        # computes new variable
-    "OVERCONFIDENCE", # called "OVERCONFIDENCE"
-    (flights.DEPARTURES_SCHEDULED - flights.DEPARTURES_PERFORMED)/flights.DEPARTURES_PERFORMED
+    "like_rt_ratio", # like_rt_ratio "OVERCONFIDENCE"
+    (tweet_df.like_count /flights.retweet_count
    )
 
 ```
-
-<<<<<<< HEAD
-The column created by `withColumn()` can have multiple values for the same line. For example you can split an array of values to have one value per line. To do that you should use the `explode()` function. For instance :
-
-```python
-df.withColumn("new column", explode("array"))
-```
-
-<!-- je ne comprends pas entièrement l'usage de explode() ici ; et c'est pas tout à fait clair si c'est du PySpark (c'est le cas) ou si c'est du Python pur (il y a un explode en pandas par ex.); est-ce que je peux utiliser n'importe quel code python dans ColumnExpression — si tu en parles plus tards, mentionne le au passage, "for using actual Python code in the creation of new variables, see ... ". ; par ailleurs on se sera pas d'explode dans l'exo qui suit... ; et tu en reparles après-->
 
 See [here](https://spark.apache.org/docs/3.1.1/api/python/reference/pyspark.sql.html#functions) for the list of all functions available in an expression.
 
@@ -267,14 +254,9 @@ See [here](https://spark.apache.org/docs/3.1.1/api/python/reference/pyspark.sql.
 
 - Define a data frame with a column names `interaction_count`. This column is the sum of `like_count`, `reply_count` and `retweet_count`.
 - Update the data frame you imported at the beginning of this lab and drop the `other` column
-=======
-**✍Hands-on 3** 
 
-- Define a dataframe with a column names `interaction_count`. This column is the sum of `like_count`, `reply_count` and `retweet_count`.
-- Update the dataframe you imported at the beginning of this lab and drop the `other` column
 
 ### Advance DataFrame column manipulation 
->>>>>>> 20690fc (TP wip)
 
 #### Array manipulation
 
@@ -282,42 +264,52 @@ Some columns often contain arrays (lists) of values instead of just one value. T
 
 You may **create array of values** with:
 - `split(text : string, delimiter : string)`, turning a text into an array of strings
-- `explode(array : Array)` <!-- je crois avoir dini par comprende ce que ça fait et donc ça a le même rôle que explode() en pandas ; si je comprends bien, ça *détruit* un array, et ça le remplace par une répétition de la ligne entière du data.frame, avec chaque valeur de l'array originel...; en R ça corresopndrait à unnest() -->
 
 You may **use array of values** with:
 - `size(array : Array)`, getting the number of elements
-- `array_contains(inputArray : Array, value)`, checking if some value appears
+
+- `array_contains(inputArray : Array, value : any)`, checking if some value appears
+
+- `explode(array : Array)`, unnesting an array and duplicating other values. For instance it if use `explode()` over the hashtags value of this DataFrame :
+
+  | Auteur | Contenu                             | Hashtags         |
+  | ------ | ----------------------------------- | ---------------- |
+  | Bob    | I love #Spark and #bigdata          | [Spark, bigdata] |
+  | Alice  | Just finished #MHrise, best MH ever | [MHrise]         |
+
+  I will get :
+
+  | Auteur | Contenu                             | Hashtags         | Hashtag |
+  | ------ | ----------------------------------- | ---------------- | ------- |
+  | Bob    | I love #Spark and #bigdata          | [Spark, bigdata] | Spark   |
+  | Bob    | I love #Spark and #bigdata          | [Spark, bigdata] | bigdata |
+  | Alice  | Just finished #MHrise, best MH ever | [MHrise]         | MHrise  |
+
+  
 
 All this function must be imported first :
 
 ```python
 from pyspark.sql.functions import split, explode, size, array_contains
-<<<<<<< HEAD
-=======
 ```
 
 Do not forget, to create a new column, you should use `withColumn()`. For example : 
 
 ```python
 df.withColumn("new column", explode("array"))
->>>>>>> 20690fc (TP wip)
 ```
 
 **✍Hands-on 4** 
 
-<<<<<<< HEAD
 - Keep all the tweets with hashtags and for each remaining line, split the hashtag text into an array of hashtags
 - Create a new column with the number of words of the `contenu` column. (Use `split()` + `size()`)
-- Count how many tweet contain the `#COVID19` hashtag.
-=======
-- Filter all the tweets without hashtags and for each remained lines, split its hashtag to only get one hashtag by line. 
-- Create a new column with the number of words of the `contenu` column (split + size)
-- Count how many tweets contain the COVID19 hashtag (use the `count()` action)
->>>>>>> 20690fc (TP wip)
+- Count how many tweet contain the `#COVID19` hashtag.(use the `count()` action)
 
 #### User defined function
 
-For more advanced column manipulation you will need Spark's `udf()` function (user defined function). For instance, with only the previous syntax you cannot run complex processes like natural language processing over your tweets,<!-- I am not sure this is true anymore, see https://spark.apache.org/docs/3.1.1/api/python/reference/api/pyspark.ml.feature.Tokenizer.html#pyspark.ml.feature.Tokenizer ; but nevertheless true for "advanced, not implemented features" -->, even if you already have your function defined in python. For instance :
+For more very specific column manipulation you will need Spark's `udf()` function (*User Defined Function*). It can be useful if you Spark does not provide a feature you want. But Spark is a popular and active project, so before coding an udf, go check the documentation. For instance for natural language processing, Spark already has some [functions](https://spark.apache.org/docs/3.1.1/api/python/reference/api/pyspark.ml.feature.Tokenizer.html#pyspark.ml.feature.Tokenizer). Last things, python udf can lead to performance issues (see https://stackoverflow.com/a/38297050) and learning a little bit of scala or java can be a good idea.
+
+For example :
 
 ```python
 # !!!! DOES NOT WORK !!!!
@@ -358,15 +350,11 @@ df_tweet_small\
 
 **✍Hands-on 5** 
 
-<<<<<<< HEAD
-- Create an user defined function that counts how many words a tweet contains.
-=======
-- Create an udf that count how many words a tweet contains. (your function will return an `IntegerType` and not a `StringType`)
->>>>>>> 20690fc (TP wip)
+- Create an user defined function that counts how many words a tweet contains. (your function will return an `IntegerType` and not a `StringType`)
 
 ### Aggregation functions
 
-Spark offer a variety of aggregation function :
+Spark offer a variety of aggregation functions :
 
 - `count(column : string)` will count every not null value of the specify column. You cant use `count(1)` of `count("*")` to count every line (even row with only null values)
 
@@ -419,9 +407,9 @@ df.groupBy("col1").agg(
 
 ### Spark SQL
 
-Spark understand SQL statement. It's not a hack or a workaround to use SQL in Spark, it's one a the more powerful feature in Spark. To use SQL in you need :
+Spark understand SQL statement. It's not a hack nor a workaround to use SQL in Spark, it's one a the more powerful feature in Spark. To use SQL in you need :
 
-1. Register a view poiting to your dataframe
+1. Register a view pointing to your dataframe
 
     ```python
     my_df.createOrReplaceTempView(viewName : str)
@@ -435,17 +423,17 @@ Spark understand SQL statement. It's not a hack or a workaround to use SQL in Sp
     """)
     ```
 
-    You could manipulate every registered dataframe by their view name.
+    You could manipulate every registered dataframe by their view name with plain SQL.
 
-In fact you can do most of this tutorial without any knowledge in pySpark, by only knowing the SQL language and how to use it in Spark. 
+In fact you can do most of this tutorial without any knowledge in PySpark nor Spark. Lot of things can be done in Sparkk only by only knowing SQL and how to use it in Spark. 
 
 **✍Hands-on 8**
 
 - How many tweets have hashtags ? Distinct hashtags ? 
 
-- Compute a daframe with the min, max and average retweet of each `auteur` using Spark SQL
+- Compute a dataframe with the min, max and average retweet of each `auteur` using Spark SQL
 
-<<<<<<< HEAD
+
 - Compute a data frame with the min, max and average retweet of each author. Then sort it (using the `sort(column : string)` method) and print it.
 <!-- one exercice more ? -->
 
@@ -453,5 +441,4 @@ In fact you can do most of this tutorial without any knowledge in pySpark, by on
 
 
 **DO NOT FORGET TO TURN YOUR CLUSTER OFF!**
-=======
->>>>>>> 20690fc (TP wip)
+
