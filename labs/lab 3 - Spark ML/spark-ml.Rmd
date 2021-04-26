@@ -1,0 +1,247 @@
+---
+title: "Lab 3 – Spark ML"
+author: "Arthur Katossky & Rémi Pépin"
+date: "4/14/2021"
+output: html_document
+---
+
+[ ] Parallelization
+[ ] Parallelized regression
+[ ] Spark ML basics
+
+
+## Going further
+
+
+## References used for constructing this tutorial
+
+- [x] https://spark.apache.org/docs/latest/ml-guide.html
+- [x] https://spark.apache.org/docs/latest/ml-statistics.html
+- [x] https://spark.apache.org/docs/latest/ml-datasource.html
+- [x] https://spark.apache.org/docs/latest/ml-pipeline.html
+- [x] https://spark.apache.org/docs/latest/ml-features.html
+- [x] https://spark.apache.org/docs/latest/ml-classification-regression.html
+- [x] https://spark.apache.org/docs/latest/ml-clustering.html
+- [x] https://spark.apache.org/docs/latest/ml-advanced.html
+- [x] https://www.scala-sbt.org/
+- [x] https://github.com/scalanlp/breeze/wiki/Quickstart
+- [x] https://spark.apache.org/docs/latest/mllib-linear-methods.html
+- [ ] https://spark.apache.org/docs/latest/mllib-optimization.html
+- [ ] https://en.wikipedia.org/wiki/Limited-memory_BFGS
+- [ ] https://en.wikipedia.org/wiki/Iteratively_reweighted_least_squares
+- [ ] https://github.com/apache/spark/blob/v3.1.1/mllib/src/main/scala/org/apache/spark/ml/optim/WeightedLeastSquares.scala
+- [ ] https://github.com/scalanlp/breeze/blob/master/math/src/main/scala/breeze/optimize/LBFGS.scala
+- [ ] https://onlinelibrary.wiley.com/doi/abs/10.1002/%28SICI%291099-1506%28199801/02%295%3A1%3C11%3A%3AAID-NLA123%3E3.0.CO%3B2-F
+
+## Other technical references 
+
+- [ ] https://github.com/kevinblighe/RegParallel
+- [ ] https://spark.apache.org/docs/latest/ml-collaborative-filtering.html
+- [ ] https://spark.apache.org/docs/latest/ml-frequent-pattern-mining.html
+- [ ] https://spark.apache.org/docs/latest/ml-tuning.html
+- [ ] https://spark.apache.org/docs/latest/api/python/getting_started/index.html
+- [ ] http://fommil.com/scalax14/#/
+- [ ] https://spark.apache.org/docs/latest/ml-linalg-guide.html
+- [ ] https://github.com/scalanlp/breeze
+- [ ] https://github.com/fommil/netlib-java
+- [ ] https://www.microsoft.com/en-us/research/wp-content/uploads/2007/01/andrew07scalable.pdf
+
+## Things to investigate
+
+[ ] Algorithms behind correlation
+[ ] Algorithms behind regression
+[ ] Libraries used: Breeze, Netlib Java, Libsvm
+
+## Notes used for constructing this tutorial
+
+### From https://spark.apache.org/docs/latest/ml-statistics.html
+
+> MLlib uses linear algebra packages Breeze and netlib-java for optimised numerical processing1. Those packages may call native acceleration libraries such as Intel MKL or OpenBLAS if they are available as system libraries or in runtime library paths.
+
+### From https://spark.apache.org/docs/latest/ml-statistics.html
+
+**Correlation**
+
+```py
+from pyspark.ml.linalg import Vectors
+from pyspark.ml.stat import Correlation
+
+data = [(Vectors.sparse(4, [(0, 1.0), (3, -2.0)]),),
+        (Vectors.dense([4.0, 5.0, 0.0, 3.0]),),
+        (Vectors.dense([6.0, 7.0, 0.0, 8.0]),),
+        (Vectors.sparse(4, [(0, 9.0), (3, 1.0)]),)]
+df = spark.createDataFrame(data, ["features"])
+
+r1 = Correlation.corr(df, "features").head()
+print("Pearson correlation matrix:\n" + str(r1[0]))
+
+r2 = Correlation.corr(df, "features", "spearman").head()
+print("Spearman correlation matrix:\n" + str(r2[0]))
+
+```
+
+**Chi-squared**
+
+```py
+from pyspark.ml.linalg import Vectors
+from pyspark.ml.stat import ChiSquareTest
+
+data = [(0.0, Vectors.dense(0.5, 10.0)),
+        (0.0, Vectors.dense(1.5, 20.0)),
+        (1.0, Vectors.dense(1.5, 30.0)),
+        (0.0, Vectors.dense(3.5, 30.0)),
+        (0.0, Vectors.dense(3.5, 40.0)),
+        (1.0, Vectors.dense(3.5, 40.0))]
+df = spark.createDataFrame(data, ["label", "features"])
+
+r = ChiSquareTest.test(df, "features", "label").head()
+print("pValues: " + str(r.pValues))
+print("degreesOfFreedom: " + str(r.degreesOfFreedom))
+print("statistics: " + str(r.statistics))
+```
+
+**Summary**
+
+Min, max, etc.
+
+```py
+from pyspark.ml.stat import Summarizer
+from pyspark.sql import Row
+from pyspark.ml.linalg import Vectors
+
+df = sc.parallelize([Row(weight=1.0, features=Vectors.dense(1.0, 1.0, 1.0)),
+                     Row(weight=0.0, features=Vectors.dense(1.0, 2.0, 3.0))]).toDF()
+
+# create summarizer for multiple metrics "mean" and "count"
+summarizer = Summarizer.metrics("mean", "count")
+
+# compute statistics for multiple metrics with weight
+df.select(summarizer.summary(df.features, df.weight)).show(truncate=False)
+
+# compute statistics for multiple metrics without weight
+df.select(summarizer.summary(df.features)).show(truncate=False)
+
+# compute statistics for single metric "mean" with weight
+df.select(Summarizer.mean(df.features, df.weight)).show(truncate=False)
+
+# compute statistics for single metric "mean" without weight
+df.select(Summarizer.mean(df.features)).show(truncate=False)
+```
+
+### From https://spark.apache.org/docs/latest/ml-datasource.html
+
+Spark ML can read images from different formats (JPG, PNG, etc.) and can read data files in the LIBSVM format.
+
+### From https://spark.apache.org/docs/latest/ml-pipeline.html
+
+> [T]he pipeline concept is mostly inspired by the `scikit-learn` project.
+
+A **transformer** is anything that transforms / enriches the original data set, like the process of scaling (transforms a column), or the process of making a predcition per observation (new column). **Transformers** often need an estimation, like the estimation of the scale when scaling.
+
+An **estimator** is anything that uses the data frame, computes a bunch of numbers with the `.fit()` method, and returns a transformer.
+
+> For example, a learning algorithm such as LogisticRegression is an Estimator, and calling fit() trains a LogisticRegressionModel, which is a Model and hence a Transformer.
+
+> Transformer.transform()s and Estimator.fit()s are both stateless.
+
+> It is possible to create non-linear Pipelines as long as the data flow graph forms a Directed Acyclic Graph
+
+> A Pipeline’s stages should be unique instances. E.g., the same instance myHashingTF should not be inserted into the Pipeline twice since [...] However, different instances myHashingTF1 and myHashingTF2 (both of type HashingTF) can be put into the same Pipeline (...).
+
+> A `Param` is a named parameter with self-contained documentation. A `ParamMap` is a set of (parameter, value) pairs.
+>
+> There are two main ways to pass parameters to an algorithm:
+> 1. Set parameters for an instance. E.g., if `lr` is an instance of `LogisticRegressio`n, one could call `lr.setMaxIter(10)` to make `lr.fit()` use at most 10 iterations. [...]
+> 2. Pass a `ParamMap` to `fit()` or `transform()`. Any parameters in the `ParamMap` will override parameters previously specified via setter methods.
+
+### From: https://spark.apache.org/docs/latest/ml-features.html
+
+There are NLP capabilities with Spark ML, such as word2vec
+
+### From: https://spark.apache.org/docs/latest/ml-classification-regression.html
+
+Supported classifiers:
+- logisitic regression (*, from GLM) (L-BFGS)
+- decision trees (*)
+- random forests (*)
+- boosted trees (*)
+- naive bayes
+- multi-layered perceptrons (L-BFGS)
+- linear SVM
+- Factorization machines classifier (*) (?)
+
+Utilities:
+- building a multi-classe classifier from a binary classifier
+
+Supported regressors:
+- linear regression (L-BFGS)
+- generalized linear regression (*, logisitic is a particular case)
+- decision tree (*)
+- random forest (*)
+- gradient-boosted trees (*)
+- accelerated failure time model (?) (L-BFGS)
+- isotonic regression (?)
+- Factorization machines regressor (*) (?)
+
+(*) Same implementation for both
+
+Not much information about the actual algorithms used. The perceptron is only used for classification...
+
+### From https://spark.apache.org/docs/latest/ml-clustering.html
+
+Supported clusterers:
+- k-means, with algorithm documented: " The MLlib implementation includes a parallelized variant of the k-means++ method called kmeans||."
+- latent-dirichlet-allocation
+- bisecting k-means (?)
+- gaussian mixtrue models
+- power iteration clustering (?) (for graph data, i.e. sparse matrices)
+
+Not much information about the actual algorithms used.
+
+### From https://spark.apache.org/docs/latest/ml-advanced.html
+
+Three methods are detailed:
+
+- L-BFGS, a quasi-Newton algorithm
+- "normal equation solver for weighted least squares"
+- iteratively reweighted least squares (IRLS)
+
+#### L-BFGS
+
+> The L-BFGS method approximates the objective function locally as a quadratic without evaluating the second partial derivatives of the objective function to construct the Hessian matrix. The Hessian matrix is approximated by previous gradient evaluations, so there is no vertical scalability issue (the number of training features) unlike computing the Hessian matrix explicitly in Newton’s method.
+
+> Orthant-Wise Limited-memory Quasi-Newton (OWL-QN) is an extension of L-BFGS that can effectively handle L1 and elastic net regularization.
+
+MLlib L-BFGS solver calls the corresponding implementation in breeze.
+
+#### normal equation solver
+
+> This objective function requires only one pass over the data to collect the statistics necessary to solve it. For an n×m data matrix, these statistics require only O(m2) storage and so can be stored on a single machine when m (the number of features) is relatively small. We can then solve the normal equations on a single machine using local methods [Choleski decomposition is used].
+
+https://github.com/apache/spark/blob/v3.1.1/mllib/src/main/scala/org/apache/spark/ml/optim/WeightedLeastSquares.scala
+
+#### IRLS
+
+> It solves certain optimization problems iteratively through the following procedure:
+> 
+> - linearize the objective at current solution and update corresponding weight.
+> - solve a weighted least squares (WLS) problem by WeightedLeastSquares.
+> - repeat above steps until convergence.
+> 
+> Since it involves solving a weighted least squares (WLS) problem by WeightedLeastSquares in each iteration, it also requires the number of features to be no more than 4096
+
+### https://www.scala-sbt.org/
+
+> **Typesafe and parallel** `build.sbt` is a Scala-based DSL to express parallel processing task graph. Typos in build.sbt will be caught as a compilation error.
+
+### https://github.com/scalanlp/breeze/wiki et  https://github.com/scalanlp/breeze/wiki/Quickstart
+
+Breeze allows for matrix operations in Scala (like NumPy in Python) and provides similar features: distribution functions, matrix algebra syntax, numerical function handling, etc. 
+
+However, the general-purpose solver is not documented, and neither the parallelizabilty of the algorithm.
+
+### From https://spark.apache.org/docs/latest/mllib-linear-methods.html
+
+Well written introduction, refers to [this page](https://spark.apache.org/docs/latest/mllib-optimization.html) for a discussion of optimization per se.
+
+> **Streaming linear regression** When data arrive in a streaming fashion, it is useful to fit regression models online, updating the parameters of the model as new data arrives. spark.mllib currently supports streaming linear regression using ordinary least squares. The fitting is similar to that performed offline, except fitting occurs on each batch of data, so that the model continually updates to reflect the data from the stream.

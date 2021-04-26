@@ -464,3 +464,6 @@ TSWLatexianTemp*
 
 # MAC OS
 .DS_Store
+
+# HTML
+*.html
