@@ -1,14 +1,14 @@
 import json
 from random import randint, choice, triangular
 from time import time
-
+from datetime import datetime, timedelta
 
 class Reccord():
     index = 0
 
     def __init__(self):
-        self.Creation_Time = int(time()*10**9) - randint(0, 10**9)
-        self.Arrival_Time = int(time()*10**9)
+        self.Creation_Time = datetime.now()- timedelta(milliseconds=int(randint(0, 120*10**6)))
+        self.Arrival_Time = datetime.now()
         self.Device = None
         self.Index = None
         self.Model = None

@@ -2,7 +2,7 @@
 
 ## Outline
 
-This lab will teach you the basic of s**tream processing with Spark**. As soon as an application compute something with business value  (for instance customer activity), and new inputs arrive continuously, companies will want to compute this result continuously too. Spark makes possible to process stream with the **Structured Streaming API**. This lab will teach you the basics of this Spark's API. Because the Structured Streaming API is based on the DataFrame API most syntaxes of lab 2 are still relevant.
+This lab will teach you the basic of **stream processing with Spark**. As soon as an application compute something with business value  (for instance customer activity), and new inputs arrive continuously, companies will want to compute this result continuously too. Spark makes possible to process stream with the **Structured Streaming API**. This lab will teach you the basics of this Spark's API. Because the Structured Streaming API is based on the DataFrame API most syntaxes of lab 2 are still relevant.
 
 ## ⛅​ Spark cluster creation in AWS
 

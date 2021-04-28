@@ -1,0 +1,54 @@
+from pyspark.sql.types import StructType,StructField, StringType, IntegerType, ArrayType, TimestampType, BooleanType, LongType, DoubleType
+
+schema_tweet = StructType([
+    StructField("auteur",StringType(),True),
+    StructField("contenu",StringType(),True),
+    StructField("date_creation",TimestampType(),True),
+    StructField("entities",StructType([
+        StructField("annotations", ArrayType(StructType([
+            StructField("end", LongType(), True),
+            StructField("normalized_text", StringType(), True),
+            StructField("probability", DoubleType(), True),
+            StructField("start", LongType(), True),
+            StructField("type", StringType(), True)
+        ]),True),True),
+        StructField("cashtags", ArrayType(StructType([
+            StructField("end", LongType(), True),
+            StructField("start", LongType(), True),
+            StructField("tag", StringType(), True)
+        ]),True),True),
+         StructField("hashtags", ArrayType(StructType([
+            StructField("end", LongType(), True),
+            StructField("start", LongType(), True),
+            StructField("tag", StringType(), True)
+        ]),True),True),
+        StructField("mentions", ArrayType(StructType([
+            StructField("end", LongType(), True),
+            StructField("start", LongType(), True),
+            StructField("username", StringType(), True)
+        ]),True),True),
+        StructField("urls", ArrayType(StructType([
+            StructField("description", StringType(), True),
+            StructField("display_url", StringType(), True),
+            StructField("end", LongType(), True),
+            StructField("expanded_url", StringType(), True),
+            StructField("images", ArrayType(StructType([
+                    StructField("height", LongType(), True),
+                    StructField("url", StringType(), True),
+                    StructField("width", LongType(), True)
+                ]),True),True),
+            StructField("start", LongType(), True),
+            StructField("status", LongType(), True),
+            StructField("title", StringType(), True),
+            StructField("unwound_url", StringType(), True),
+            StructField("url", StringType(), True),
+        ]),True),True),
+    ]),True),
+    StructField("hashtags", ArrayType(StringType(),True)),
+    StructField("like_count", LongType(), True),
+    StructField("reply_count", LongType(), True),
+    StructField("retweet_count", LongType(), True),
+    StructField("others", StructType([
+        StructField("auteur_name", StringType(), True)
+    ]),True),
+  ])
