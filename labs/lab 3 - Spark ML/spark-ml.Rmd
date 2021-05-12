@@ -68,7 +68,7 @@ Each run is called a **pass** and some algorithms require several passes.
 
 ### QUESTIONS
 
-💡 **Q1.** You are given `errors`, a distributed vector of prediction errors. Write a map-and-reduce algorithm for computing the **total sum of squares**. _(You may want to create a Python version of this algorithm, using the `map(vector, function)` and `reduce(vector, function)` functions. `reduce` lives in the `functools` module. You may use lambda-functions.)_
+💡 **Q1.** You are given `errors`, a distributed vector of prediction errors. Write a map-and-reduce algorithm for computing the **total sum of squares**. _(You may want to create a Python version of this algorithm, using the `map(function, vector)` and `reduce(function, vector)` functions. `reduce` lives in the `functools` module. You may use lambda-functions.)_
 
 <!--
 ```
@@ -169,21 +169,18 @@ When you compute the variance, the means is computed "for free".
 spark._jsc.hadoopConfiguration().set("fs.s3.useRequesterPaysHeader","true")
 
 from pyspark.sql.types import FloatType, IntegerType, DateType
-from pyspark.sql.functions import substring, col
+from pyspark.sql.functions import regexp_replace, col
 
-listings_raw = spark.read.csv("s3://spark-lab-input-data-ensai20202021/airbnb/data-insideairbnb-australia-vic-barwon-south-west-vic-2020-05-26-data-listings.csv.gz", header=True, multiLine=True, escape='"')
+listings_raw = spark.read.csv("s3://spark-lab-input-data-ensai20202021/airbnb/", header=True, multiLine=True, escape='"')
 
-listings_raw = listings_raw.withColumn("beds",     listings_raw["beds"    ].cast(IntegerType()))
-listings_raw = listings_raw.withColumn("bedrooms", listings_raw["bedrooms"].cast(IntegerType()))
-listings_raw = listings_raw.withColumn("time", listings_raw["last_scraped"].cast(DateType()))
-listings_raw = listings_raw.withColumn(
-    "price", substring(listings_raw["price"   ], pos=2, len=100).cast(FloatType())
+listings = (listings_raw
+  .withColumn("beds",     listings_raw["beds"    ].cast(IntegerType()))
+  .withColumn("bedrooms", listings_raw["bedrooms"].cast(IntegerType()))
+  .withColumn("time", listings_raw["last_scraped"].cast(DateType()))
+  .withColumn("price", regexp_replace('price', '[$\\,]', '').cast(FloatType()))
+  .select("id", "beds", "bedrooms", "price", "city", "time")
+  .dropna() # remove lines with missing values
 )
-
-listings = listings_raw.select(
-    "id", "beds", "bedrooms", "price", "city"
-)
-listings = listings.dropna() # remove lines with missing values
 ```
 
 ### QUESTIONS
@@ -330,7 +327,7 @@ print ("Execution time for sumary():", t()-start, "s")
 # statistics come almost for free.
 -->
 
-**Q10.** Compute the average number of beds per property in Fairhaven in four different ways:
+**Q10.** Compute the average number of beds per property in Barcelona in four different ways:
 
 1. directly with the Spark SQL mean function,
 2. using `summary()`,
@@ -425,8 +422,8 @@ vectorizer = VectorAssembler( # same vectorizer as before
 regressor = LinearRegression(featuresCol="features", labelCol="price") # same regressor
 pipeline  = Pipeline(stages = [vectorizer, regressor]) # ... but now we pack them into a pipeline
 
-listings_beij = listings.filter(listings.neighbourhood=="Beijing")
-listings_barc = listings.filter(listings.neighbourhood=="Barcelona")
+listings_beij = listings.filter(listings.city=="Beijing")
+listings_barc = listings.filter(listings.city=="Barcelona")
 
 model_beij = pipeline.fit(listings_beij) # vectorizer AND regressor are applied
 model_barc = pipeline.fit(listings_barc)
