@@ -1,4 +1,4 @@
-# Lab4- Stream processing with Spark
+# Lab3- Stream processing with Spark
 
 **DO NOT FORGET TO TURN YOUR CLUSTER OFF A THE END OF THIS TUTORIAL!**
 
@@ -12,7 +12,7 @@ First: **DO NOT FORGET TO TURN YOUR CLUSTER OFF A THE END OF THIS TUTORIAL!**
 
 Instructions are at the beginning of lab 2. Or you can just clone you cluster ;)
 
-## :gear: 3. Configuration of the notebook
+## :gear: 3. Notebook configuration
 
 
 ```python
@@ -25,9 +25,8 @@ spark.conf.set("spark.sql.shuffle.partitions", 5)
 
 # Import all the needed library
 from time import sleep
-from pyspark.sql.functions import from_json, window, col, expr
+from pyspark.sql.functions import from_json, window, col, expr, size, explode, avg, min, max
 from pyspark.sql.types import StructType,StructField, StringType, IntegerType, ArrayType, TimestampType, BooleanType, LongType, DoubleType
-
 ```
 
 **Explanation:**
@@ -102,7 +101,7 @@ Defining an input source is like loading a DataFrame but, you have to replace `s
 my_first_stream = spark\
 .readStream\
 .schema(schema_tweet)\
-.json("s3//my-awesome-bucket/my-awesome-folder")
+.json("s3://my-awesome-bucket/my-awesome-folder")
 ```
 
 The major difference with lab2, it is Spark cannot infer the schema of the stream. You have to pass it to Spark. There is two ways :
@@ -297,10 +296,11 @@ Stream processing looks the same as DataFrame processing. Hence, **you still hav
 - **File sink** - Stores the output to a file. The file can be stored locally (on the cluster), remotely (on S3). The file format can be json, csv etc
 
 ```python
-writeStream
-    .format("parquet")        // can be "json", "csv", etc.
-    .option("path", "path/to/destination/dir")
-    .start()
+writeStream\
+.format('json')\
+.option("checkpointLocation", "output_folder/history") \ 
+.option("path", "output_folder")\
+.start()
 ```
 
 - **Kafka sink** - Stores the output to one or more topics in Kafka.
@@ -434,18 +434,51 @@ memory_sink = df\
 
 - Add a column `has_hashtag` to your DataFrame. This column equals True if `data.entities.hashtags` is not null. Else it's false. Use the `withColumn` transformation to add a column. You can count the size of `data.entities.hashtags` to check if it's empty or not.
 - Group and count by the `has_hashtag` column
-
 - Print some results
+
+### Debugging tip
+
+If at any moment of this lab you encounter an error like this one :
+
+```
+'Cannot start query with name has_hashtag as a query with that name is already active'
+Traceback (most recent call last):
+  File "/usr/lib/spark/python/lib/pyspark.zip/pyspark/sql/streaming.py", line 1109, in start
+    return self._sq(self._jwrite.start())
+  File "/usr/lib/spark/python/lib/py4j-0.10.7-src.zip/py4j/java_gateway.py", line 1257, in __call__
+    answer, self.gateway_client, self.target_id, self.name)
+  File "/usr/lib/spark/python/lib/pyspark.zip/pyspark/sql/utils.py", line 79, in deco
+    raise IllegalArgumentException(s.split(': ', 1)[1], stackTrace)
+pyspark.sql.utils.IllegalArgumentException: 'Cannot start query with name has_hashtag as a query with that name is already active'
+```
+
+Run in a cell the following code :
+
+```python
+for stream in spark.streams.active:
+	stream.stop()
+```
+
+`spark.streams.active` returns an array with all the active stream, and the code loops over all the active stream and closes them.
+
 ## 7. 🥈Stream processing basics 
 
 ### ✍Hand-on 3 : transformations on stream 🧙‍♂️
 
-- :hocho: Filter all records with missing / null value then group the remaining by `hashtag`.
+- :hocho: Filter all records with missing / null value then count how many records you keep
      - For this filter, you will use the `na.drop("any")` transformation. The `na.drop("any")` drop every line with a null value in at least one column. It's simpler than using a `filter()` transformation because you don't have to specify all the column. For more precise filter you can use `na.drop("any" or "all", subset=list of col)` (`all` will drop rows with only null value in all columns or in the specified list).
+     - Use the SQL `COUNT(1)` function in the sql request to get the count
+     - Because you don't perform aggregation the `outputMode()` must be `append`
      
-- 🕵️‍♂️ Filter all records with no hashtag value then group the remaining by `hashtag`.
+     You will notice no record are dropped. Is 
+     
 
-- :small_red_triangle_down: Column creation and filtering : 
+- 🕵️‍♂️ Drop all records with unverified (`includes.users.verified == True`)user  then group the remaining  records by `hashtag`.
+
+     - `includes.users` is an array with only one element. You will need to extract it.
+     - `data.entities.hashtags` is an array too ! To group by tag (the hashtag content) you will need to explode it too.
+
+- :small_red_triangle_down: Find the covid related tweet (or any other topic like cat, dog, spring, batman, dogecoin etc) : 
 
   - Define a new column, name `covid_related`. This column is equal to `True` if `data.text` contains "covid", else it's  equal to`False`.
   
@@ -536,7 +569,7 @@ df_with_event_time.groupBy(
 ### ✍Hand-on 5 : Event-time processing :hourglass:
 
 - Count the number of event with a 10 seconds time window (use the `created_at` column)
-- Count the number of event by hashtag with a 30 seconds time window 
+- Count the number of event by verified / unverified user with a 10 seconds time window (use the `Creation_Time` column)
 - Count the number of event with a 10 seconds time window sliding every 5 seconds 
 
 ### 8.1.🏆 ⏳ ​Handling late data with watermarks 
@@ -567,6 +600,8 @@ df_with_event_time.withWatermark(df_with_event_time.event_time, "4 minutes")\
 	window(df_with_event_time.event_time, "10 minutes", "5 minutes"),
 	df_with_event_time.word).count()
 ```
+
+Be careful, the watermark field cannot be a nested field ([link](https://www.waitingforcode.com/apache-spark-structured-streaming/nested-fields-dropduplicates-watermark-apache-spark-structured-streaming/read))
 
 #### ✍Hand-on 6 : Handling late data with watermarks :hourglass_flowing_sand:
 
