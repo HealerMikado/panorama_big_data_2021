@@ -13,7 +13,7 @@
 
 
 
-## ⛅Spark cluster creation in AWS
+## ⛅​ Spark cluster creation in AWS
 
 First: **DO NOT FORGET TO TURN YOUR CLUSTER OFF A THE END OF THIS TUTORIAL!**
 
@@ -33,20 +33,21 @@ First: **DO NOT FORGET TO TURN YOUR CLUSTER OFF A THE END OF THIS TUTORIAL!**
 
   - [ ] Mode de lancement : `Cluster`. The difference between `Cluster` et `Exécution d'étape` is that `Cluster` create a cluster made for interactive processing, and`Exécution d'étape` create a cluster, run one or several script and stop it at the end. It's useful to run long processes not for data exploration.
 
-  - [ ] Libérée (Release en VO) : `emr-5.31.0`, other version have some issues
+  - [ ] Libérée (Release en VO) : `emr-5.31.0`, others versions have some issues
 
-  - [ ] Type d'instance : https://pickerwheel.com/pw?id=sNKV2 spin to know your instance type.
+  - [ ] Type d'instance : https://pickerwheel.com/pw?id=LkjX5 spin to know your instance type. Those instances are the ones you can access with a educate account.
 
-  - [ ] Nombre d'instance :  `3`, but every number between 2 and 6 should be fine.
+  - [ ] Nombre d'instance :  `3`, but every number between 2 and 6 should be fine (max 4 for c5.xlarge et m4.2xlarge).
 
     Here is a table with the hourly price of some instances just to give you an idea of the cost of an EMR cluster
 
-    | Instance   | Hourly price |
-    | ---------- | ------------ |
-    | m5.xlarge  | 0.24$        |
-    | m5.2xlarge | 0.48$        |
-    | m5.4xlarge | 0.96$        |
-    | m5.8xlarge | 1.86$        |
+    | Instance   | Hourly price per instance |
+    | ---------- | ------------------------- |
+    | m4.xlarge  | 0.26                      |
+    | m5.xlarge  | 0.24$                     |
+    | m5.2xlarge | 0.48$                     |
+    | c4.large   | 0.12$                     |
+    | c5.xlarge  | 0.21$                     |
 
   - [ ] Paire de clé EC2 : select  `Sans paire de clé EC2` ok `Aucune paire de clé trouvée`
 
@@ -74,17 +75,22 @@ First: **DO NOT FORGET TO TURN YOUR CLUSTER OFF A THE END OF THIS TUTORIAL!**
   
   And for this lab it's enough.
   
+
 Your screen should look like this :
-  
+
 ![](img/notebook_creation.png)
-  
-- [ ] The notebook creation should be fas. Once your notebook is ready click on `Ouvrir dans JupyterLab`. This will open JupiterLab. Create a notebook with a pyspark kernel and run the following line
 
-  ```
+- [ ] The notebook creation should be fast. Once your notebook is ready click on `Ouvrir dans JupyterLab`. This will open JupiterLab. Create a notebook with a pyspark kernel and run the following line
+
+  ```python
+  #Spark session
   spark
-  ```
 
-  If everything is ok you should get something like this
+  # Configuraion
+  spark._jsc.hadoopConfiguration().set("fs.s3.useRequesterPaysHeader","true")
+  ```
+  
+  If everything is ok you should get something like this after one or two minutes.
   ![](img/notebook_spark.png)
 
 If not, just check if your cluster is `En attente`. If not, just wait, if so, ask for help.
@@ -116,13 +122,15 @@ csv_df = spark.read.csv([location of the file])
 
 In the future, you may consult the [Data Source documentation](https://spark.apache.org/docs/latest/sql-data-sources.html) to have the complete description of Spark's reading abilities.
 
+The data you will use in this lab are real data from the twitter [sampled stream API](https://developer.twitter.com/en/docs/twitter-api/tweets/sampled-stream/introduction) and [filtered stream API](https://developer.twitter.com/en/docs/twitter-api/tweets/filtered-stream/introduction). The tweets folder contains more than 50 files and more than 2 million tweets. The tweets was collected between the 14/04/2021 and the 18/04/2021. The total collection time was less than 10 hours.
+
 ---
 
-### **✍Hands-on 1 ** 
+### ✍Hands-on 1  - Data importation
 
 - Load the json file store here : `s3n://spark-lab-input-data-ensai20202021/tweets/tweets20210414-143312.jsonl.gz` and name you data frame `df_tweet`
 
-    <small> ⚙️ This file is an a `JSONL` (JSON-line) format, which means that each line of it is a JSON object. A JSON object is just a Python dictionary or a JavaScript object and looks like this: `{ key1: value1, key2: ["array", "of", "many values]}`). This file has been compressed into a `GZ` archive, hence the `.jsonl.gz` ending. Also this file is not magically appearing in your S3 storage. It is hosted on one of your teacher's bucket and has been made public, so that you can access it.</small>
+    <small> ⚙️ This file is an a `JSONL` (JSON-line) format, which means that each line of it is a JSON object. A JSON object is just a Python dictionary or a JavaScript object and looks like this: `{ key1: value1, key2: ["array", "of", "many values]}`). This file has been compressed into a `GZ` archive, hence the `.jsonl.gz` ending. Also this file is not magically appearing in your S3 storage. It is hosted on one of your teacher's bucket and has been made public, so that you can access it. </small>
   
 - It's possible to load multiple file in a unique DataFrame. It's useful when you have daily files and want to process them all. It's the same syntax as the previous one, just specify a folder. Like `s3n://spark-lab-input-data-ensai20202021/tweets/`. Name you DataFrame `df_tweet_big`
 
@@ -131,6 +139,7 @@ Now you have two DataFrames 🎉.
 Remember that **Spark is lazy**, in the sense that it will avoid at all cost to perform unnecessary operations and wait to the last moment for performing only the duly requested computations. (Maybe you remember that R is lazy in that sense, but Spark is one degree more lazy than R.)
 
 - Knowing that, do you think that when you run `spark.read.json()`, the data is actually migrated from S3 to the cluster ? If you want some data to be actually loaded, you can use the `show(n)` method (omitting `n` defaults to 20).
+- Each time you will transform this DataFrame, the data will be transferred to your cluster. To avoid that, you need to cache your two DataFrame with the `cache()` method.
 
 Sparks has very loose constraints on what you can actually store in a DataFrame column. The objects we just imported are actually quite messy.
 
@@ -208,24 +217,19 @@ Spark is quite extreme in its laziness, since only a handful of methods called *
 
 **This has advantages:** on huge data, you don't want to accidently perform a computation that is not needed. Also, Spark can optimize each **stage** of the execution in regard to what comes next. For instance, filters will be executed as early as possible, since it diminishes the number of rows on which to perform later operations. On the contrary, joins are very computation-intense and will be executed as late as possible. The resulting **execution plan** consists in a **directed acyclic graph** (DAG) that contains the tree of all required actions for a specific computation, ordered in the most effective fashion.
 
+**This has also drawbacks.** Since the computation is optimized for the end result, the intermediate stages are discarded by default. So if you need a DataFrame multiple times, you have to cache it in memory because if you don't Spark will recompute it every single time. 
+
 ---
 
-### **✍Hands-on 2 ** 
+### ✍Hands-on 2 - Data frame basic manipulations
+
+- How many rows have your two DataFrame ?
+- Sample `df_tweet_big` and keep only 10% of it. Create a new DataFrame named `df_tweet_sampled`. If computations take too long on the full DataFrame, use this one instead or add a sample transformation in your expression. 
 
 - Define a DataFrame `tweet_author_hashtags`  with only the `auteur` and `hashtags` columns
 - Print (few lines of) a DataFrame with only the `auteur`, `mentions`, and `urls` columns. (`mentions` and `urls` are both nested columns in `entities`.)
-- Filter your first DataFrame and keep only tweets with more than 1 like. Give a name for this new, transformed DataFrame and print. Print (few lines of) it.
----
-
-**This has also drawbacks.** Since the computation is optimized for the end result, the intermediate stages are discarded by default. So if you need a DataFrame multiple times, you have to cache it in memory because if you don't Spark will recompute it every single time. 
-
+- Filter your first DataFrame and keep only tweets with more than 1 like. Give a name for this new, transformed DataFrame. Print (few lines of) it.
 ## 🥈Basic DataFrame column manipulation 
-
-<!-- Je réfléchis`a la volée. Est-ce qu'on grouperait pas comme ça:
-(1) show, take, firs, collect et discussion sur la distribution des données ;
-(2) drop, select, filter, et discussion sur la laziness ;
-(3) sample, withColumn, etc. et discussion sur l'immutabilité 
-? -->
 
 You can add/update/rename column of a DataFrame with spark :
 
@@ -246,7 +250,7 @@ tweet_df_with_like_rt_ratio = tweet_df\
 
 See [here](https://spark.apache.org/docs/3.1.1/api/python/reference/pyspark.sql.html#functions) for the list of all functions available in an expression.
 
-### **✍Hands-on 3** 
+### ✍Hands-on 3 - Basic DataFrame column manipulation  
 
 - Define a DataFrame with a column names `interaction_count`. This column is the sum of `like_count`, `reply_count` and `retweet_count`.
 - Update the DataFrame you imported at the beginning of this lab and drop the `other` column
@@ -295,11 +299,11 @@ Do not forget, to create a new column, you should use `withColumn()`. For exampl
 df.withColumn("new column", explode("array"))
 ```
 
-#### **✍Hands-on 4** 
+#### ✍Hands-on 4 - Array manipulation 
 
 - Keep all the tweets with hashtags and for each remaining line, split the hashtag text into an array of hashtags
 - Create a new column with the number of words of the `contenu` column. (Use `split()` + `size()`)
-- Count how many tweet contain the `#COVID19` hashtag.(use the `count()` action)
+- Count how many tweet contain the `COVID19` hashtag (use the `count()` action)
 
 ### 🥼User defined function
 
@@ -335,7 +339,7 @@ to_lower_case_udf = udf(
 ) #we use a lambda function to create the udf.
 
 # df manipulation
-df_tweet_small\
+df_tweet\
   .select("auteur","hashtags")\
   .filter("size(hashtags)!=0")\
   .withColumn("hashtag", explode("hashtags"))\
@@ -344,7 +348,7 @@ df_tweet_small\
 
 ---
 
-#### **✍Hands-on 5** 
+#### ✍Hands-on 5 - User defined function 
 
 - Create an user defined function that counts how many words a tweet contains. (your function will return an `IntegerType` and not a `StringType`)
 
@@ -370,7 +374,7 @@ Spark offer a variety of aggregation functions :
 
 ---
 
-### **✍Hands-on 6**
+### ✍Hands-on 6 - Aggregation functions
 
 - What are the min, max, average of `interaction_count`
 - How many tweets have hashtags ? Distinct hashtags ? Try the approximative count with 0.1 and 0.01as maximum estimation error allowed.
@@ -394,24 +398,24 @@ df.groupBy("col1").agg(
 
 Aggregation and grouping transformations work differently than the previous method like `filter()`, `select()`, `withColumn()` etc. Those transformations cannot be run over each partitions in parallel, and need to transfer data between partitions and executors.  They are called "wide transformations"
 
-![](img/spark_exemple2_pipeline.png)
+<img src="img/spark_exemple2_pipeline.png" style="zoom:50%;" />
 
 ---
 
-### **✍Hands-on 7**
+### ✍Hands-on 7 - Grouping functions
 
 - Compute a daframe with the min, max and average retweet of each `auteur`. Then order it by the max number of retweet in descending order by . To do that you can use the following syntax
 
   ```python
   from pyspark.sql.functions import desc
-  def.orderBy(desc("col"))
+  df.orderBy(desc("col"))
   ```
 
 ## 🔌Spark SQL
 
 Spark understand SQL statement. It's not a hack nor a workaround to use SQL in Spark, it's one a the more powerful feature in Spark. To use SQL in you need :
 
-1. Register a view pointing to your DataFrame
+1. Register a view pointing to your DataFrame. In SQL statement you will refer to your DataFrame with its view name
 
     ```python
     my_df.createOrReplaceTempView(viewName : str)
@@ -426,18 +430,25 @@ Spark understand SQL statement. It's not a hack nor a workaround to use SQL in S
     ```
 
     You could manipulate every registered DataFrame by their view name with plain SQL.
+    
+    For instance 
+    
+    ```python
+    df_tweet.createOrReplaceTempView("small_tweet_df")
+    spark.sql("""
+    SELECT *
+    FROM small_tweet_df
+    """)
+    ```
 
 In fact you can do most of this tutorial without any knowledge in PySpark nor Spark. Lot of things can be done in Sparkk only by only knowing SQL and how to use it in Spark. 
 
-### **✍Hands-on 8**
+### ✍Hands-on 8 - Spark SQL
 
 - How many tweets have hashtags ? Distinct hashtags ? 
 
 - Compute a dataframe with the min, max and average retweet of each `auteur` using Spark SQL
-
-
-- Compute a DataFrame with the min, max and average retweet of each author. Then sort it (using the `sort(column : string)` method) and print it.
-<!-- one exercice more ? -->
+  <!-- one exercice more ? -->
 
 <!-- I can help with that tomorrow, but can we add a (short) exercise on the principle of parallelised computation, like last year with the sum and / or the meand ? It can be a purely theoretical exercice. -->
 
@@ -492,10 +503,28 @@ By default Spark compute inner joins, but you can pass a third argument to the j
 - Left anti join : The opposite of the previous one. Use he "left_anti" argument
 - You can do cross joins to, but it's a very bad idea to do so, so please don't !
 
-### **✍ Hands-on 9**
+### ✍ Hands-on 9 - Joins in Spark
 
 - Import the files stored in `s3n://spark-lab-input-data-ensai20202021/users/` in a DataFrame  and its informations to your DataFrame. Filter your new DataFrame to only keep verified user (`verified == True`) and group by user and get the most active user of your DataFrame.
 
+  This time you will use a user defined schema to load your data, and pass it to the `json()` method with the `schema` parameter. Here is the schema of the user data :
+
+  ```python
+  from pyspark.sql.types import StructType,StructField, StringType, IntegerType, ArrayType, TimestampType, BooleanType
+  schema = StructType([ \
+      StructField("created_at",TimestampType(),True), \
+      StructField("id",StringType(),True), \
+      StructField("name",StringType(),True), \
+      StructField("username", StringType(), True), \
+      StructField("withheld",StructType([ 
+          StructField("country_codes", ArrayType(StringType(),True)),\
+          StructField("scope", StringType(), True)  \
+      ])),
+      StructField("verified",BooleanType(),True)             
+    ])
+  ```
+
+- Filter the data to only keep tweets create by user create after 2019. You can use `to_date(lit("2019-01-01"))` and a `filter()` transformation to do so.
 
 **DO NOT FORGET TO TURN YOUR CLUSTER OFF!**
 
