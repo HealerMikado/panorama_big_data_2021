@@ -1,11 +1,12 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<html lang="" xml:lang="">
   <head>
-    <title>1-lesson-1.4-what-if.utf8</title>
+    <title>1-lesson-1.4-what-if.knit</title>
     <meta charset="utf-8" />
     <meta name="author" content="Arthur Katossky &amp; Rémi Pépin" />
-    <link rel="stylesheet" href="css\xaringan-themer.css" type="text/css" />
-    <link rel="stylesheet" href="css\mine.css" type="text/css" />
+    <script src="1-lesson-1.4-what-if_files/header-attrs-2.12/header-attrs.js"></script>
+    <link rel="stylesheet" href="css/xaringan-themer.css" type="text/css" />
+    <link rel="stylesheet" href="css/mine.css" type="text/css" />
   </head>
   <body>
     <textarea id="source">
@@ -31,19 +32,28 @@ We have to distinguish between estimation of a statistical model (always the sam
 
 ## What if data is too big to fit in memory ?
 
-.pull-right[![](https://image.flaticon.com/icons/png/512/906/906794.png)]
+.pull-right[![](https://www.flaticon.com/free-icons/question-mark)]
 
 --
-1. do less (filter, select, sample)
+1. buy more/bigger memory.
+--
+Easy but expensive. Not the best solution
 
 --
-2. buy more/bigger memory
+2. do less (filter, select, sample) &lt;/br&gt;
+--
+
+Do you really need all this data ? Can statistic help you ?
 
 --
 3. do things in chunks / stream
+--
+Need to rethink the process. Or to use exotic libraries 
 
 --
 4. distribute the data
+--
+Go to the cloud, or use a Spark cluster
 
 ---
 
@@ -264,9 +274,25 @@ if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
     }
     deleted = true;
   });
-})();</script>
-
-<script>
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
 (function() {
   var links = document.getElementsByTagName('a');
   for (var i = 0; i < links.length; i++) {
@@ -274,8 +300,7 @@ if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
       links[i].target = '_blank';
     }
   }
-})();
-</script>
+})();</script>
 
 <script>
 slideshow._releaseMath = function(el) {

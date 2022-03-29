@@ -36,13 +36,26 @@ In classification, accuracy. In regression, mean squared error.
 
 Try to identify **bottlenecks** in **memory use**, **computing time**, network exchange, etc. and how they evolve with the problem size.
 
+- python :
+  - computing time :  `cProfile`
+  - memory :  `memory_profiler`
+- java : `JProfiler`
+- R : `profvis`
+
+
+---
+
+## Profile code
+
+Demo
+
 ---
 
 ## Analyse code
 
 After having identified a bottleneck, especially in computing time
 
-- algorithmic analysis can confirm the profiling ( $O(n^2)$, $O(n\ln(n))$,  $O(p\ln(n))$, etc.)
+- algorithmic analysis can confirm the profiling ( $O(n^2)$, $O(n\ln(n))$,  $O(n!)$, etc.)
 - known problems have known approximations: matrix inversion, matrix cross product, spectral decomposition, etc.
 
 ???
@@ -58,6 +71,14 @@ Algorithmic approximation errors are often orders of magnitude smaller than:
 - rounding floating-point errors
 - statistical uncertainty
 
+--
+
+Well know approximation algorithm  :
+- stochastic gradient decent (ML)
+- approximation  kNN
+- greedy algorithm
+- Matrix spectral approximation
+
 ---
 
 ## Down-size
@@ -65,12 +86,17 @@ Algorithmic approximation errors are often orders of magnitude smaller than:
 - selecting (columns) and filtering (rows)
 - sampling
 
+--
+
+In development phases work on small data. For production process only load what
+you really need.
+
 ???
 
 This is usually very effective for every step of the process:
 
 - network, storage, memory, computation
-- do you need these 100 columns? (in computation, in storage? do you need them simultaneouly?)
+- do you need these 100 columns? (in computation, in storage? do you need them simultaneously?)
 - filter close-to-identical observations in a regression setting ; focus on information-rich subsets
 
 An advantage of sampling + bootstrapping is that you get an statistical idea of the uncertainty.
@@ -80,6 +106,8 @@ An advantage of sampling + bootstrapping is that you get an statistical idea of 
 ## Shift from memory to disk
 
 - you usually have much more disk space
+- need to use some special library or know some basics of programming
+- usually increase the computation time (hard drive are slower than RAM)
 
 ???
 
@@ -93,7 +121,7 @@ Traditional **batch processing** consists in processing a whole data set simulta
 
 When this causes issues, shift to processing data in **chunks** (per smaller groups of observations) or in **streams** (one at a time).
 
-- comes at no cost with **associative symetrical operations** (like summation) but requires substantial rewriting for other algorithms
+- comes at no cost with **associative symmetrical operations** (like summation) but requires substantial rewriting for other algorithms
 
 - **online algorithms** (that can be updated one element at a time) are typical examples
 
@@ -169,7 +197,7 @@ R or Python allow you to write functions directly in these languages, with often
 
 ## Go low-level
 
-**Command line** code, also known as **batch** or **shell**, is a way to take advantage of very effective low-level functions.
+**Command line** code, also known as **bash** or **shell**, is a way to take advantage of very effective low-level functions.
 
 You can execute command line code from R with `system(...)` or with Python through `os.system(...)` or `subprocess.run(...)`.
 
@@ -203,6 +231,18 @@ Real-world computing is not black and white. For instance most interpreters do p
 
 ## Go low-level : compilation
 
+**Cython**, compile python code to C.
+
+1. Static type your code
+2. Compile to C
+3. Import your C code as an external library
+
+Not magical, can be a easy improvement.
+
+---
+
+## Go low-level : compilation
+
 A common intermediate pattern is **compilation to bytecode**, a platform agnostic language that gets interpreted at run time, or even further compiled to machine code.
 
 Compiled code often faster than non-compiled one but compiling also takes time. It is usually worth it only for production code.
@@ -217,8 +257,8 @@ Compiled code often faster than non-compiled one but compiling also takes time. 
 
 ## Move computing at the data source
 
-- with remote data, filter, select and sample at a distance
-- if possible execute code distantly and return results
+- with remote data, filter, select and sample at a distance (no `SELECT * FROM table`)
+- if possible execute code distantly and return results (prepared statement)
 - results usually have smaller size than data
 
 For instance, most SQL servers have (limited) statistical abilities for mean, sum, percentiles, variance, standard error, etc. More recently, many have moved to allow execution of [arbitrary scripts in R and Python](https://docs.microsoft.com/fr-fr/sql/machine-learning/sql-server-machine-learning-services).
@@ -270,4 +310,3 @@ system.time(fib(30)) # second called is
 
 ---
 
-## Know your language

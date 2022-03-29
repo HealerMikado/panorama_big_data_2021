@@ -3,7 +3,7 @@ title: |
     | Introduction to Big Data
     | Lesson 1.2 Computer science survival kit
 author: "Arthur Katossky & Rémi Pépin"
-date: "Friday, March 12, 2021"
+date: "Wednesday, March 30, 2022"
 output: 
   xaringan::moon_reader:
     nature:
@@ -75,7 +75,8 @@ A processor performance is measured in how many operations it can perform per se
 - **instructions are stored sequentially** in one or several stacks / threads / queues
 
 --
-- multiple processors or cores may share a stack, or have each their own
+- Mono vs multi threaded application.     
+
 --
 - **processors can be specialized** (e.g. GPU)
 

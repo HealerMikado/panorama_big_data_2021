@@ -28,19 +28,27 @@ We have to distinguish between estimation of a statistical model (always the sam
 
 ## What if data is too big to fit in memory ?
 
-.pull-right[![](https://image.flaticon.com/icons/png/512/906/906794.png)]
+.pull-right[![](https://www.flaticon.com/free-icons/question-mark)]
 
 --
-1. do less (filter, select, sample)
+1. Buy more/bigger  </br>
+--
+Easy but expensive. Not the best solution
 
 --
-2. buy more/bigger memory
+2. Do less (filter, select, sample) </br>
+--
+Do you really need all this data ? Can statistic help you ?
 
 --
-3. do things in chunks / stream
+3. Do things in chunks / stream </br>
+--
+Need to rethink the process. Or to use exotic libraries 
 
 --
-4. distribute the data
+4. Distribute the data </br>
+--
+Go to the cloud, or use a Spark cluster, use in DB processes ...
 
 ---
 
@@ -53,19 +61,25 @@ We have to distinguish between estimation of a statistical model (always the sam
 .pull-right[![](https://image.flaticon.com/icons/png/512/906/906794.png)]
 
 --
-1. update file system
+1. Update file system </br>
+--
+No more FAT32
 
 --
-2. import less data (filter, select, sample)
+2. Import less data (filter, select, sample)</br>
+--
+For a small experimentation, you don't need 2To of data
 
 --
-3. cut file into pieces and process in chunks<br><small>for instance 1 file per day</small>
+3. Cut file into pieces and process in chunks<br><small>for instance 1 file per day</small>
 
 --
-4. if you file is slight structured, go onto databases, that's what they are made for
+4. If you file is slight structured, go onto databases, that's what they are made for
 
 --
-5. rent a remote cloud-based service, they will abstract the problem away from you
+5. Rent a remote cloud-based service, they will abstract the problem away from you</br>
+--
+Like AWS S3, Azure Bloc Blobs 
 
 ???
 

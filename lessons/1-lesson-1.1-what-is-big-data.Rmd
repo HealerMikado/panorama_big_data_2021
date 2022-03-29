@@ -3,7 +3,7 @@ title: |
     | Introduction to Big Data
     | Lesson 1.1 What is big data?
 author: "Arthur Katossky & Rémi Pépin"
-date: "Friday, March 12, 2021"
+date: "Wednesday, March 30, 2022"
 output: 
   xaringan::moon_reader:
     nature:
@@ -46,7 +46,7 @@ library(tidyverse)
 
 --
 
-- is inherenly relative to _**who**_ is using it
+- is inherently relative to _**who**_ is using it
 
 ???
 
@@ -54,7 +54,7 @@ The term started to be used in the 1990's and is a ill-defined notion.
 
 **Big Data** broadly refers to data that **cannot be managed by commonly-used software**.
 
-<small>It is inherenly relative to **who** and is using it. What is a common software for someone may not be for someone else. For instance, relational databases for someone used to use spreadsheet software.</small>
+<small>It is inherently relative to **who** and is using it. What is a common software for someone may not be for someone else. For instance, relational databases for someone used to use spreadsheet software.</small>
 
 ---
 
@@ -139,8 +139,8 @@ Size is **not** the only thing that matters.
 
 --
 
-.pull-left[In a tablesheet program, what kind of information can't you store properly?]
-.pull-right[![](https://image.flaticon.com/icons/png/512/906/906794.png)]
+In a tablesheet program, what kind of information can't you store properly?
+
 
 --
 - relationnal data
@@ -263,7 +263,7 @@ To this day, can be considered "big" for a statistician :
 What is usually **not** an issue:
 
 - file size on modern computers ³
-- database constraints ⁴
+- database *constraints* ⁴
 
 .footnote[
 ³ <small>Over 16 To for Window's NTFS, Unix's ext4 and Apple's APFS</small>  
@@ -292,7 +292,7 @@ To this day, **any data change is challenging** for a statistician :
 To this day, **any non-textual format** and **any non-standard textual format** is an issue :
 
 - **images**, **sounds**, **videos** are not supported by most spreadsheets or statistical software and rarely supported by non-specialized databases
-- any non-standard format is a challenge (ex: annotated texts, vocal message conversations, etc.)
+- any non-standard format is a challenge (ex: annotated texts, vocal message conversations, etc.). How to store to process ?
 
 What is usually **not** an issue:
 
@@ -300,6 +300,10 @@ What is usually **not** an issue:
 - storing formatted text such as XML, JSON, HTML, etc.
 - storing raw, unformatted text
 - storing spatial data
+
+--
+
+Processing those data can be hard and takes time
 
 ---
 

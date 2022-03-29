@@ -1,11 +1,12 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<html lang="" xml:lang="">
   <head>
-    <title>1-lesson-1.2-computer-science-survival-kit.utf8</title>
+    <title>1-lesson-1.2-computer-science-survival-kit.knit</title>
     <meta charset="utf-8" />
     <meta name="author" content="Arthur Katossky &amp; Rémi Pépin" />
-    <link rel="stylesheet" href="css\xaringan-themer.css" type="text/css" />
-    <link rel="stylesheet" href="css\mine.css" type="text/css" />
+    <script src="1-lesson-1.2-computer-science-survival-kit_files/header-attrs-2.12/header-attrs.js"></script>
+    <link rel="stylesheet" href="css/xaringan-themer.css" type="text/css" />
+    <link rel="stylesheet" href="css/mine.css" type="text/css" />
   </head>
   <body>
     <textarea id="source">
@@ -14,7 +15,7 @@ class: center, middle, inverse, title-slide
 # <div class="line-block">Introduction to Big Data<br />
 Lesson 1.2 Computer science survival kit</div>
 ### Arthur Katossky &amp; Rémi Pépin
-### Friday, March 12, 2021
+### Wednesday, March 30, 2022
 
 ---
 
@@ -78,7 +79,7 @@ A processor performance is measured in how many operations it can perform per se
 - **instructions are stored sequentially** in one or several stacks / threads / queues
 
 --
-- multiple processors or cores may share a stack, or have each their own
+- Mono vs multi threaded application.     
 --
 - **processors can be specialized** (e.g. GPU)
 
@@ -400,9 +401,25 @@ if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
     }
     deleted = true;
   });
-})();</script>
-
-<script>
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
 (function() {
   var links = document.getElementsByTagName('a');
   for (var i = 0; i < links.length; i++) {
@@ -410,8 +427,7 @@ if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
       links[i].target = '_blank';
     }
   }
-})();
-</script>
+})();</script>
 
 <script>
 slideshow._releaseMath = function(el) {
