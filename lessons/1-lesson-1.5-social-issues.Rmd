@@ -1,25 +1,93 @@
+---
+title: | 
+    | Introduction to Big Data
+    | Lesson 1.5 Social-issues
+author: "Arthur Katossky & Rémi Pépin"
+output: 
+  xaringan::moon_reader:
+    nature:
+      highlightLines: 
+      ratio: 16:10
+      scroll: false
+      countIncrementalSlides: false
+    css: ["css/xaringan-themer.css", "css/mine.css"]
+---
 
 ## Ethical issues
+
+- **Privacy** : more data are collected and analyzed, but in what extend and for what ? 
+- **Discrimination** : predictive justice, recruitment, social network (doom scrolling)
+- **Consent** : do individuals agree to give their data ? Do they really understand ? Have the choice ?
+- **Transparency** : how models work ? What are their purpose ? 
+- **Security** : more data collected = more risk of data breaches = more cyber attacks
+
 
 ???
 
 - too much information -> everyone is identifiable
-- retroactive content (the collection of data depends on what the algorithm produces and the algorithm learns from the data, ex: video recommandations on YouTube)
+- retroactive content (the collection of data depends on what the algorithm produces and the algorithm learns from the data, ex: video recommendations on YouTube)
 - security issues (all the 3 giants are forced to comply by the American intelligence agencies)
+
+---
+## Are ML model discriminating ?
+
+- [Twitter investigates racial bias in image previews](https://www.bbc.com/news/technology-54234822)
+- [Amazon’s sexist AI recruiting tool: how did it go so wrong?](https://becominghuman.ai/amazons-sexist-ai-recruiting-tool-how-did-it-go-so-wrong-e3d14816d98e)
+- [Predictive policing algorithms are racist. They need to be dismantled.](https://www.technologyreview.com/2020/07/17/1005396/predictive-policing-algorithms-racist-dismantled-machine-learning-bias-criminal-justice/)
+- [Google Photos Tags Two African-Americans As Gorillas Through Facial Recognition Software](https://www.forbes.com/sites/mzhang/2015/07/01/google-photos-tags-two-african-americans-as-gorillas-through-facial-recognition-software/)
+
+
+---
+## Do data scientists do it on purpose ?
+--
+
+NO !
+--
+
+- ML model learn from input data
+- If your input data are biased : lake of diversity or based on biased processes your model will be biased
+
+--
+
+Hard to find biased in your data if you don't realize that some groups are discriminated and in what extend.
+
+--
+
+The best solution is to have a team with multiple profiles
 
 ---
 
 ## Environmental issues
+
+- **Energy consumption** : the Internet : 10% electricity consumption worldwide, 1 data center = consumption of 30 000 habs.[1]
+- **E-Waste / Rare earth metals** : need to recycle components ! Computers use rare earth metals, usually mined in developing countries (working regulation ? pollution ?). Risk of run out in the future. 
+- **Carbon Emissions / Water consumption** : building and running data center are polluting. Data center operator try to build green data center by producing their own energy.
+
+--
+
+> Even if effort are made to reduce all those issues, because it's easy to use the overall energy consumption of big data increase. Rebound effect
+
+
+.footnote[[1][source](https://www.fournisseur-energie.com/internet-plus-gros-pollueur-de-planete/)]
 
 ???
 
 - environmental resource consumption of storing / computing / communication
 - both the energ consumption
 - but also what to do with all the waste
+-  Cloud computing makes it easy to get state of the art infrastructures. Current python libraries make machine learning accessible. It's easier than ever to train and deploy consumming application so lot of companies does that.
 
 ---
 
 ## Political issues
+
+- **Surveillance** : easy to watch people in the current era. Like targeted add, or detecting odd behavior with pattern detection.
+- **Misinformation** : target contents to polarize people (electoral manipulation), distilled propaganda (Chinese video on TikTok). Not new phenomenon, big data helps to industrialize it.
+- **Biased algorithm** : decision-making algorithm are widely spread but they are mostly biased because of the training data. How to prevent that ?
+- **Transparency** : ML algorithm seems magical by lot of people. It's important to explain how they work and IA models are not intelligent.
+- **GAFAM** : currently Europe is dependent of American companies. OVH growing but sill behind.
+
+> It's a complex problem for ours democraties. Big data is here and will stay. Peoples need to be educated to understand the current state of the world.
 
 ???
 

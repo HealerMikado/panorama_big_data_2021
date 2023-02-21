@@ -104,11 +104,11 @@ The data you will use in this lab are real data from the twitter [sampled stream
 
 ### ✍Hands-on 1  - Data importation
 
-- Load the json file store here : `s3n://spark-lab-input-data-ensai20202021/tweets/tweets20220324-155940.jsonl.gz` and name you DataFrame`df_tweet`
+- Load the json file store here : `s3://spark-lab-input-data-ensai20212022/tweets/tweets20220324-155940.jsonl.gz` and name you DataFrame`df_tweet`
 
     <small> ⚙️ This file is an a `JSONL` (JSON-line) format, which means that each line of it is a JSON object. A JSON object is just a Python dictionary or a JavaScript object and looks like this: `{ key1: value1, key2: ["array", "of", "many values]}`). This file has been compressed into a `GZ` archive, hence the `.jsonl.gz` ending. Also this file is not magically appearing in your S3 storage. It is hosted on one of your teacher's bucket and has been made public, so that you can access it. </small>
   
-- It's possible to load multiple file in a unique DataFrame. It's useful when you have daily files and want to process them all. It's the same syntax as the previous one, just specify a folder. Like `s3n://spark-lab-input-data-ensai20202021/tweets/`. Name you DataFrame `df_tweet_big`
+- It's possible to load multiple file in a unique DataFrame. It's useful when you have daily files and want to process them all. It's the same syntax as the previous one, just specify a folder. Like `s3n://spark-lab-input-data-ensai20212022/tweets/`. Name you DataFrame `df_tweet_big`
 
 Now you have two DataFrames 🎉.
 
@@ -219,7 +219,7 @@ For example
 tweet_df_with_like_rt_ratio = tweet_df\
   .withColumn(        # computes new variable
     "like_rt_ratio", # like_rt_ratio "OVERCONFIDENCE"
-    (tweet_df.like_count /flights.retweet_count
+    (tweet_df.like_count /tweet_df.retweet_count
    )
 
 ```

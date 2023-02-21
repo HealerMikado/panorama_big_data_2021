@@ -29,8 +29,7 @@ function process_data {
     local tmp_output_file="$g_tmp_folder/$year"
     N=32
     for file in $local_path/*; do
-        ((i=i%N)); ((i++==0)) && wait
-        (gunzip -c $file >> "$tmp_output_file") &
+        gunzip -c $file >> "$tmp_output_file"
     done
     zipped_file="$g_output_folder/$year.gz"
     gzip -c "$tmp_output_file" >> "$zipped_file"
@@ -43,7 +42,7 @@ function process_data {
 # $1 - start year
 # $2 - finish year
 function main {
-    local start_year=1919
+    local start_year=1901
     local finish_year=1920
 
     if [ -n "$1" ]; then

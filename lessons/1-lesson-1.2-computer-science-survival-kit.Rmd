@@ -175,7 +175,10 @@ What is important to know for us:
 
 ---
 
-.height600[![](img/storage/storage-cost.png)]
+.height500[![](img/storage/memory price.png)
+
+Source : https://aiimpacts.org/trends-in-dram-price-per-gigabyte/ 
+]
 
 ---
 
@@ -207,7 +210,7 @@ background-size: contain
 - for long-term storage of information
 
 --
-- can have **multiple forms**: magnetic disk (hard disk, floppy disk), physical engraving (vinyls, CDs, DVDs), magnetic tape, paper (books, punch cards, bar codes, QR codes), biological (DNA), etc.
+- can have **multiple forms**: electronic disk (SSD), magnetic disk (hard disk, floppy disk), physical engraving (vinyls, CDs, DVDs), magnetic tape, paper (books, punch cards, bar codes, QR codes), biological (DNA), etc.
 
 --
 - commonly referred to as "(disk / storage) space" or "(hard) disk"
@@ -221,7 +224,6 @@ background-size: contain
     - **integrity**, resistance to degradation
     - **speed**, in read and write
 
-.footnote[The memory (RAM) vs. storage (hard disk) distinction is pedagogical. There are many in-between technologies, such as solid-state drives (SSD).]
 
 ???
 
@@ -306,7 +308,8 @@ What is important to know for us:
 - dealing with **files distributed over multiple computers** is non-trivial
 
 --
-<br>Cost and speed are usually not an issue.
+
+</br>Cost and speed are usually not an issue.
 
 ???
 

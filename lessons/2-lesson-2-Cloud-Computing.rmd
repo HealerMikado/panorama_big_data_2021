@@ -295,35 +295,39 @@ The contrary to cloud-computing is **on-premise** or **self-hosted** computing.
 
 When it comes to infrastructure as a service, all cloud-providers basically share the same two basic products:
 
-1. normal storage
+1. object storage
 2. virtual machines
 
 ---
-## Normal storage
+## Object storage
 
-**Normal storage** is the place where you put all of your files, script, logs, data or else: **anything that is worth saving.**
+**Object storage** is the place where you put all of your files, script, logs, data or else: **anything that is worth saving.**
 
-"Normal", in "normal storage" means:
-- slower access than directly from the virtual machine
-- faster than recovery storage
+- Slower access than directly from the virtual machine (it's not a mounted disk)
+- Access via HTTP or special protocol
+- Propose multiple tier from different access pattern (from frequent to archive)
+- Cheap
 
-Normal storage is organised into units often called "buckets".
+Normal storage is organized into units often called "buckets".
 
 ???
 
 (Of course you may want to use database services instead, but let's forget about that for now.)
 
 ---
-## Normal storage
+## Object storage
 
 - The provider takes charge of the **integrity** and **availability** of your files (through **replication**)
 
 - Each resource you store gets **a unique URI** (≈ URL), that you can refer to from inside or outside the cloud-provider ecosystem
 
-- Data is usually **encrypted server-side** : stealing physically disks from a Google server is useless but by default, the provider stores the encryption key themselves somewhere, and the communication between you and the ecosystem is not encrypted
+- Data is usually **encrypted server-side** : stealing physically disks from a Google server is useless but by default, the provider stores the encryption key themselves somewhere, and the communication between you and the ecosystem is not encrypted.
+
+- But you can an other level of encryption by encrypting the logical object and by limiting who
+can use the key. Or by encrypting the object **client side**
 
 ---
-## Normal storage
+## Object storage
 
 Storage solutions have different names, but similar pricing schemes:
 
@@ -339,17 +343,17 @@ Prices are given monthly.
 .footnote[**Sources:** GCP ([link](https://cloud.google.com/storage/pricing)), AWS ([link](https://aws.amazon.com/fr/s3/pricing)), Windows ([link](https://azure.microsoft.com/en-us/pricing/details/storage/blobs)), OVH ([link](https://www.ovhcloud.com/fr/public-cloud/prices)), visited on 2020/01/18.]
 
 ---
-## Normal storage
+## Object storage
 
-Other forms of storage, beyond "normal" storage, include:
+Other forms of storage, beyond object storage, include:
 
-- disks that can be "attached" to and "detached" from a virtual machine (faster, but more expensive)
-- storage whose physical location adapts to usage
-- so-called "cold" storage for unfrequently-accessed storage (less expensive, but you pay reads and writes more)
+- Block storage : disks that can be "attached" to and "detached" from a virtual machine (faster, but more expensive)
+- File system : can be shared with multiple VM. Some are generalized (like Amazon EFS or Google Filestore ), others can be specialized for HPC (Amazon FSx for Lustre)
+- so-called "cold" storage for infrequently-accessed storage (less expensive, but you pay reads and writes more)
 - archive solution (inexpensive, but takes min. to hours for access)
 
 ---
-## Normal storage, the snowmobile
+## Object storage, the snowmobile
 
 <img src="https://media.datacenterdynamics.com/media/images/Snowmobile-AWS-truck-data-delivery.original.jpg" style="width: 70%; display: block; margin-left: auto;margin-right: auto" />
 
@@ -365,8 +369,9 @@ The other component of a typical IaaS environement are **virtual machines** (VMs
 A VM is made of a combination of components:
 - memory
 - processing units
-- local storage (hard disk)
+- local storage (hard disk) (AWS EBS, GCP Persistent Disk)
 - an operating system (FR: système d'exploitation), typically Linux
+- Network configuration
 
 VMs come in a fixed (but high) number of pre-configured options. Some providers offer tailored configuration, but they are usually more expensive that the closest pre-configured option.
 
@@ -427,16 +432,28 @@ https://cloud.google.com/docs/compare/aws/
 ---
 ## Virtual machines
 
+Cloud Provider propose multiple ways to lower your bill :
+
+- Reserved instance : you pay upfront to reduce your overall cost.
+- Spot instance : volatile instances but very cheap, but your CP can delete the instance at any time. Prefect for non critical application, that can but stopped at any time.
+- Serverless services : your application run only when triggered. You pay only for the computation time.
+
+
+---
+## Virtual machines
+
 ![](img/meme/brain.jpg)
 
 ---
 ## Platform as a service (PaaS)
 
-An already package platforme. Just need some tuning.
+An already package platform. Just need some tuning.
 
-As a statician, services you may come to use are:
+As a robotician, services you may come to use are:
 
 - databases
+- message queue
+- event stream
 - data analytics
 - machine-learning
 - serverless computing
@@ -445,7 +462,7 @@ As a statician, services you may come to use are:
 
 .red[Cons]: less configurable, possibly more expensive, cloud provider dependent
 
-**Exemples :** Hadoop Platform (AWS EMR, GCP Cloud Dataproc, Azure HDInsight)
+**Examples :** Hadoop Platform (AWS EMR, GCP Cloud Dataproc, Azure HDInsight), 
 
 ---
 ## Software as a Service, SaaS
@@ -456,7 +473,7 @@ As a statician, services you may come to use are:
 - You must agree some terms and conditions before use
 - Usually not appropriate for sensitive data (especially if the service is "free")
 
-**Exemples :** Gmail, Github, Binder... (most the services you use as an individual)
+**Examples :** Gmail, Github, Binder... (most the services you use as an individual)
 
 ---
 ## Some exemples of cloud computing success
@@ -520,8 +537,8 @@ class: center, middle
 ## To sum up
 
 - Cloud computing = multiple services :
-  - IaaS : only basic ressources provided. Good for experimented people
-  - PaaS : a packaged plateform. Good if you need a database, a Hadoop cluster etc
+  - IaaS : only basic resources provided. Good for experimented people
+  - PaaS : a packaged platform. Good if you need a database, a Hadoop cluster etc
   - Saas : a ready to use service.
 
 --

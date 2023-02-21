@@ -443,7 +443,7 @@ print(model_barc.stages[1].intercept)
 
 <!-- Very bad model, with a R2 very close to 0. -->
 
-**Q14** Repeat the estimation separately for 2020 and 2021. Are the coefficients stable? _You will build a pipeline object._
+**Q14** Repeat the estimation separately for beijing, paris and rome. Are the coefficients stable? _You will build a pipeline object._
 
 <!-- not they are not, this is because our dataset is not balanced through time
 listings.groupBy(year("time")).agg(mean("price")).show()

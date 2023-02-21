@@ -41,6 +41,24 @@ knitr::opts_chunk$set(echo = FALSE)
 
 ---
 
+## Who use Hadoop ?
+
+Basically every companies that need 100+ TOs storage system
+
+- La Poste Groupe
+- la DGA
+- Thales
+- EDF
+- Société Générale
+- Criteo
+- Facebook, Twitter
+
+.footnote[Source : recherche Linkedin]
+]
+
+---
+
+
 ## The HDFS architecture
 
 ### Architecture
@@ -144,7 +162,7 @@ If your are using python you should use the WebHDFS, it works like a webservice
 ## Keep in mind
 
 - HDFS is only a storage solution !
-- There are frameworks to process data like  **MapReduce** or **Spark**
+- There are frameworks to process data like  **MapReduce**,  **Spark** or **Storm** 
 - HDFS doesn't have a GUI, it's all command line (CLI)
 - Today with cloud provider you can create a big HDFS cluster in a snap
 - Cloud providers have they own storage solution (S3, Azure blob, Google Cloud Storage) (usually cheaper)

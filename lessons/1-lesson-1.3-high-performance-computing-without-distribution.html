@@ -61,7 +61,7 @@ Demo
 
 After having identified a bottleneck, especially in computing time
 
-- algorithmic analysis can confirm the profiling ( `\(O(n^2)\)`, `\(O(n\ln(n))\)`,  `\(O(n\ln(n))\)`, etc.)
+- algorithmic analysis can confirm the profiling ( `\(O(n^2)\)`, `\(O(n\ln(n))\)`,  `\(O(n!)\)`, etc.)
 - known problems have known approximations: matrix inversion, matrix cross product, spectral decomposition, etc.
 
 ???
@@ -78,6 +78,7 @@ Algorithmic approximation errors are often orders of magnitude smaller than:
 - statistical uncertainty
 
 --
+
 Well know approximation algorithm  :
 - stochastic gradient decent (ML)
 - approximation  kNN
@@ -170,7 +171,9 @@ object.size(factor(char))
 
 ## Take advantage of sparcity
 
-In computation, it is possible to perform **sparse matrix operations** very effectively.
+In computation, it is possible to perform **sparse matrix operations** very effectively. Package `scipy.sparse` in python. Multiple format, each has pros/cons.
+
+
 
 ---
 
@@ -325,7 +328,7 @@ system.time(fib(30)) # first call isn't cached
 
 ```
 ##    user  system elapsed 
-##    1.65    0.00    1.66
+##    1.68    0.03    1.72
 ```
 
 ```r
@@ -334,12 +337,9 @@ system.time(fib(30)) # second called is
 
 ```
 ##    user  system elapsed 
-##       0       0       0
+##    0.01    0.00    0.01
 ```
 
----
-
-## Know your language
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>

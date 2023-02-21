@@ -153,7 +153,9 @@ object.size(factor(char))
 
 ## Take advantage of sparcity
 
-In computation, it is possible to perform **sparse matrix operations** very effectively.
+In computation, it is possible to perform **sparse matrix operations** very effectively. Package `scipy.sparse` in python. Multiple format, each has pros/cons.
+
+
 
 ---
 
@@ -307,6 +309,4 @@ system.time(fib(30)) # first call isn't cached
 system.time(fib(30)) # second called is
 
 ```
-
----
 

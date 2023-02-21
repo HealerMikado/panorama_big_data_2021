@@ -63,7 +63,7 @@ Tous les services que vous propose AWS peuvent nativement lire depuis et écrire
 
 ![](img/s3_upload_file.png)
 
-- [ ] Une fois le chargement terminé cliquez sur votre fichier. Vous arriverez sur une page similaire avec le lien pour accéder à votre fichier. Aussi bien S3 que HTTP faire différence entre s3 et http
+- [ ] Une fois le chargement terminé cliquez sur votre fichier. Vous arriverez sur une page similaire avec le lien pour accéder à votre fichier. Vous en trouverez deux, l'URL de votre fichier. C'est la manière d'accéder à votre fichier depuis le protocole HTTPS. Et l'URI S3, qui est l'identifiant de votre fichier dans le système de stockage amazon. C'est cette adresse qui sera utilisée pour copier votre fichier dans la suite du TP. 
 
   ![](img/s3_file.png)
 
@@ -72,9 +72,21 @@ Tous les services que vous propose AWS peuvent nativement lire depuis et écrire
 **SSH** (**S**ecure **SH**ell) permet de se connecter et contrôler de façon sécurisée un système Unix distant comme le cluster de l'Ensai ou une machine hébergée sur AWS. Pour plus d'information, je vous conseille de lire le début de cette [page web](https://doc.fedora-fr.org/wiki/SSH_:_Authentification_par_cl%C3%A9).
 
 - [ ] Dans la barre de recherche, cherchez "paire de clés" et cliquez dessus 
+
 - [ ] Cliquez sur "Créer une paire de clés" 
-- [ ] Donnez lui un nom (par ex: "ensai_big_data_TP"), sélectionnez le format PPK si vous utilisez une machine windows, et pem si vous utilisez une machine sous Linux / Mac Os, et cliquez sur "créer" 
+
+- [ ] Donnez lui un nom (par ex: "labsuser"), sélectionnez le format PPK si vous utilisez une machine windows, et pem si vous utilisez une machine sous Linux / macOs, et cliquez sur "créer" 
+
 - [ ] Cela va lancer le téléchargement d'un fichier, ne le perdez pas ! 
+
+- [ ] Si vous êtes sur Linux / macOs ouvrez un terminal et faites :
+
+  ```
+  cd ~/Downloads
+  chmod 400 labsuser.pem
+  ```
+
+  Ne fermez pas ce terminal
 
 ## 6. Création d'une machine virtuelle
 
@@ -109,7 +121,9 @@ Tous les services que vous propose AWS peuvent nativement lire depuis et écrire
 
   ![](img/ec2_accueil_instance.png)
 
-Vous y trouverez de nombreuses informations, mais surtout l'adresse `IPv4 publique` qui est adresses IP (Internet Protocol) de votre machine pour y accéder en étant à l'extérieur de la plateforme AWS, par exemple depuis votre ordinateur.
+Vous y trouverez de nombreuses informations, mais surtout l'adresse `IPv4 publique` qui est adresses IP (Internet Protocol) de votre machine pour y accéder en étant à l'extérieur de la plateforme AWS
+
+###  Si vous avez Windows
 
 - [ ] Lancez PuTTY
 
@@ -135,7 +149,20 @@ Vous y trouverez de nombreuses informations, mais surtout l'adresse `IPv4 publiq
 
     ![](img/terminal ec2.png)
 
-  - [ ] Voilà vous venez de vous connecter à votre machine virtuelle. **Bien que visuellement le terminal se trouve sur votre écran, tout ce que vous allez exécuter dans ce terminal sera réalisé sur une machine distante**. Vous pouvez ainsi réaliser des calculs très longs et nécessitant une grande puissance de calcul sur une machine puissance depuis votre ordinateur. Par contre cette machine n'a pas d'interface graphique (GUI : *graphical user interface*) et va nécessiter de connaitre quelques rudiments de *bash*.
+  
+
+### Si vous avez macOS/Linux
+
+- [ ] Reprenez le terminal ouvert précédemment et faites :
+
+  ```
+  ssh -i labsuser.pem ec2-user@[public-ip]
+  ```
+
+  En remplaçant [public-ip] par l'IP public de la machine
+
+
+Voilà vous venez de vous connecter à votre machine virtuelle. **Bien que visuellement le terminal se trouve sur votre écran, tout ce que vous allez exécuter dans ce terminal sera réalisé sur une machine distante**. Vous pouvez ainsi réaliser des calculs très longs et nécessitant une grande puissance de calcul sur une machine puissance depuis votre ordinateur. Par contre cette machine n'a pas d'interface graphique (GUI : *graphical user interface*) et va nécessiter de connaitre quelques rudiments de *bash*.
 
 ## 8. Jouer avec sa VM
 
@@ -145,12 +172,27 @@ Le but de cette section es de vous faire manipuler quelques commandes de base en
 2. Installer R et un package pour python
 3. Réaliser le benchmark.
 
-Pour rappel ce benchmark se base sur le calcul de la température max annuelle à partir des données météo étatsunienne. Chaque fichier contient les données d'une année, avec chaque ligne contenant les données d'une mesure. Les différents programmes font tous la même chose, ils lisent les fichiers pour extraire la température maximum et l'afficher. Mais chaque langage à ses spécificités :
+Pour rappel ce benchmark se base sur le calcul de la température max annuelle à partir des données météo étatsunienne. Chaque fichier contient les données météos d'une année, avec chaque ligne contenant les données d'une mesure. Les différents programmes font tous la même chose, ils lisent les fichiers pour extraire la température maximum et l'afficher. Mais chaque langage à ses spécificités :
 
 - python : langage typé dynamiquement, compilé à la volée puis interprété python
 - java : langage typé statiquement, compilé en byte code à l'avance puis interprété par java
 - C : langage typé statiquement, compilé en code machine à l'avance puis exécuté
-- script bash :  pas de notion au sens python/java/C, interprété par votre OS. 
+- script bash :  pas de type au sens python/java/C, interprété par votre OS.
+
+Vous allez dans cette partie utiliser plusieurs commandes depuis un terminal.
+
+| Commande                       | Utilité                                                      |
+| ------------------------------ | ------------------------------------------------------------ |
+| sudo                           | Super user : permet d'exécuter une commande en mode superuser. Permet de tout faire |
+| cd [target_directory]          | Change directory : permet de se déplacer dans une arborescence de fichiers. Pour remonter dans arborescence vous devez faire `cd ./` |
+| ls                             | List : permet de lister tous les fichiers dans le répertoire courante |
+| mkdir [directory_name]         | Make directory : permet de créer de créer un dossier         |
+| rm [file_name]                 | Remove : permet de supprimer un fichier. Il est possible de supprimer un dossier, mais il doit être vide, ou alors ajouter -r à la commande pour supprimer de manière récursive.  Note : exécutez **jamais** la commande `rm -rf /` car elle supprimer tous les fichiers sur une machine |
+| chmod 764 [file_name]          | Change mode : permet de gérer les droits de vos fichiers. Sans rentrer dans les détails 764 permet au propriétaire d'un fichier de l'exécuter. |
+| unzip [file_name]              | Unzip : permet d'extraire une archive zip                    |
+| yum install [package]          | Gestionnaire de package pour certaines distribution linux (comme apt). Permet d'installer un package |
+| aws s3 cp [s3://URI]           | Commande spécifique à amazon. Permet de copier un fichier stocker sur amazon S3 |
+| amazon-linux-extras  [package] | Similaire à yum, mais c'est un gestionnaire de package fait pour aws |
 
 ###  8.1 Mise en place des fichiers du TP 
 
@@ -173,21 +215,21 @@ Pour rappel ce benchmark se base sur le calcul de la température max annuelle �
 
 - [ ] Maintenant que vous avez vos fichiers, vous allez exécuter le script `get_data.sh`. Pour ce faire tapez `./get_data.sh`.  Ce script va récupérer les fichier depuis les serveurs de la NOAA (= météo France étatsunienne) et les mettre en forme pour le TP.
 
-### 8.2 Installer R et un package python
+### 8.2 Installer R, java, un compilateur C et un package python
 
 La machine virtuelle que vous avez crée ne dispose pas tous les programmes nécessaires au benchmark.
 
 - [ ] **Installation de python-dev** : `python-devel` est nécessaire pour créez des extension python. Pour l'installer, vous allez utiliser `yum`, un gestionnaire de packages pour certaines distributions linux (un équivalent au `apt` d'ubuntu). La commande à utiliser est `sudo yum install -y python3-devel.x86_64` (`sudo` pour dire que vous exécuter la commande en super user, `yum` pour dire que vous utiliser le gestionnaire de package, `install` pour dire que vous voulez installez un package, `-y` pour valider l'installation, et `python3-devel.x86_64` le nom du package)
-  - [ ] Installez `Cython` avec `pip3 ` et compilez le code cython en faisant :
-    - [ ] `cd cythond_code` pour *change directory* qui permet de se déplacer dans votre arborescence
-    - [ ] `python3 setup.py` pour lancer la compilation
-    - [ ] `cd ../` pour retourner dans la dossier parent.
-
+- [ ] **Installation de Java et d'un compilateur C** :  de la même façon installer java et gcc (GNU compiler collection) avec `sudo yum install java gcc -y`
+- [ ] **Installez `Cython`** avec `pip3 ` et compilez le code cython en faisant :
+  - [ ] `cd cython_code` pour *change directory* qui permet de se déplacer dans votre arborescence
+  - [ ] `python3 setup.py build_ext --inplace ` pour lancer la compilation
+  - [ ] `cd ../` pour retourner dans la dossier parent.
 - [ ] **Installation de R** : pour l'installer R vous allez utiliser le gestionnaire de package d'amazon `amazon-linux-extras`,  avec la ligne de commande suivante : `sudo amazon-linux-extras install R4 -y`.  Le terminal va se remplir de texte pendant quelques minutes n'y prêtez pas attention, c'est juste la machine qui vous dit ce qu'elle fait. 
 
 ### 8.2 Benchmark des langages
 
-Dans cette partie vous allez reproduire l'expérience du cours consistant à tester la vitesse de traitement de différents langages. Cela va se faire essentiellement avec la commande `time`. La commande `time` permet de mesurer la temps d'exécution d'une commande passer en argument. Exemple `time chmod 764 get_data.sh` permet de mesurez le temps nécessaire pour pour changer les permission du fichier get_data.sh. Notez chacun des résultats et vérifiez qu'ils sont cohérents avec ceux du cours. Si ce n'est pas les cas, essayez de comprendre pourquoi.
+Dans cette partie vous allez reproduire l'expérience du cours consistant à tester la vitesse de traitement de différents langages. Cela va se faire essentiellement avec la commande `time`. La commande `time` permet de mesurer la temps d'exécution d'une commande passer en argument. Exemple `time get_data.sh` permet de mesurez le temps nécessaire pour la récupération des fichiers. Notez chacun des résultats et vérifiez qu'ils sont cohérents avec ceux du cours. Si ce n'est pas les cas, essayez de comprendre pourquoi.
 
 - [ ] Pour lancer le code C compilé et le script bash vous devez faire `time ./[file]` 
 - [ ] Pour lancer le code java compilé en jar vous devez utiliser la commande `time java -jar [file.jar]`

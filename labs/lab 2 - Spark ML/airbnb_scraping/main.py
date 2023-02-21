@@ -1,3 +1,5 @@
+import csv
+import gzip
 import logging
 import os
 from typing import Dict, List
@@ -51,6 +53,21 @@ def dowload_from_url(url :str, file_name : str) -> None:
     r = requests.get(url,headers=headers, allow_redirects=True)
     open(f'out/{file_name}', 'wb').write(r.content)
 
+def add_city_column(file_name:str, city:str) -> None :
+    with gzip.open(f'out/temp_{file_name}', 'rt', encoding="utf-8", newline="") as file_in:
+        reader = csv.reader(file_in, quotechar='"')
+        with gzip.open(f'out/{file_name}', 'wt', encoding="utf-8", newline="") as file_out:
+            writer = csv.writer(file_out, quotechar='"', lineterminator='\n')
+            header = next(reader)
+            header.append("city")
+            writer.writerow(header)
+            for row in reader :
+                row.append(city)
+                writer.writerow(row)
+
+
+
+
 def get_headers() -> Dict:
     # MS edge header. Just to look like a normal user
     user_agent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.135 Safari/537.36 Edge/12.246'
@@ -81,7 +98,7 @@ def get_all_urls(page_url : str, display_link: str, cities:str = None) -> List[s
     # Transform the page in HTML tree
     tree = html.fromstring(page.content)
     links  = []
-    # Permet d'aller chercher la liste des utilisateurs via une requête Xpath
+    # Permet d'aller chercher la liste des lien via une requête Xpath
     if len(cities)==0:
          links.append(tree.xpath(f'.//a[text()="{display_link}"]'))
     else:
@@ -89,7 +106,7 @@ def get_all_urls(page_url : str, display_link: str, cities:str = None) -> List[s
             table = tree.xpath(f'.//table[contains(@class, \'{city}\')]')[0]
             links.extend(table.xpath(f'.//a[text()="{display_link}"]'))
    
-    return links
+    return links, cities
 
 def tranform_url_to_file_name(url : str) -> str:
     url = url.replace("http://data.insideairbnb.com", "data-insideairbnb")
@@ -105,16 +122,21 @@ if __name__ == "__main__":
 
     logging.info("Scrapping airbnb page")
 
-    cities = ["paris", "beijing", "geneva", "istanbul", "mexico-city", "puglia", "seattle", "washington-dc"]
 
-    links = get_all_urls("http://insideairbnb.com/get-the-data.html", "listings.csv.gz", cities)
+    cities =["barcelona", "brussels", "new-york-city", "riga", "rome", "barcelona", "salem-or"]
+    #cities = ["lisbon", "paris", "beijing", "geneva", "istanbul", "mexico-city", "puglia", "seattle", "washington-dc"]
+    #cities = ["istanbul"]
+
+    links, cities = get_all_urls("http://insideairbnb.com/get-the-data.html", "listings.csv.gz", cities)
+    link_city =zip (links, cities)
     # DL file + upload to S3 + delete file
-    for link in links:
-        file_name = tranform_url_to_file_name(link.attrib['href'])
+    for link in link_city:
+        file_name = tranform_url_to_file_name(link[0].attrib['href'])
         dowload_from_url(
-            link.attrib['href']
-            ,file_name )
-        upload_to_aws(f'out/{file_name}', file_name)
-        os.remove(f'out/{file_name}')
+            link[0].attrib['href']
+            ,f"temp_{file_name}" )
+        add_city_column(file_name=file_name, city=link[1] )
+        #upload_to_aws(f'out/{file_name}', file_name)
+        #os.remove(f'out/{file_name}')
 
     logging.info("******   End scrapping   ******")

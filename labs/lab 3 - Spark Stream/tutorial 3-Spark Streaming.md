@@ -12,7 +12,23 @@ First: **DO NOT FORGET TO TURN YOUR CLUSTER OFF A THE END OF THIS TUTORIAL!**
 
 Instructions are at the beginning of lab 2. Or you can just clone you cluster ;)
 
-## :gear: 3. Notebook configuration
+## ⚙ 3. Notebook configuration
+
+Because Spark Streaming need to write some data on the underlying HDFS cluster, we need to configure our cluster. The cluster configuration will be a little bit more complexe than the previous ones.
+1. You need to select a SSH key to your cluster
+2. Once you cluster is running, go to the EC2 dashboard like in lab 0
+3. Click on the instance with the security groups : `ElasticMapReduceEditors-Livy,ElasticMapReduce-master`
+4. Go to the security tab
+5. Click on the security group `ElasticMapReduce-master`
+6. Clink on edit `inbound rules` (`Modifier les règles entrantes` en français)
+7. Add a rule SSH, to all IPv4
+8. Save your rules
+9. Go bask to the EC2 instance with the security group `ElasticMapReduce-master`
+10. Click on `Connect` ( `Se connecter` en français)
+11. Again clik on `Connect`
+12. In the cloud shell copy/paste : `sudo usermod -a -G hdfsadmingroup livy`. It will give to the the user "livy" admin right.
+
+    
 
 
 ```python
@@ -132,7 +148,7 @@ Previously, in lab 1, you loaded all the files in a folder stored in S3 with Spa
 
 ### ✍Hand-on 1 : open a stream
 
-Like in lab 2, you will use tweets in this lab. The tweets are stored in jsonl file (*json line* every line of the file is a complete json). Here is an example. The schema changed a little, because this time tweets aren't pre-processed.
+Like in lab 1, you will use tweets in this lab. The tweets are stored in jsonl file (*json line* every line of the file is a complete json). Here is an example. The schema changed a little, because this time tweets aren't pre-processed.
 
 ````js
 {
@@ -470,18 +486,18 @@ for stream in spark.streams.active:
      - Use the SQL `COUNT(1)` function in the sql request to get the count
      - Because you don't perform aggregation the `outputMode()` must be `append`
      
-     You will notice no record are dropped. Is 
+     You will notice no record are dropped.
      
 - 🕵️‍♂️ Drop all records with unverified (`includes.users.verified == True`)user  then group the remaining  records by `hashtag`.
 
      - `includes.users` is an array with only one element. You will need to extract it.
      - `data.entities.hashtags` is an array too ! To group by tag (the hashtag content) you will need to explode it too.
 
-- :small_red_triangle_down: Find the covid related tweet (or any other topic like cat, dog, spring, batman, dogecoin etc) : 
+- :small_red_triangle_down: Find ukraine related tweet (or any other topic like cat, dog, spring, batman, dogecoin etc) : 
 
-  - Define a new column, name `covid_related`. This column is equal to `True` if `data.text` contains "covid", else it's  equal to`False`.
+  - Define a new column, name `ukraine_related`. This column is equal to `True` if `data.text` contains "ukraine", else it's  equal to`False`.
   
-  -  Use the `withColumn()` transformation, and the `expr()` function to define the column. `expr()` takes as input an SQL expression. You do not need a full SQL statement (`SELECT ... FROM ... WHERE ...`) but just an SQL expression that return True or False if `data.text` contains "covid". To help you :
+  -  Use the `withColumn()` transformation, and the `expr()` function to define the column. `expr()` takes as input an SQL expression. You do not need a full SQL statement (`SELECT ... FROM ... WHERE ...`) but just an SQL expression that return True or False if `data.text` contains "ukraine". To help you :
   
     - `LOWER()` put in lower case a string
     - `input_string LIKE wanted_string` return `True`  if `input_string` is equal to `wanted_string`

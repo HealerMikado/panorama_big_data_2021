@@ -243,7 +243,7 @@ Marketers constantly **invent new V's**
 
 ## How big is "Big Data" ?
 
-To this day, can be considered "big" for a statistician :
+To this day, can be considered "big" for a data analyst :
 
 - more than 1 000 000 rows and/or more than 100 000 columns
 - one individual file over 4 Go ¹
@@ -262,8 +262,14 @@ To this day, can be considered "big" for a statistician :
 
 What is usually **not** an issue:
 
-- file size on modern computers ³
-- database *constraints* ⁴
+- file size on modern OS ³
+- DBMS *constraints* ⁴
+
+--
+
+What is usually an issue:
+- your physical storage
+- computation time
 
 .footnote[
 ³ <small>Over 16 To for Window's NTFS, Unix's ext4 and Apple's APFS</small>  
@@ -280,10 +286,15 @@ Source:
 
 ## How fast is "Big Data" ? (velocity)
 
-To this day, **any data change is challenging** for a statistician :
+To this day, **any data change is challenging** for a data analyst :
 
 - **most data analysis is done with data at rest**
 - most spreadsheet or statistical software is not well adapted to streams of data
+- processing data streams can be challenging (delay, keep the order, retrain the model ?)
+
+???
+Retrain a model takes time
+Your conclusions at time T can change at T+n
 
 ---
 
@@ -296,10 +307,10 @@ To this day, **any non-textual format** and **any non-standard textual format** 
 
 What is usually **not** an issue:
 
-- storing network data (e.g. social graphs)
-- storing formatted text such as XML, JSON, HTML, etc.
-- storing raw, unformatted text
-- storing spatial data
+- storing network data (e.g. social graphs) (neo4J)
+- storing formatted text such as XML, JSON, HTML, etc (mongoDB)
+- storing raw, unformatted text (Elasticsearch, apache Solr)
+- storing spatial data (PostGIS)
 
 --
 

@@ -25,6 +25,22 @@ knitr::opts_chunk$set(echo = FALSE)
 - Can run without HDFS or the Hadoop ecosystem
 
 
+## Who use Spark ?
+
+- Amazon
+- AstraZeneca
+- eBay
+- Electolux
+- la SNCF
+- Tecent
+- Yahoo
+
+.footnote[Source : [site officiel apache Spark](https://spark.apache.org/powered-by.html), [site officiel Databricks](https://www.databricks.com/fr/customers?itm_data=hp-promo-customerlogos-seeallcustomers)]
+
+
+---
+
+
 ---
 ## The Hadoop Ecosystem
 
