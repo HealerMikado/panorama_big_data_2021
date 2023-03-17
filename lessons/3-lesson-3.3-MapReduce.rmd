@@ -23,6 +23,7 @@ knitr::opts_chunk$set(echo = FALSE)
 - A widely use file processing framework
 - Based on the `map()` and `reduce()` programming model 
 - Part of the Hadoop ecosystem
+- Have to be used on top of HDFS
 - Can process *very large file* 
 - Throughput optimized
 - Highly parallel
@@ -40,16 +41,15 @@ knitr::opts_chunk$set(echo = FALSE)
 <img src="img/hadoop ecosystem.png" style="width: 80%; display: block; margin-left: auto;margin-right: auto" />
 
 ---
-
-
 ## Key Concepts
 
 ### Architecture
 
 It's a main/worker architecture.
 
-- **Resource Manager** (main) : schedule, orchestrate tasks ;
-- **Node manager** (worker) : run tasks.
+- **Resource Manager** (main, 1 for the cluster) : schedule, orchestrate applications ;
+- **Application Manager** (1 by task) : orchestrate all tasks relate to se same application
+- **Container** (as many as necessary) : run tasks
 
 ---
 
@@ -70,16 +70,41 @@ It's a main/worker architecture.
 
 ---
 
+## Example
+
+- Compute how many time words `cat`, `dog`, `bird`, `spider` appear in tweets
+--
+
+- All the tweets are stored in HDFS, distributed in multiple chunks
+--
+
+- First we will compute how many time `cat`, `dog`, `bird`, `spider` appear in each parts
+--
+
+- Then we will sum for each animal
+
+---
+
+## Example
+
+<img src="img/map reduce/Example 1 map reduce.jpg" class="border" style="width: 75%; display: block; margin-left: auto;margin-right: auto"  />
+
+Aggregate data by key
+
+---
+
 ## Key Concepts
 
 ### The Map phase : Input
 
-Records from the data source (line of a file, row of a DB, documents) as is a `{key1:value, key2:value, ...}`. Examples :
-  - filename : line
-  - reccord index : reccord
-  - document name : document
+Records from the data source (line of a file, row of a DB, documents). Examples :
+  - lines for a text file
+  - data base records of a distributed query
+  - file name in a distributed folder
 
-Each **mapper** has a its own input.
+--
+
+Because it's a distributed framework, each **mapper** has its own input and runs in **parallel**
 
 ???
 
@@ -90,11 +115,12 @@ Usualy the data source is a file in HDFS, so split in bloc, each mapper reads a 
 
 ### The Map phase : Behaviour
 
-Each **mapper** executes the same code for each reccord Example :
+Each **mapper** executes the same code for each record Example :
   - split a line into word
   - filter records
   - extract values
   - scalar operations
+  - count how many time `cat`, `dog`, `bird`, `spider` appears in a tweet
   
 ---
 ## Key Concepts
@@ -102,13 +128,13 @@ Each **mapper** executes the same code for each reccord Example :
 ### The Map phase : Output
 
 Each **mapper** produces `{key_map1:value, key_map2:value, ...}` pairs. Examples :
-  - word count : `{to:1, be:1, or:1, not:1, to:1, be:1}`
+  - word count : `{to:2, be:2, or:1, not:1}`
   - max temperature : `{1990:320, 1900:123, 1901:235}`
-  - etc
+  - count `cat`, `dog`, `bird`, `spider` : `{cat:123, dog:456, bird:78, spider:9}`
 
 
 ---
-## Key Concepts
+## Example 2
 
 ### How to get the max temp for each year in the USA ?
 
@@ -127,18 +153,19 @@ The map phase
 
 ### How to get the max temp for each year in the USA ?
 
-<img src="img/map reduce/map reduce map.png" class="border" style="width: 60%; display: block; margin-left: auto;margin-right: auto"  />
+<img src="img/map reduce/map reduce map.jpg" class="border" style="width: 70%; display: block; margin-left: auto;margin-right: auto"  />
 
 
 ---
 ### The Shuffle phase
 
-Because **mapper** and **reducer** are distinct, need to transfer data between then.
-
-
+- Because **mapper** and **reducer** are distinct, need to transfer data between then.
 --
-Output map keys are randomly assigned to **reducer** and all related values are transfered to them.
 
+- Output map keys are randomly assigned to **reducer** and all related values are transferred to them.
+--
+
+- It the **shuffle phase** and it's done automatically by Hadoop MapReduce
 
 ---
 
@@ -211,13 +238,14 @@ Each **reducer** produces a list of
 ...}
 ```
 pairs. Examples :
-  - Word count : `{to:2, be:2, or:1, not:1}`
-  - The max temperature for each year `{1900:320, 1901:245, 1902:301, 1903:196 }`
-  - etc
+  - Word count : `{to:2, be:2, or:1, not:1, that:1, is:1, the:1, question:1}`
+  - The max temperature for each year : `{1900:320, 1901:245, 1902:301, 1903:196}`
+  - The number of occurrence of words : `{cat:36832, dog:22048, bird:2959, spider:1018}`
 
 --
 
-This input is written into the file system (increase latency)
+Then the output is written into the file system (increase latency) 
+
 
 ---
 ## Key Concepts
@@ -237,7 +265,7 @@ The reduce phase
 
 ### How to get the max temp for each year in the USA ?
 
-<img src="img/map reduce/map reduce reduce.png" class="border" style="width: 80%; display: block; margin-left: auto;margin-right: auto"  />
+<img src="img/map reduce/map reduce reduce.jpg" class="border" style="width: 80%; display: block; margin-left: auto;margin-right: auto"  />
 
 
 ---
@@ -245,7 +273,7 @@ The reduce phase
 
 ### Full example
 
-<img src="img/map reduce/map reduce full.png" class="border" style="width: 100%; display: block; margin-left: auto;margin-right: auto"  />
+<img src="img/map reduce/map reduce full.jpg" class="border" style="width: 80%; display: block; margin-left: auto;margin-right: auto"  />
 
 
 ---
@@ -255,7 +283,7 @@ The reduce phase
 
 - **Data locality** : MapReduce run map phase where the data are located if possible
 - **Fault tolerance** : if a job fails, MR just rerun the job
-- **Straggler mitigation** : if a task takes to much time, MR launch a *speculative copy*
+- **Straggler mitigation** : if a task takes to much time, MR launch a *speculative copy*. It's the same task, with the same input and MR will take the result of the first task that finished. It's decrease computation time but increase the energy consumption.
 
 ---
 
@@ -265,27 +293,95 @@ The reduce phase
 - Have to run with CLI
 - Or install Apache Hue
 
+
+---
+
+## MapReduce and python
+
+- Hadoop MapReduce is design for java not python
+--
+
+- Hadoop Streaming is a solution to use python with Hadoop MapReduce
+--
+
+- Basically Hadoop stream data to python and python will stream its output back to Hadoop.
+--
+
+- Two codes : one for the map task and one for the reduce task. Codes are basic python code
+--
+
+- It's quite easy to use, but the overall performance are quite bad...
+
+
+---
+
+## MapReduce and python : Map function
+
+We want to extract the year and the temperature from each record. MR stream the data
+to python, we extract the relevant data and sand them to MR.
+
+```python
+import re
+import sys
+
+# Read the input streamed by MapReduce
+for line in sys.stdin:
+  # Extract year, temperature, quality from a line
+  year, temp, q = (line[15:19], line[87:92], line[92:93])
+  # If the temperature is not 9999 and the record has a good quality
+  if (temp != "+9999" and q in "01459"):
+       print(f'{year}:{temp}')
+```
+
+---
+
+## MapReduce and python : Reduce function
+
+For the reduce task, MR stream data as (year:temp) ordered by year. So we simply compute the the max by year iteratively
+
+```python
+import sys
+# Initialization
+last_year, max_temp = None, -9999
+# Read the input streamed by MapReduce
+for line in sys.stdin:
+  # Extract year and temperature
+  year, temp = line.strip().split(":")
+  # Because MapReduce order data by key, when the current year is different from
+  # the previous we know that we won't get anymore data from previous year. So we
+  # send the maw temp to MapReduce
+  if last_year and last_year != year:
+      print(f'{last_year}:{max_temp}')
+      last_year, max_temp = year, int(temp)
+  # If last_year == year we simply update the max temp
+  else:
+      last_year, max_temp = key, max(max_temp, int(temp))
+# When there is no more data, we send the current data to MR
+print(f'{last_year}:{max_temp}')
+```
+
+
+
 ---
 
 ## Pros of MapReduce
 
-- Fault tolerance
-- High throughput
-- Scale easily
+- Built to handle easily node or  network failures => **Highly fault tolerant !**
+- Can process very large file quickly => **High throughput**
+- TO increase the computationnal power, just add more nodes => **Scale easily**
 
 ---
 
 ## Cons of MapReduce
 
-Write your ouput in the file system
-- High latency processing
-- Iterative algorithms are very slow (like ML algorithms)
+- Writes your output in the file system => **High latency**
+- Iterative algorithms are very slow (like ML algorithms) because of that. => **Not ML oriented**
 
 ---
 ## When MapReduce is a good choice ?
 
 - When you have HDFS
-- To batch process files
+- To batch process very large files (like logs)
 
 ---
 ## When MapReduce is a bad choice ?
@@ -293,16 +389,15 @@ Write your ouput in the file system
 - If you need interactive session (data exploration)
 - You want to process other things than text file but don't want to learn java
 - To run ML algorithms
-- To process streams
+- To process streams of data (like IoT data, click stream etc)
 
 ---
 ## Keep in mind
 
 - MapReduce is a file processing framework !
-- Throughput oriented
-- *Write once read many* philosophy
+- Throughput oriented : better to process very large data than small one (it's a Big Data tools !)
 - Perfect for batch processing
-- No GUI, only CLI 
+- No GUI, only CLI or code
 - For statistics, ML, interactive sessions you should use **Spark**
 
 ---

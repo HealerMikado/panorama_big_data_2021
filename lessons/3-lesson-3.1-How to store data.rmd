@@ -1,7 +1,6 @@
 ---
 title: "How to store big data ?"
 author: "Arthur Katossky & Rémi Pépin"
-date: "18/02/2021"
 output: 
   xaringan::moon_reader:
     nature:

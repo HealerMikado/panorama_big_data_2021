@@ -3,7 +3,6 @@ title: |
     | Introduction to Big Data
     | Lesson 1.1 What is big data?
 author: "Arthur Katossky & Rémi Pépin"
-date: "Wednesday, March 30, 2022"
 output: 
   xaringan::moon_reader:
     nature:
@@ -19,16 +18,14 @@ knitr::opts_chunk$set(echo = FALSE)
 library(tidyverse)
 ```
 
-# From "Big Data" to "Large Scale"
-
 <!-- intro sur la quantité de données produites -->
+<img src="http://allaccess.com/assets/img/content/merge/2021/m-4-13-pic2.jpg" class="border" style="width: 60%; display: block; margin-left: auto;margin-right: auto"  />
 
 ---
 
 ## What is "Big Data" ?
 
---
-.pull-right[![](https://image.flaticon.com/icons/png/512/906/906794.png)]
+![](https://media.giphy.com/media/a5viI92PAF89q/giphy.gif)
 
 ---
 
@@ -46,7 +43,7 @@ library(tidyverse)
 
 --
 
-- is inherently relative to _**who**_ is using it
+- is inherently relative to _**who**_ is using it and _**when**_ data are used
 
 ???
 
@@ -300,10 +297,10 @@ Your conclusions at time T can change at T+n
 
 ## How heterogeneous is "Big Data" ? (variety)
 
-To this day, **any non-textual format** and **any non-standard textual format** is an issue :
+To this day, **any non-textual format** and **any non-standard textual format** is an issue for data scientist:
 
 - **images**, **sounds**, **videos** are not supported by most spreadsheets or statistical software and rarely supported by non-specialized databases
-- any non-standard format is a challenge (ex: annotated texts, vocal message conversations, etc.). How to store to process ?
+- any non-standard format is a challenge (ex: annotated texts, vocal message conversations, etc.). How to store ? How to process ?
 
 What is usually **not** an issue:
 
@@ -322,13 +319,14 @@ Processing those data can be hard and takes time
 
 **BUT data do not just sit here:**
 
-- we copy, transform, use data
+- we copy, transform, use data : **data pipeline**
 
 - "big" data are especially **data that take time to process**
 
 - focus shift from "big data" to **"large-scale computing"**
 
 There are **many possible issues** with processing a lot of data...
+
 
 ---
 
@@ -422,7 +420,7 @@ There are also political considerations: autonomy ; population, election manipul
 - curse of dimensionality: when the number of columns or variables $p$ increases, the $p$-dimensional space becomes very vast and empty, and the observations become inevitably very sparse
 
 --
-- issue when $p$ increases proportionally to $n$ (the number of rows or observations), giving rise to the field of high-dimmensionnal statistics
+- issue when $p$ increases proportionally to $n$ (the number of rows or observations), giving rise to the field of high-dimensional statistics
 
 --
 - computational issues cumulate (e.g. rounding errors)
@@ -439,7 +437,7 @@ Ref: https://stats.stackexchange.com/questions/2516/are-large-data-sets-inapprop
 
 - **goal :** understand why some data are hard to store and use
 
-- **necessary step:** look at how a regular simple computer work
+- **necessary step:** look at how a regular simple computer works
 
 ???
 

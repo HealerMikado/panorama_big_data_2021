@@ -134,9 +134,8 @@ The course's content this year is the same as 2nd-year students' "Introduction t
 
 ## Evaluation
 
-- Multiple-choice questionnaire at the beginning of every tutorial
-- 1 short tutorial report (tutorial 1)
-- Desk examination (most probably multiple-choice questionnaire)
+- 1 lab report (the last one)
+- 1 desk examination (most probably multiple-choice questionnaire)
 
 ---
 

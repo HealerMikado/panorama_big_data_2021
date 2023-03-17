@@ -3,7 +3,6 @@ title: |
     | Introduction to Big Data
     | Lesson 1.3 High-performance computing without distribution
 author: "Arthur Katossky & Rémi Pépin"
-date: "Friday, March 12, 2021"
 output: 
   xaringan::moon_reader:
     nature:

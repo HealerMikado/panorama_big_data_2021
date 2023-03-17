@@ -16,10 +16,11 @@ output:
 ## Ethical issues
 
 - **Privacy** : more data are collected and analyzed, but in what extend and for what ? 
-- **Discrimination** : predictive justice, recruitment, social network (doom scrolling)
+- **Discrimination** : predictive justice, recruitment
 - **Consent** : do individuals agree to give their data ? Do they really understand ? Have the choice ?
 - **Transparency** : how models work ? What are their purpose ? 
 - **Security** : more data collected = more risk of data breaches = more cyber attacks
+- **Captology** : using data to influence people or keeping then engage (*doomscrolling*) 
 
 
 ???
@@ -53,7 +54,7 @@ Hard to find biased in your data if you don't realize that some groups are discr
 
 --
 
-The best solution is to have a team with multiple profiles
+The best solution is to have a team with multiple profiles with multiple points of view !
 
 ---
 
@@ -63,9 +64,13 @@ The best solution is to have a team with multiple profiles
 - **E-Waste / Rare earth metals** : need to recycle components ! Computers use rare earth metals, usually mined in developing countries (working regulation ? pollution ?). Risk of run out in the future. 
 - **Carbon Emissions / Water consumption** : building and running data center are polluting. Data center operator try to build green data center by producing their own energy.
 
+
 --
 
-> Even if effort are made to reduce all those issues, because it's easy to use the overall energy consumption of big data increase. Rebound effect
+Even if efforts are made to reduce all those issues, because it's easy to use the overall energy consumption of big data increase. Rebound effect
+--
+
+Big infrastructures are not always the best solution. Try to be as sober as possible.
 
 
 .footnote[[1][source](https://www.fournisseur-energie.com/internet-plus-gros-pollueur-de-planete/)]
@@ -84,8 +89,8 @@ The best solution is to have a team with multiple profiles
 - **Surveillance** : easy to watch people in the current era. Like targeted add, or detecting odd behavior with pattern detection.
 - **Misinformation** : target contents to polarize people (electoral manipulation), distilled propaganda (Chinese video on TikTok). Not new phenomenon, big data helps to industrialize it.
 - **Biased algorithm** : decision-making algorithm are widely spread but they are mostly biased because of the training data. How to prevent that ?
-- **Transparency** : ML algorithm seems magical by lot of people. It's important to explain how they work and IA models are not intelligent.
-- **GAFAM** : currently Europe is dependent of American companies. OVH growing but sill behind.
+- **Transparency** : ML algorithm seems magical by lot of people. It's important to explain how they work and IA models are not intelligent (like chatGPT3)
+- **GAFAM** : currently Europe is dependent of American companies. OVH growing but sill behind. We are financing US company by using their services.
 
 > It's a complex problem for ours democraties. Big data is here and will stay. Peoples need to be educated to understand the current state of the world.
 

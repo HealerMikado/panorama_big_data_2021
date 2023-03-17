@@ -3,7 +3,6 @@ title: |
     | Introduction to Big Data
     | Lesson 1.0 Course Introduction
 author: "Arthur Katossky & Rémi Pépin"
-date: "Wednesday, March 30, 2022"
 output: 
   xaringan::moon_reader:
     nature:
@@ -35,7 +34,7 @@ they are important for a real data scientist
 
 ## The two speakers
 
-- Rémi Pepin :  teaching assistant in the IT department and former Java developer at Insee
+- Rémi Pepin :  teaching assistant in the IT department and former Java developer at Insee. Certified AWS Professional Solution Architect
 - Arhur Katossky : NLP enthusiast, currently student at Ensae, former  teaching assistants in the economy department.
 
 ---
@@ -51,7 +50,7 @@ they are important for a real data scientist
 
 ## How you will be graded
 
-- One graded lab at the end of the coures
+- One graded lab at the end of the course
 - One quick exam after the course
 ---
 
@@ -68,19 +67,6 @@ If you think it's too easy, you can explore things by yourself =)
 We think it's a good way to learn new things, because you can be autonomous and you are never blocked. If you think
 it's too easy, you can explore things by yourself =). 
 
----
-## A little game : which is the fastest ? 
-
-- US weather data : 1 file per year, 71 years of data, around 6Go when gziped
-- Extract the max temperature of each year
-- 7 contestants :
-  - a classic R script with only R core functions
-  - a classic python loop (loop through file + read each line one by one)
-  - a same but with Cython (python compiled in C)
-  - the same code but in C. This code is compiled to machine code
-  - The same code but in java. This code is compiled to byte code (need JVM)
-  - python but each file are process in parallel (with 12 cores)
-  - a `awk` command in bash to read each line of each file 
 
 
 
