@@ -1,0 +1,2421 @@
+---
+title: "Introduction to Big Data"
+subtitle: "Lesson 2 — Parallelized and distributed computing"
+author: "Arthur Katossky & Rémi Pépin"
+date: "Tuesday, April 4, 2023"
+format:
+  revealjs:
+    slide-number: true
+    theme: [solarized, css/custom.scss]
+---
+
+# 1. Refresher
+
+## What if ... ?
+
+> Jane is a data analyst at Acme Corporation, a large online retailer.
+> 
+> She needs to build a model to predict which customers are most likely to make a purchase in the next month so they can target them with personalized marketing campaigns. She thinks of a standard linear regression however the purchase data weighs 2To and is too large to fit in memory on her computer (16GB of RAM) or on the company's server (500 Go of RAM).
+
+::: aside
+Example adapted form suggestion by GPT-3.5.
+:::
+
+:::{.notes}
+
+We have to distinguish between estimation of a statistical model (always the same call, happen seldom, often only once or twice), developement/research (many requests, often very different from each other) and model in production, for instance for prediction (usually lighter computations, but happen possibly very often). It is rare to be in the case where you both want a very intense computation and you wan to perform it often, exceptions being for instance 3D rendering.
+
+:::
+
+## What if data is too big to fit in memory ?
+
+1. Buy more / bigger memory cards
+    
+    <small>Easy but expensive. Not the best solution</small>
+    
+2. Do less (filter, select, sample)
+    
+    <small>Do you really need all this data ? Can statistic help you ?</small>
+    
+3. Do things in chunks / stream
+    
+    <small>Need to rethink the process. Or to use exotic libraries.</small>
+    
+4. Rent one virtual machine in the cloud
+    
+    <small>Need to store the data at the same service provider.</small>
+    
+5. Use a computing service
+    
+    <small>For simple uses (exploratory statistics, mainstream ML), cloud providers have your back</small>
+
+---
+
+## What if ... ?
+
+> Sarah works at Global Logistics Inc., a transportation company. There, she analyzes GPS data from the company's fleet of vehicles to optimize routes and fuel consumption.
+>
+> The data is stored on a dedicated server, where each new datum is appended to a gigantic text file. Some day, Sarah faces a single 5 Go file, but her workstation runs under Windows with FAT32 file system and she cannot open it anymore. When she borrows her manager's computer and tries to open the file from the file explorer, it takes 15 minutes just to open and the whole operating system is slowed down.
+
+---
+
+## What if your file is too big for your local file system ?
+
+1. Update file system
+    
+    <small>No more FAT32</small>
+    
+2. Import less data (filter, select, sample)
+    
+    <small>For a small experimentation, you don't need 2To of data</small>
+    
+3. Cut file into pieces and process in chunks
+    
+    <small>For instance 1 file per day (many data formats are text under the hood)</small>
+    
+4. If your data are structured, even so slightly, move to a database
+    
+    <small>That's what databases are made for</small>
+    
+5. Rent a remote cloud-based service, they will abstract the problem away from you
+    
+    <small>Like AWS S3, Azure Bloc Blobs, GCP Storage</small>
+
+---
+
+## What if your file is too big for your local file system ?
+
+![](img/cloud/limit-size-aws.png)
+
+![](img/cloud/limit-size-gcp.png)
+
+![](img/cloud/limit-size-azure.png)
+
+---
+
+## What if ... ?
+
+> Kim is data scientist at West Coast Energy. The company is launching a new project where they plan to analyse satellite imagery to identify potential locations for new wind farms.
+> 
+> The high-resolution imagery covers a large area and generates huge amounts of data that cannot be stored on an average desktop computer.
+
+---
+
+## What if data is too big to fit on disk ?
+
+1. Store less (filter, select, sample)
+    
+    <small>Especially for exploratory projects</small>
+    
+2. Buy bigger physical disk
+    
+    <small>Easier on desktops</small>
+    
+3. Buy your own storage server<br>
+    
+    <small>Distribution is transparent. Local replication possible.</small>
+    
+4. Rent storage space (file space or database) in the cloud
+    
+    <small>It is transparently distributed and replicated over a cluster<br>but there are privacy or sovereignty concerns!</small>
+    
+5. Distribute data on an organisation-hosted cluster
+    
+    <small>Quite technical. Local replication possible.</small>
+
+:::{.notes}
+
+Database may be helpful, but won't solve the issue of not enough space on the disk.
+:::
+
+---
+
+## What if ... ?
+
+> Amin works at an Environmental research organization called Noah's Ark. The organisation is running simulations of climate models to predict future climate patterns and identify potential areas of concern for conservation efforts.
+>
+> The models are borrowed from a preliminary project from a partner university and have a manageable size (a few GB) but executing just one simulation at a low resolution, on a regional scale and in the short run already takes days on Amin's laptop (32 GB of RAM). However, his manager asked for multiple variants based on the IPCC latest scenarii.
+
+---
+
+## What if computation takes ages ?
+
+::::{.columns}
+
+:::{.column width="45%"}
+
+1. Do less: filter, select, sample
+    
+    <small>Especially in development stages<br>Processing is the most costly aspect of statistics in production<br>... both in dollars and environmentally-speaking</small>
+    
+4. Profile your code
+    
+    <small>How does it scale ? Where are the bottlenecks?<br>Then focus on these parts</small>
+    
+2. Do less: less tests, less formatting
+2. Use parallelism locally
+    
+    <small>Works on both CPUs and GPUs</small>
+    
+3. Go low-level: compile, use C or C++, use command shells ... or build chips!
+6. Buy processors with faster or more cores
+
+:::
+:::{.column width="45%"}
+
+7. Move computation closer to the data source in a first stage and use the ouputs for final computation
+    
+    <small>This redirects the computation load towards the data source</small>
+    
+8. Rent low-level infrastructure (virtual machines) or high-level computing service (such AWS SageMaker) over the cloud
+    
+    <small>Same privacy or sovereignty concerns as before</small>
+    
+9. Avoid i/o or network operations
+10. Use a supercomputer, a grid or a cluster
+    
+    <small>Developing your own cluster solution may be quite challenging<br>... using one less so</small>
+:::
+
+::::
+
+---
+
+## What if ... ?
+
+---
+
+## What if computation / storage is too expensive ?
+
+1. Store or compute less (filter, select, sample)
+2. Consider cloud computing
+    
+    <small>Not always cheaper, though!</small>
+    
+3. Be careful with databases requests
+    
+    <small>(When you pay on read)</small>
+    
+4. Go from RAM (expensive) to disk (cheap)
+5. Use smaller but more computing units
+    
+    <small>Scientific grids, edge computing, fog computing, etc. Technically challenging</small>
+
+---
+
+## What if ... ?
+
+---
+
+## What if data i/o is too fast ? (V = Velocity)
+
+1. faster processors, memories, disks
+3. parallelism and load balancing
+1. pipelining (overlapping chunk processing)
+2. For compute, streams (never-ending one-by-one processing)
+3. For storage, fast databases
+
+---
+
+## What if ... ?
+
+---
+
+## What if data i/o is too varied ? (V = Variety)
+
+1. File systems and document-oriented databases
+
+No one-size-fits-all solution
+
+# 2. File systems vs. databases
+
+**Goal:** understand the challenges with distribution
+
+**Necessary detour:** understand traditional traditional data storage (at the software level)
+
+**Principle:** align physical data (bits on disk or in memory, fragmented) with logical data (as perceived by the user, as a whole) without compromising performance
+
+## How to store data ?
+
+There are two traditional ways to store data :
+
+- A **file system** (like the one you use on your computer) to store *files* (unstructured highly heterogeneous data)
+- A **database** to store *structured / formatted data*
+
+Inside each type of storage, **file formats** are crucial for efficient storage, balancing :
+
+- size
+- I/O speed
+- security
+
+## File system in a nutshell
+
+Manages **files** or **objects** in storage
+
+- Is responsible for the correspondence between the physical and logical file
+- Maintains the **index** of where data is physically situated on disk
+- Maintains the a virtual hierarchy of files and directories making possible to identify one single file by a string, called a **path**
+- **Transparent** for users / programmes (you or your programmes only see your file, you don't have to know _where_ it is on the disk)
+- Can handle very heterogeneous unstructured data (e.g. a **binary**^[A **binary** is any non-textual data format, like an image, a video, a compiled program, etc.])
+- Doesn't understand file contents, only understands **metadata** (e.g. size, owner, time stamp of last change)
+
+
+## File system in a nutshell
+
+![](img/storage/filesystem.png)
+
+
+## Database in a nutshell
+
+- Is responsible for the correspondence between the physical and logical file
+- Maintains the index of where data is physically situated on disk
+- **Exposes tools to manipulate data (like SQL)** that allows access to data through a **query**
+- Transparent for users / programmes (you or your programmes only see your "datum", you don't have to know _where_ it is on the disk)
+- **Preferably handles *homogeneous*, *structured* data**
+- **Possibly cares about data format (numbers, texts, dates...)**
+
+::: {.notes}
+Even if unstructured databases exist, the data in a DB are more structured than a file system
+:::
+
+## Databases in a nutshell
+
+![](img/storage/database.png)
+
+## Not so simple
+
+Since 2000 the difference has become blur between file system and databases (no-SQL movement)
+
+> The difference between a distributed file system and a distributed [database] is that a distributed file system allows files to be accessed using the same interfaces and semantics as local files.^[Source : https://en.wikipedia.org/wiki/Clustered_file_system]
+
+**So FS and DB will have the same issues to tackle** :
+
+- I/O speed
+- security^[Not in the scope of our presentation.]
+- integrity, etc.
+
+## File formats : the problem of serialization
+
+**Serialization** : representing as a series of bytes a complex object, like a 2-dimensional dataset, so that it can be written down then reconstructed on an other machine with no information loss
+
+Need to balance requirements : storage space, I/O speed, possibility for complex structures (think recursive functions, inheritance, etc.), security (encryption), etc.
+
+## Semi-transparent file formats : Parquet and Arrow
+
+- Part of the Apache ecosystem
+    * **Parquet** for (distributed) disk storage
+    * **Arrow** for memory caching
+    
+- Both are oriented for analytics :
+    * fast reads, slower writes
+    * hybrid-format prioritizing columns over rows
+    
+
+::::: aside
+
+:::: {.columns}
+
+:::{.column width="50%"}
+![](img/parquet/paqruet-logo.png)
+:::
+
+:::{.column width="50%"}
+![](img/parquet/arrow-logo.png)
+:::
+
+::::
+
+:::::
+
+## Semi-transparent file formats : Parquet and Arrow
+
+
+Why not CSV ?
+
+- row-oriented
+- no **direct / random access**
+- no meta-data
+- physically non-adjacent
+
+## Parquet
+
+![](img/parquet/parquetlayout.svg)
+
+::::: aside
+
+:::: {.columns}
+
+:::{.column width="50%"}
+**Image source:**
+
+[https://dkharazi.github.io/blog/parquet](https://dkharazi.github.io/blog/parquet)
+:::
+
+:::{.column width="50%"}
+![](img/parquet/paqruet-logo.png)
+:::
+
+::::
+
+:::::
+
+
+## Parquet
+
+![Parquet optimisation](img/parquet/parquetpushdown.svg)
+
+::::: aside
+
+:::: {.columns}
+
+:::{.column width="50%"}
+**Image source:**
+
+[https://dkharazi.github.io/blog/parquet](https://dkharazi.github.io/blog/parquet)
+:::
+
+:::{.column width="50%"}
+![](img/parquet/paqruet-logo.png)
+:::
+
+::::
+
+:::::
+
+## Parquet
+
+Ultimately, all is about balance:
+
+> Data pages should be considered indivisible so smaller data pages allow for more fine grained reading (e.g. single row lookup). Larger page sizes incur less space overhead (less page headers) and potentially less parsing overhead (processing headers). Note: for sequential scans, it is not expected to read a page at a time; this is not the IO chunk. We recommend 8KB for page sizes.
+
+::::: aside
+
+:::: {.columns}
+
+:::{.column width="50%"}
+:::
+
+:::{.column width="50%"}
+![](img/parquet/paqruet-logo.png)
+:::
+
+::::
+
+:::::
+
+## Parquet
+
+Other optimisations include :
+- run-length encoding (EEEEEEFFF => 6E3F)
+- dictionary encoding (EEEEEEFFF => 00000011, (0=E,1=F))
+- structured columns (objects with attributes)
+- compression of pages and dictionaries
+- padding to match physical treatment units
+
+::::: aside
+
+:::: {.columns}
+
+:::{.column width="50%"}
+:::
+
+:::{.column width="50%"}
+![](img/parquet/paqruet-logo.png)
+:::
+
+::::
+
+:::::
+
+## Arrow
+
+Same principles as for Parquet, but for use **in memory**
+
+- intended to become the default exchange format for tabular data
+- serialisation for data exchange is time consuming (e.g. from SQL to R or from Java to Python)
+- in storage, OK to spend more time for less space (e.g. compression)
+- I/O speed is crucial in memory
+
+::::: aside
+
+:::: {.columns}
+
+:::{.column width="50%"}
+⚠️ Memory implies no one can "save a file as Arrow"
+:::
+
+:::{.column width="50%"}
+![](img/parquet/arrow-logo.png)
+:::
+
+::::
+
+:::::
+
+## Arrow
+
+![](img/parquet/arrow-table.png)
+
+## Arrow
+
+
+Other optimisations include :
+
+- run-length encoding (EEEEEEFFF => 6E3F)
+- dictionary encoding (EEEEEEFFF => 00000011, (0=E,1=F))
+- structured columns (objects with attributes)
+- padding to match physical treatment units
+- **validity bits** (avoids explicitly storing a `null` value)
+- **fixed-size** or **variable-size columns**
+
+::::: aside
+
+:::: {.columns}
+
+:::{.column width="50%"}
+Compared with Parquet, no additional compression is performed, because compression is time-consuming.
+:::
+
+:::{.column width="50%"}
+![](img/parquet/arrow-logo.png)
+:::
+
+::::
+
+:::::
+
+
+# 3. The fundamental problems of distribution
+
+## Distribution : unlimited storage at no cost ?
+<img src="https://media.giphy.com/media/5C472t1RGNuq4/source.gif" style="width:80%;display: block; margin-left: auto;margin-right: auto" />
+
+## Context
+
+
+**Distributed file systems** are also known historically as **network file systems**
+
+Dates back from the beginning of "the network" in the 1960s.
+
+In 1985, Sun Microsystems creates "Network File System" (NFS), still in use today.
+
+
+## The fundamental problems of distribution
+
+Same problems for databases and file systems :
+
+- **Availability:** you want your data available 24/7
+
+- **Consistency:** the same query with the same data returns the same result
+
+- **Partition tolerant:** the system can deal with some failure
+
+... but also :
+
+
+  
+- **Latency**: you don't want to wait for hours to get answered (read and write)
+
+- **Throughput:** maybe you want to read ALL your data or write GB at once
+
+- **Schema consistency:** changes affected data only in allowed ways
+
+... and last but not least:
+
+- **Scalability:** under constraint of constant / acceptably-increasing request time, can it store more or bigger files or process more requests ? Can I add more nodes ? (**horizontal scaling**) Cn the scaling happen automatically? (**elasticity**)
+
+
+:::{.notes}
+
+There are more issues but like
+
+- latency
+- durability
+- isolation
+- and more
+
+:::
+
+
+## The fundamental problems of distribution
+
+
+Plus the usual questions of large-scale systems :
+
+- **Security :** only authorized person can access your data ; communication between components of your system must be incrypted ; etc.
+- **Data governance :** under which law are your data ?
+- **Environment :** is your system not too big ? Does your system use too much energy ?
+- **Economy :** isn't it too expensive to manage?
+- Etc.
+
+## The CAP theorem
+
+![](img/storage/cap-theorem.jpg)
+
+:::{.notes}
+
+Brewer's theorem, published as a conjecture in 1999, proved in 2002
+Source : https://en.wikipedia.org/wiki/CAP_theorem
+
+:::
+
+## Some solutions 
+
+
+- **Redundancy / replication :** keep copies of the data in far away nodes, so that you don't lose information under hardware failure 
+
+
+- **Balancing / rebalancing:** use all your node fairly 
+
+
+- **Timestamp-based concurrency control:** use timestamp to resolve conflict (first in first out)  
+
+
+- **Get the closest data to the client:** if the data are close to the client, there is less network time 
+
+
+- **Have a main node:** it organizes the work to avoid conflict 
+
+
+- **Asynchronous processing:** nodes can accept change locally, and consolidate the transactions only in a second phase 
+
+
+- **First-class actions:** you may chose to priviledge reads over writes, or to completely prevent modifying files, for instance
+
+:::{.notes}
+
+Homegeneous (all run with the same sowftware / OS) vs. inhomogeneous (diff. software / OS).
+
+
+> Confidentiality, availability and integrity are the main keys for a secure system.
+
+> A server belongs to a rack, a room, a data center, a country, and a continent, in order to precisely identify its geographical location
+> The need to support append operations and allow file contents to be visible even while a file is being written
+> Communication is reliable among working machines: TCP/IP is used with a remote procedure call RPC communication abstraction. TCP allows the client to know almost immediately when there is a problem and a need to make a new connection.
+
+**Source:** https://en.wikipedia.org/wiki/Distributed_file_system_for_cloud
+
+
+> Distributed file systems may aim for "transparency" in a number of aspects. That is, they aim to be "invisible" to client programs, which "see" a system which is similar to a local file system. Behind the scenes, the distributed file system handles locating files, transporting data, and potentially providing other features listed below.
+> 
+
+
+:::
+
+
+## Transparency requirement
+
+
+Because distribution is a technical solution, it must be transparent for users :
+
+- **Access transparency** : unaware of distribution
+- **Location transparency** : unaware of the physical location
+- **Concurrency transparency** : unaware that there are other users accessing the same resource
+- **Failure transparency:** users should not notice a single node failure
+- **Replication transparency:** unaware of the exact number of copies that exist
+- etc.
+
+## Specifc problems with databases
+
+- when data becomes large, join operations becomes expensive
+- with **denormalisation**, consistency becomes an issue
+    
+    <small>You need to lock files while you add / remove all the lines corresponding to an item crossed with the rest of the database. Or to be able to "undo" the changes if the modification fails.</small>
+    
+- **sharding** consists in splitting your database into subgroups
+    
+    <small>Typically along a discrete variable that is often queried.</small>
+    
+## Sharding
+
+::::{.columns}
+
+:::{.column width="30%"}
+Product table, store on one node
+
+| Product | Price |
+|---------|-------|
+| p1      | 45    |
+| p2      | 50    |
+| p3      | 200   |
+| p4      | 230   |
+| p5      | 500   |
+| p6      | 12    |
+| p7      | 56    |
+| p8      | 1000  |
+
+:::
+
+:::{.column width="65%"}
+Product table sharded. Each shard is stored on one node (or multiple for redundancy)
+
+::::{.columns}
+
+:::{.column width="40%"}
+Shard 1:  
+`price < 100`
+
+| Product | Price |
+|---------|-------|
+| p1      | 45    |
+| p2      | 50    |
+| p6      | 12    |
+| p7      | 56    |
+:::
+
+:::{.column width="40%"}
+Shard 1:  
+`price >= 100`
+
+| Product | Price |
+|---------|-------|
+| p3      | 200   |
+| p4      | 230   |
+| p5      | 500   |
+| p8      | 1000  |
+:::
+
+::::
+
+:::
+
+::::
+
+
+## Some big data storage solutions
+
+### Distributed file systems
+
+- NFS (Linux), SMB (Windows) or AFP (MacOS)
+    
+    <small>Typically used in Network-attached storages (NAS's)</small>
+    
+- [Lustre](https://www.lustre.org/) : open source  file system for High Performance Computing
+- [Hadoop File System (HDFS)](https://hadoop.apache.org/docs/stable/hadoop-project-dist/hadoop-hdfs/HdfsDesign.html) : open source distributed file system. Part of the Hadoop Ecosystem
+- [Amazon S3](https://aws.amazon.com/fr/s3/) / [Google Cloud Storage](https://cloud.google.com/storage?hl=fr) / [Azure Blob storage](https://azure.microsoft.com/fr-fr/services/storage/blobs/): objet storage as a Service
+
+:::{.notes}
+- [Aluxio](https://www.alluxio.io/) : Open source data orchestration for analytics and machine learning in any cloud
+- [Minio](https://min.io/) : open source object storage
+:::
+
+
+## Some big data storage solutions
+
+### Databases
+
+-  [MongoDB](https://www.mongodb.com/fr) : document oriented
+-  [Amazon DynamoDB](https://aws.amazon.com/fr/dynamodb/) / [Azure Cosmos DB](https://azure.microsoft.com/fr-fr/services/cosmos-db/) / [Google Firestore](https://cloud.google.com/firestore?hl=fr) : document oriented (as a service)
+-  [Google Bigtable](https://cloud.google.com/bigtable/?hl=fr) / [Amazon Redshif](https://aws.amazon.com/fr/redshift) : column-oriented (as a service)
+-  [Cassandra](https://cassandra.apache.org/) : column-oriented, distributed without main node
+-  [H base](https://cassandra.apache.org/) : part of the hadoop ecosystem, column-oriented
+
+## How to choose ?
+
+::::{.columns}
+
+:::{.column width="50%"}
+![](img/meme/chooseFSDB.jpg)
+:::
+
+:::{.column width="50%"}
+Not a simple answer.
+
+- if you just want to store data : filesystem
+- if you have highly heterogeneous data (image + text) : filesystem
+- if you need integrated tools to request data : database
+- json, xml processing : database or filesystem 
+
+
+Maybe you need a file system to store raw input data (**data lake**), and a database to store the cleaned data (**data warehouse**)
+:::
+
+::::
+
+## To sum up
+
+- Difference between filesystem and database is very blur
+- Lot of highly specialized tools. You have to pick the better one for your need
+- Reminder : big data solution are not always needed, and they come at a cost
+
+---
+
+![](img/meme/drake end.jpg){.border width="900"}
+
+# 4. Examples: HDFS and Cassandra
+
+- HDFS is a distributed centralised file system
+- Cassandra is a decentralised database
+
+## An example of distributed file system : HDFS
+
+### HDFS in a nutshell
+
+- A widely use distributed file system
+- The default storage layer of the the Hadoop Ecosystem
+- Write once, read many philosophy
+- Can store *very large file* 
+
+## An example of distributed file system : HDFS
+
+### The Hadoop Ecosystem
+
+![](img/hadoop-ecosystem-full.png){fig-align="center"}
+
+## An example of distributed file system : HDFS
+
+### Why shoud you use Hadoop ?
+
+- Open-source financed by the Apache Foundation
+- Well spread
+- Well documented
+- Lot's of related projects (Spark, Hive, Solr, Kafka)
+
+## An example of distributed file system : HDFS
+
+### Who uses Hadoop ?
+
+Basically every companies that need 100+ TOs storage system
+
+- La Poste Groupe
+- la DGA
+- Thales
+- EDF
+- Société Générale
+- Criteo
+- Facebook, Twitter
+
+::: aside
+Source : recherche Linkedin 
+:::
+
+## An example of distributed file system : HDFS
+
+### How does it work ?
+
+Follows a **main/workers architecture**
+
+- Each file are split in **blocks** (128 Mb by default).
+- Those blocks are stored in **DataNodes** (workers)
+    * each blocks are stored on multiple nodes (3 by defaults)
+- The **NameNode** (main node) keeps in memory how each file is split and where each block is stored :
+    * doesn't store any actual file
+    * stores **on disk** the namespace image and edit logs
+    * stores **memory** the physical location of the data blocks
+- priorises reads over writes (files are immutable)
+- aware of the physical network (tries to favour distant copies)
+
+## An example of distributed file system : HDFS
+
+### How does it work ?
+
+![](img/hdsf/hadoop example.png)
+
+:::{.notes}
+If a client wants to write a file, they ask the NameNode.
+
+1. The NameNode splits the file into blocks.
+
+2. For each block, it selects a number of DataNode to write onto (typically 3), based on:
+    1. disk space (more space is better)
+    2. proximity to the client (closer is better)
+    3. proximity to each other (one replication close, one far)
+    4. distribution of blocks (blocks of the same file should be on different nodes)
+    
+3. It then passes the block split and the lists to the client.
+
+4. The client writes each block on the first block on the list.
+
+5. The DataNode passes the block and the list on to the next DataNode on the list. (This minimizes the use of the network in between the cluster and the client, likely to be slower than the network inside the cluster.)
+
+
+If a client wants to read a file, they ask the NameNode.
+
+1. The NameNode looks into the index to associate the file path to blocks.
+2. The NameNode locates DataNodes containing the blocks, closest to the client.
+3. It passes the information to the client, who in turn reads directly from the specified DataNodes.
+
+The **NameNode** :
+
+- is the entry point for a client's requests
+- decides how to split files into blocks and on which DataNodes to store these blocks
+- never handles actual files, only stores metadata
+- knows at any time the correspondance between a file's name and the block's identifiers (aka **namespace**, stored on disk) and the the physical location of blocks (aka **block index**, kept in memory)
+- detects DataNode failure by listenning to their **heartbeat** and demands block replication as necessary
+
+Receipt of a Heartbeat implies that the DataNode is functioning properly. A Blockreport contains a list of all blocks on a DataNode.
+- splits 
+- manages and stores the data registry
+
+The **namespace** is persisted to disk at regular intervals (every X seconds or every Y changes). In between, a record of the changes is also written onto disk, in a file know as the edit log, so that at all time, the entire file system is preserved. In a case of a failure of the master, the data on disk is restored.
+
+_Where_ exactly the blocks are stored, however, is not stored on disk, but kept in memory.
+
+**DataNodes:**
+- emit a regular **heartbeat** containing the list of all the blocks stored locally
+- send copies directly to each other when the NameNode requires a copy to be made
+- give access (in read or write) directly to the client
+- verify that their blocks do not get corrupted by using checksums
+
+:::
+
+
+
+## An example of distributed file system : HDFS
+
+### How to get a file ?
+
+- A client requests a file to the NameNode 
+- The NameNode selects for each file block a DataNode
+- It sends back to the client where to find each block
+- The client request the selected DataNodes and merge the blocks back together
+
+
+
+## An example of distributed file system : HDFS
+
+### How to get a file ?
+
+**Pros**: 
+
+- No network nor process overload for the NameNode
+- The NameNode can handle a lot of request at the same time 
+- Tries to select the best DataNodes
+
+**Con**:
+
+- NameNode single point of failure (there are solutions)
+
+
+## An example of distributed file system : HDFS
+
+### In practice
+
+- You need a cluster with HDFS to store file (obviously) 
+- HDFS doesn't provide a fancy GUI to interact with  :
+  - Install the hadoop CLI on your machine
+  - Use the Java API 
+  - Use the [WebHDFS REST API](https://hadoop.apache.org/docs/r2.4.1/hadoop-project-dist/hadoop-hdfs/WebHDFS.html)
+- Install HUE, an GUI for the Hadoop ecosystem
+
+## An example of distributed file system : HDFS
+
+### Pros
+
+- Fault tolerance :
+  - Resilient to DataNode failure
+  - NameNode failure can stop the system for some time, but if the log and the namespace image are still here the system can reboot (that's why they are persist on disk). Or you can use multiple NameNode
+- High throughput
+- Scale easily
+  - Just add mote DataNode for more storage capacity
+  - For very large system one NameNode can be insufficient 
+
+## An example of distributed file system : HDFS
+
+### Cons
+
+- High latency data access
+- Can't handle lots of small file
+- No concurrent write for the same file
+- No arbitrary modification of a file. Can only add content at the end
+- Not elastic
+
+
+## An example of distributed file system : HDFS
+
+### HDFS is a good choice when you want to
+
+- store very big files
+- store read only files
+- build all the Hadoop stack on top
+- store file for batch processing (as opposed to interactive processing)
+
+
+## An example of distributed file system : HDFS
+
+### HDFS is a bad choice when you want to
+
+- store a lots of small files
+- store files that are edited a lot
+- store file used by system which need low latency
+
+
+## An example of distributed file system : HDFS
+
+### Keep in mind
+
+- HDFS is only a storage solution !
+- There are frameworks to process data like  **MapReduce**,  **Spark** or **Storm** 
+- HDFS doesn't have a GUI, it's all command line (CLI)
+- Today with cloud provider you can create a big HDFS cluster in a snap
+- Cloud providers have they own storage solution (S3, Azure blob, Google Cloud Storage) (usually cheaper)
+
+## An exemple of distributed database: Cassandra
+
+Cassandra is part of the Hadoop ecosystem
+
+- Born in Facebook in 2007
+- Distribution designed inspired by Amazon’s Dynamo
+- Data model inspired by Google’s Bigtable.
+
+::: aside
+
+![](img/logos/Cassandra_logo..png){ width="30%"}
+
+:::
+
+## An exemple of distributed database: Cassandra
+
+
+Production deployments use of Cassandra as of 2019 :
+
+- Apple with over 75,000 nodes storing over 10 PB of data
+- Netflix with 2,500 nodes, 420 TB, over 1 trillion requests per day
+- Chinese search engine Easou's, wuth 270 nodes, 300 TB, over 800 million requests per day
+- Ebay with over 100 nodes, 250 TB
+
+::: aside
+
+![](img/logos/Cassandra_logo..png){ width="30%"}
+
+:::
+
+:::{ .notes}
+
+ (Cassandra support map reduce task, and cassandra node can be installed on top of hadoop).
+
+Distributed
+Every node in the cluster has the same role. There is no single point of failure. Data is distributed across the cluster (so each node contains different data), but there is no main node as every node can service any request.
+Supports replication and multi data center replication
+Replication strategies are configurable.[16] Cassandra is designed as a distributed system, for deployment of large numbers of nodes across multiple data centers. Key features of Cassandra’s distributed architecture are specifically tailored for multiple-data center deployment, for redundancy, for failover and disaster recovery.
+Scalability
+
+Cassandra has innate balancing and rebalancing capabilities in the case of adding or removing nodes.
+
+Cassandra uses **location awareness**, and distinguishes between two levels: the rack, and the data center.
+
+<!-- flexible schema -->
+
+1. The node launches a "snitch" (FR: cafteur), whose task is to find the fastest available node having the requested records
+2. The client downloads the records.
+3. Simmultaneously, the node asks for the checksums of the same records from the other (slower) nodes that contain the same data. As many checksums are askes as the consistency level specified in the request.
+
+### Gossipping
+
+Once per second, a node will send a message to a random node of the cluster.
+
+If the node does not answer, it marks it locally as down.
+
+<!--Not so clear...-->
+
+The term "gossip protocol" dates back from 1987, in an article by Alan Demers. 
+
+Cassandra is typically classified as an AP system, meaning that availability and partition tolerance are generally considered to be more important than consistency in Cassandra,[17] Writes and reads offer a tunable level of consistency, all the way from "writes never fail" to "block for all replicas to be readable", with the quorum level in the middle.
+
+Data is automatically replicated to multiple nodes for fault-tolerance. Replication across multiple data centers is supported. Failed nodes can be replaced with no downtime.
+
+Designed to have read and write throughput both increase linearly as new machines are added, with the aim of no downtime or interruption to applications.
+:::
+
+## An exemple of distributed database: Cassandra
+
+### Key ideas
+
+- **decentralisation** : each node functions exactly the same as the other (no central node, no **single point of failure**)
+- **sparsity**: Cassandra is **row-oriented**, but not all columns need to exist for each record
+- each row gets a key, that is used to distribute and replicate the records
+- nodes maintain their knowledge of the network through **gossip**
+
+::: aside
+
+![](img/logos/Cassandra_logo..png){ width="30%"}
+
+:::
+
+## An exemple of distributed database: Cassandra
+
+### Key ideas
+
+Cassandra gives up **consistency** in exchange for **availability**.
+
+The trade-off between them is adjusted with two parameters:'
+
+- **replication factor** is the number of copies the database has to maintain
+- **consistency level** is specified at each interaction: it is the number of nodes the database has to consult and that have to agree for the operation to be considered a success.
+
+::: aside
+
+![](img/logos/Cassandra_logo..png){ width="30%"}
+
+:::
+
+## An exemple of distributed database: Cassandra
+
+### Typical execution
+
+When a clients wants to write or read, they addresses themselves to any of the nodes, while specifying a desired consistency level.
+
+1. The node becomes coordinator for this request.
+2. The coordinator forwards the request to all the <!--known?--> replicas hosting the nodes.
+3. In case of a write, the replica logs the request in its "commit log" on disk, performs the write in memory, then confirms the transaction success, and returns a result if any.
+4. The coordinator waits for as many confirmations as the client has requested with its consistency level before confirming the reading/writing and returns the consolidated response.
+
+## An exemple of distributed database: Cassandra
+
+### Replicas
+
+When an write instruction is given, a replica:
+
+1. logs it in a log (called "commit log")
+2. pushes the changes in memory ("memtable")
+3. if the current memtable reaches a threshold, creates a new memtable
+4. when idle, copies the memtable to disk
+
+This ensures a trade-off between availability and fault-tolerance.
+
+
+# 5. Parallezing compution
+
+
+## Parallelization
+
+Set of **hardware** and **software** technics enabling the similtaneous execution of sequences of independent instructions on multiple computation units
+
+
+
+## Why parallelize ?
+
+
+- Sequential execution too long
+
+
+- Optimize ressources
+
+
+- Data too big
+
+
+- Data arrives continuously
+
+
+
+-> Parallelization **can** solve a lot a the big data chanllenges. But it's not magic !
+
+
+
+## Parallelizable problems
+
+**Not all problems are parallelizable.**
+
+
+There is basically a spectrum from:
+
+
+- **embarassingly parallel problems** (ex: any for loop with no dependency between the steps of the loop)
+
+
+to:
+
+- **inherently sequential problems** (ex: evaluating recursive function, for instance computing Fibonacci numbers, factorials or binomial coefficients)
+
+
+
+## Amdahl's Law
+
+Depending on the share of the problem that you can parallelize, even in perfect conditions (no information passing cost), you may only expect so much gain from parallisation.
+
+This is known as Amdahl's Law.
+
+If the problem has a share `p` that can be parallelised, you won't be able to speed anything on the `1-p` remaining part.
+
+
+
+## Amdahl's Law
+
+![](img/amdahls-law.png)
+
+
+
+## Parallization architecture
+
+- Shared memory
+- Distributed memory
+- Hybrid architecture
+
+::: aside
+
+These architecture schemes can be used at any scale! At the core scale, at the (compound) processor scale... or at the cluster scale.
+
+:::
+
+## Shared memory
+
+**Principle:** many computation units share the same memory unit
+
+The most common architecture
+
+::::{.columns}
+
+:::{.column width="40%"}
+Pros :
+
+- simple
+- low memory-processor transfer time
+- no memory transfer
+- one can rely on the OS scheduler to organize the threads
+:::
+
+:::{.column width="40%"}
+Cons :
+
+- synchronization issues (concurrent access to memory)
+- memory is a limiting factor
+- number of processors able to access the same memory is a limiting factor
+:::
+::::
+
+:::{.notes}
+It is the most common architecture. You can find it in your computer, smartphone, gaming console, etc.
+:::
+
+## Distributed memory
+
+**Principle:** each computation unit has its own memory
+
+Mostly use in distributed computing
+
+::::{.columns}
+
+:::{.column width="40%"}
+Pros :
+
+- cost-effective (one can use any existing components)
+- fault tolerant : each computation unit are independent from each other., if one fail, the **scheduler** just runs the task on a other one
+:::
+
+:::{.column width="40%"}
+Cons :
+
+- harder to implement (there are however turnkey solutions at this date)
+- memory transfer and sync is needed
+- scheduler has more work
+:::
+::::
+
+
+## Hybrid architecture
+
+Most of distributed arhictures are actually compound, with memory being shared between **pods** of processing unit, but distributed among **pods**.
+
+Algorithms running on such architecture use both types of parallelisation.
+
+## Parallelization : the magic solution ?
+
+
+**SPOILER ALERT!** There is no such thing as magic.
+
+
+
+Exemples of parallelization limitation:
+
+- Communication time between computation units can be important, especially if working on big data sets
+- Scheduling can be hard
+- Energy consumption
+- Low level coordination issues (concurrent access to memory)
+- Complex architecture (map reduce)
+
+## CPUs, GPUs, TPUs
+
+Parallelisation does not happen only _between_ cores of a processing unit, or between processing units themselves.
+
+It can also happen _inside_ a processing unit, which is how _graphical processing units_ (GPUs) are so usefull.
+
+:::{.notes}
+
+Sources:
+https://iq.opengenus.org/cpu-vs-gpu-vs-tpu/
+http://villemin.gerard.free.fr/Multimed/CPUGPU.htm
+
+:::
+
+## CPUs
+
+**CPU are inherently sequential** (or at least so is each of its _core_)
+
+The historic speed up of CPUs is not explained by parallelism:
+
+- the cadencing of operations (faster and faster)
+- the increased proximity between transistors
+- the increased number of transistors
+- the improvement of the pipeline (the next instruction is read and data is loaded while an operation is currently performed)
+
+## GPUs
+
+Historically:
+
+1. texture mapping and rendering polygons
+2. rotation and translation of vertices into different coordinate systems
+3. **programmable** shaders
+4. oversampling and interpolation techniques for anti-aliasing
+
+All these operations involve **matrix operations**, and are performed in a highly parallel fashion.
+
+NVIDIA now produces **general purpose programmable GPUs** that are now also used for non-graphical calculation involving matrix operations or embarassing-parallel problems.
+
+## GPUs
+
+They have they own memory, separate from the CPU
+
+- GPU is made of multiple cores, itself made of subcores
+- sub-cores must perform exactly similar tasks
+- their threads are "locked" into "blocks"
+- each iteration is called a "lockstep"
+
+Typically `if` operations won't perform well on GPUs because of this, whereas matrix operations will be fast.
+
+## GPUs
+
+Several (low-level) languages are used to programme GPUs:
+
+- CUDA (proprietary, NVIDIA)
+- Metal (proprietary, Apple)
+- OpenCL (open standard)
+
+But we generally do not code down to the GPU level in R or Python and use libraries.
+
+## GPUs
+
+```{r gpu, eval=F, echo=T}
+library(gpuR)
+library(tictoc)
+
+for(i in seq(1:5)) {
+ N = 512*i
+ 
+ tic(paste("CPU: creating two", N, "x", N, "matrices"))
+ A = matrix(rnorm(N^2), nrow=N)
+ B = matrix(rnorm(N^2), nrow=N)
+ toc()
+ tic(paste("CPU: multiplying them"))
+ C = A %*% B
+ toc()
+ 
+ tic(paste("GPU: copying", N, "x", N, "matrices to memory"))
+ gpuA = vclMatrix(A, type="double")
+ gpuB = vclMatrix(B, type="double")
+ toc()
+ tic(paste("GPU: multiplying them"))
+ gpuC = gpuA %*% gpuB
+ toc()
+}
+```
+
+## GPUs
+
+```
+CPU: creating two  512 x  512 matrices:      0.050 sec elapsed
+CPU: multiplying them:                       0.158 sec elapsed
+GPU: copying  512 x  512 matrices to memory: 0.030 sec elapsed
+GPU: multiplying them:                       0.012 sec elapsed
+CPU: creating two 1024 x 1024 matrices:      0.379 sec elapsed
+CPU: multiplying them:                       1.318 sec elapsed
+GPU: copying 1024 x 1024 matrices to memory: 0.096 sec elapsed
+GPU: multiplying them:                       0.007 sec elapsed
+CPU: creating two 1536 x 1536 matrices:      0.994 sec elapsed
+CPU: multiplying them:                       4.379 sec elapsed
+GPU: copying 1536 x 1536 matrices to memory: 0.137 sec elapsed
+GPU: multiplying them:                       0.006 sec elapsed
+CPU: creating two 2048 x 2048 matrices:      1.108 sec elapsed
+CPU: multiplying them:                       13.03 sec elapsed
+GPU: copying 2048 x 2048 matrices to memory: 0.255 sec elapsed
+GPU: multiplying them:                       0.007 sec elapsed
+CPU: creating two 2560 x 2560 matrices:      2.457 sec elapsed
+CPU: multiplying them:                       26.13 sec elapsed
+GPU: copying 2560 x 2560 matrices to memory: 0.415 sec elapsed
+GPU: multiplying them:                       0.009 sec elapsed
+```
+:::{.notes}
+
+An other restriction is that there is not any synchronisation between blocks.
+
+http://www.parallelr.com/r-gpu-programming-for-all-with-gpur/
+http://www.parallelr.com/r-hpac-benchmark-analysis-gpu/
+https://blog.revolutionanalytics.com/2015/01/parallel-programming-with-gpus-and-r.html
+http://www.r-tutor.com/gpu-computing
+
+Other exemple: http://www.r-tutor.com/gpu-computing/clustering/distance-matrix
+
+:::
+
+
+## TPUs
+
+Tensors are a generalisation of gradients, i.e k-dimensionnal arrays.
+
+TPUs are chips designed by Google specifically for TensorFlow.
+
+Like a CPU, a TPU may have several cores. But contrary to CPU, each core consist in an MXU (for MatriX Unit), able to perform 16K **multiply-accumulate**^[A multiply-accumulate operation is of the form: $a \leftarrow a+c\times c$, but perfomed in only one step.] operations in each cycle.
+
+It is thus specifically suited to:
+
+- dot product (**FR** produit vectoriel)
+- matrix multiplication
+- evaluating polynoms
+- gradient descent
+
+::: aside
+**More on TPUs:** Google ([link](https://cloud.google.com/tpu/docs/)) 
+:::
+
+## When to use what ?
+
+
+::::{.columns}
+
+:::{.column width="45%"}
+**CPUs**
+
+- **Inherently sequential problems**
+- Programs that require frequent branching
+- Quick prototyping that requires maximum flexibility
+- Simple models that do not take long to train
+- **Communication intensive problems**
+:::
+
+:::{.column width="45%"}
+**GPUs**
+
+- Models dominated by matrix computations
+- **Embarassingly parallel problems** (e.g. computing a distance matrix)
+
+**TPUs**
+
+- Models dominated by matrix computations
+- Models written in TensorFlow
+- Models that train for weeks or months
+:::
+::::
+
+
+::: aside
+**Source:** Google ([link](https://cloud.google.com/tpu/docs/tpus)), Stackoverflow ([link](https://stackoverflow.com/questions/806569/whats-the-opposite-of-embarrassingly-parallel)) 
+:::
+
+:::{.notes}
+
+Cloud TPUs are not suited to the following workloads:
+
+- Linear algebra programs that require frequent branching or are dominated element-wise by algebra. TPUs are optimized to perform fast, bulky matrix multiplication, so a workload that is not dominated by matrix multiplication is unlikely to perform well on TPUs compared to other platforms.
+- Workloads that access memory in a sparse manner might not be available on TPUs.
+- Workloads that require high-precision arithmetic. For example, double-precision arithmetic is not suitable for TPUs.
+- Neural network workloads that contain custom TensorFlow operations written in C++. Specifically, custom operations in the body of the main training loop are not suitable for TPUs.
+
+:::
+
+# 6. Parallelization over distributed data
+
+## Principles
+
+We want balance between :
+
+1. data transfer (perform computation where the data is if possible)
+2. idle nodes (move data and computation to underused nodes)
+3. process time (including I/O, notably minimise "number of passes")
+
+## Map-and-reduce
+
+- A typical way to write parallelizable algorithms
+- Not to be confused with MapReduce, one of its implementations by Apache
+
+## Map-and-reduce
+
+### The map step
+
+- apply the same transformation to an array/vector/list of values
+- does not require any information passing (parallelism)
+
+Typical examples are:
+
+- scalar operation (add $1$, multiply by $k$)
+- non-linear transformation (square, square-root, exponential)
+- searching for a given string sequence, etc.
+
+Counter-examples :
+
+- centering / scaling is a mild counter example (mean and variance depends on the whole dataset)
+- local averaging even worse (you need one mean per observation)
+
+## Map-and-reduce
+
+### The reduce step
+
+- apply a `(a,b) => c` transformation **recursively**
+- transforms any tuple into single element
+- transformation must be **associative** and is usually **commutative**
+
+This means that the precise order in which it is applied is irrelevant.
+
+- For instance, to compute the **product of all the numbers in the vector `v`**
+    1. reduce it by pairwise operations: `f: (a, b) => a*b`
+    2. `v` is progressively shortened by the repetitive application of `f`
+    3. There is only one value left
+
+## Map-and-reduce
+
+### Interest
+
+::::{.columns}
+
+:::{.column width="45%"}
+
+The **map step** is embarassingly parallel.
+
+It can be parallalized.
+:::
+
+:::{.column width="45%"}
+The **reduce step** is not an embarrassingly parallel nor inherently sequential.
+
+The first pair-operations can happen independently of each other.
+:::
+::::
+
+## Map-and-reduce
+
+### Interest
+
+What is the interest of the map-reduce principle?
+
+1. the reduce step may happen in any order ; in particular, it may be used for additional data occuring after a first estimation ; said otherwise, map-reduce algorithms are readily-usable **online algorithms**
+2. the map step is embarrassingly parallel, and thus is super-efficient to parallelize, especially on GPU / TPU
+3. the reduce step may first happen locally in the case where memory is not shared between processors ; in this case, each processor performs the map then starts reducing their data locally, without any transfer of information ; only the summaries are then transferred to a central reducer ; **the communication between the processors is thus small**
+
+## Map-and-reduce
+
+### Example 1 : sum
+
+Let's say you want to count voyels and consonants. You may think you can apply the first method twice, but that is _not_ a good idea, since a significant part of the time taken by the computation comes from passing around the data itself. Computing the two things at once is often more efficient.
+
+Map step:
+```{r, eval=F, echo=T}
+count_letters <- function(char){
+  is_voyel <- ifelse(char %in% c("a","e","i","o","u"), yes=1, false=0)
+  return(list(voyels=is_voyel, consonants=!is_voyel))
+}
+l %>% strsplit(split="") %>% unlist() %>% map(count_letters)
+```
+
+Reduce step:
+```{r, eval=F, echo=T}
+function(a, b) list(
+  voyels     = a$voyels     + b$voyels,
+  consonants = a$consonants + b$consonants
+)
+```
+
+## Map-and-reduce
+
+### Example 2 : mean
+
+Mean is actually just sum and count simultaneously. At this point you realise that accumulators (i.e. variables actualised by `v <- v + newvalue`, with `+` an associative, commutative operator) are readily-available reducers.
+
+Let's imagine a list `l` of black & white images `i`, represented by a vector of black to white pixel values `p` (where `p=0` represents a black pixel, while `p=1` represents a white one). We want to know the average number of completely white pixels.
+
+Map step:
+```{r, eval=F, echo=T}
+l %>% map( function(i) list( sum = sum(i==1), count = 1 ) )
+```
+
+Reduce step:
+```{r, eval=F, echo=T}
+function(a, b) list( sum = a$sum + b$sum, count = a$count + b$count )
+```
+
+Final step: `mean = sum / count`.
+
+## Map-and-reduce
+
+### Example 3 : lieklihood
+
+Imagine you want to compute the likelihood of a set of $n$ observations (values) under the parameter $\theta$.
+
+1. Because of numerical instability with big numbers, you prefer to *add* log-likelihood thant to *multiply* likelihood of single observations. This operation is typically a **map** step if we assume independance. There are $n$ evaluations to make, each taking $k$ number of elementary operations. If you have $c$ cores at your disposal, you can pick among them $c-1$ workers to perform the mapping.
+
+2. The **reduce** step consists in adding the results pairwise, until you get the full log-likelihood. You can assign this task to the remaining core. Each time one of the workers return a value, the reducing core can use it. If $k>c$, this core will reduce faster thant the others map.
+
+The apparent speed have been divided by (a little less than) $c-1$.
+
+# 6. Examples : MapReduce and Spark
+
+## Hadoop MapReduce in a nutshell
+
+- A widely use file processing framework
+- Based on the `map()` and `reduce()` programming model 
+- Part of the Hadoop ecosystem
+- Have to be used on top of HDFS
+- Can process *very large file* 
+- Throughput optimized
+- Highly parallel
+
+:::{.notes}
+
+- Open source
+- Run the best on HDFS
+- batch processing oriented
+
+:::
+
+## The Hadoop Ecosystem
+
+<img src="img/hadoop ecosystem.png" style="width: 80%; display: block; margin-left: auto;margin-right: auto" />
+
+
+## Key Concepts
+
+### Architecture
+
+It's a main/worker architecture.
+
+- **Resource Manager** (main, 1 for the cluster) : schedule, orchestrate applications ;
+- **Application Manager** (1 by task) : orchestrate all tasks related to the same application
+- **Container** (as many as necessary) : run tasks
+
+## Example
+
+- Compute how many time words `cat`, `dog`, `bird`, `spider` appear in tweets
+
+
+- All the tweets are stored in HDFS, distributed in multiple chunks
+
+
+- First we will compute how many time `cat`, `dog`, `bird`, `spider` appear in each parts
+
+
+- Then we will sum for each animal
+
+
+
+## Example
+
+<img src="img/map reduce/Example 1 map reduce.jpg" class="border" style="width: 75%; display: block; margin-left: auto;margin-right: auto"  />
+
+Aggregate data by key
+
+
+
+## Key Concepts
+
+### The Map phase : Input
+
+Records from the data source (line of a file, row of a DB, documents).
+
+Examples :
+
+- lines for a text file
+- data base records of a distributed query
+- file name in a distributed folder
+
+
+
+Because it's a distributed framework, each **mapper** has its own input and runs in **parallel**
+
+:::{.notes}
+
+Usualy the data source is a file in HDFS, so split in bloc, each mapper reads a block
+:::
+
+## Key Concepts
+
+### The Map phase : Behaviour
+
+Each **mapper** executes the same code for each record Example :
+
+- split a line into word
+- filter records
+- extract values
+- scalar operations
+- count how many time `cat`, `dog`, `bird`, `spider` appears in a tweet
+  
+
+## Key Concepts
+
+### The Map phase : Output
+
+Each **mapper** produces `{key_map1:value, key_map2:value, ...}` pairs. Examples :
+
+- word count : `{to:2, be:2, or:1, not:1}`
+- max temperature : `{1990:320, 1900:123, 1901:235}`
+- count `cat`, `dog`, `bird`, `spider` : `{cat:123, dog:456, bird:78, spider:9}`
+
+
+
+## Example 2
+
+### How to get the max temp for each year in the USA ?
+
+The map phase
+
+- **Input**: positional file of the National Climatic Data Center
+  - Position 15-18 : year
+  - Position 87- 92 : temperature
+
+- **Map function** : Extract the temperature of a line if temperature !=9999
+
+- **Output** : List of year:temperature
+
+
+## Key Concepts
+
+### How to get the max temp for each year in the USA ?
+
+<img src="img/map reduce/map reduce map.jpg" class="border" style="width: 70%; display: block; margin-left: auto;margin-right: auto"  />
+
+
+
+### The Shuffle phase
+
+- Because **mapper** and **reducer** are distinct, need to transfer data between then.
+
+
+- Output map keys are randomly assigned to **reducer** and all related values are transferred to them.
+
+
+- It the **shuffle phase** and it's done automatically by Hadoop MapReduce
+
+
+
+## Key Concepts
+
+### The Reduce phase : Input
+The input of a reduce function is
+
+```
+{
+  map_key1:[value1, value2..],
+  map_key2:[value3, value4..],
+...}
+```
+
+
+::::{.columns}
+
+:::{.column width="40%"}
+
+Reduce task 1
+```python
+{
+  1900 : [320, 123, 234, 120, 165, 246], 
+  1903 : [196]
+}
+```
+
+:::
+
+:::{.column width="40%"}
+Reduce task 2
+```python
+{
+  1901 : [245],
+  1902 : [001, 301]
+}
+```
+:::
+::::
+
+
+:::{.notes}
+How the shuffle works it's quite complexe and not very useful
+:::
+
+## Key Concepts
+
+### The Reduce phase : Behaviour
+
+Each **reducer** executes the same code for each input. Usually it's an aggregation by key :
+
+- sum
+- average
+- max/min
+
+This operation cannot depend of the other received key because you cannot
+controle the *shuffle*.
+
+## Key Concepts
+
+### The Reduce phase : Output
+
+Each **reducer** produces a list of
+
+```
+{
+  reduce_key1:value1,
+  reduce_key1:value2,
+...}
+```
+pairs.
+
+
+Examples :
+
+- Word count : `{to:2, be:2, or:1, not:1, that:1, is:1, the:1, question:1}`
+- The max temperature for each year : `{1900:320, 1901:245, 1902:301, 1903:196}`
+- The number of occurrence of words : `{cat:36832, dog:22048, bird:2959, spider:1018}`
+
+Then the output is written into the file system (increase latency) 
+
+## Key Concepts
+
+### How to get the max temp for each year in the USA ?
+
+The reduce phase
+
+- **Input**: output of the map phase, grouped by key
+
+- **Reduce function** : Get the max value for each key
+
+- **Output** : List of year:max temperature
+
+
+## Key Concepts
+
+### How to get the max temp for each year in the USA ?
+
+<img src="img/map reduce/map reduce reduce.jpg" class="border" style="width: 80%; display: block; margin-left: auto;margin-right: auto"  />
+
+
+
+## Key Concepts
+
+### Full example
+
+<img src="img/map reduce/map reduce full.jpg" class="border" style="width: 80%; display: block; margin-left: auto;margin-right: auto"  />
+
+
+
+## Key Concepts
+
+### Some properties
+
+- **Data locality** : MapReduce run map phase where the data are located if possible
+- **Fault tolerance** : if a job fails, MR just rerun the job
+- **Straggler mitigation** : if a task takes to much time, MR launch a *speculative copy*. It's the same task, with the same input and MR will take the result of the first task that finished. It's decrease computation time but increase the energy consumption.
+
+
+
+## How to run MapReduce tasks ?
+
+- No nice GUI by default
+- Have to run with CLI
+- Or install Apache Hue
+
+
+
+
+## MapReduce and Python
+
+- Hadoop MapReduce is design for Java not Python
+
+
+- Hadoop Streaming is a solution to use Python with Hadoop MapReduce
+
+
+- Basically Hadoop stream data to Python and Python will stream its output back to Hadoop.
+
+
+- Two codes : one for the map task and one for the reduce task. Codes are basic Python code
+
+
+- It's quite easy to use, but the overall performance are quite bad...
+
+
+
+
+## MapReduce and Python : Map function
+
+We want to extract the year and the temperature from each record. MR stream the data
+to Python, we extract the relevant data and sand them to MR.
+
+```python
+import re
+import sys
+
+# Read the input streamed by MapReduce
+for line in sys.stdin:
+  # Extract year, temperature, quality from a line
+  year, temp, q = (line[15:19], line[87:92], line[92:93])
+  # If the temperature is not 9999 and the record has a good quality
+  if (temp != "+9999" and q in "01459"):
+       print(f'{year}:{temp}')
+```
+
+
+
+## MapReduce and Python : Reduce function
+
+For the reduce task, MR stream data as (year:temp) ordered by year. So we simply compute the the max by year iteratively
+
+```python
+import sys
+# Initialization
+last_year, max_temp = None, -9999
+# Read the input streamed by MapReduce
+for line in sys.stdin:
+  # Extract year and temperature
+  year, temp = line.strip().split(":")
+  # Because MapReduce order data by key, when the current year is different from
+  # the previous we know that we won't get anymore data from previous year. So we
+  # send the maw temp to MapReduce
+  if last_year and last_year != year:
+      print(f'{last_year}:{max_temp}')
+      last_year, max_temp = year, int(temp)
+  # If last_year == year we simply update the max temp
+  else:
+      last_year, max_temp = key, max(max_temp, int(temp))
+# When there is no more data, we send the current data to MR
+print(f'{last_year}:{max_temp}')
+```
+
+
+
+
+
+## Pros of MapReduce
+
+- Built to handle easily node or  network failures => **Highly fault tolerant !**
+- Can process very large file quickly => **High throughput**
+- TO increase the computationnal power, just add more nodes => **Scale easily**
+
+
+
+## Cons of MapReduce
+
+- Writes your output in the file system => **High latency**
+- Iterative algorithms are very slow (like ML algorithms) because of that. => **Not ML oriented**
+
+
+## When MapReduce is a good choice ?
+
+- When you have HDFS
+- To batch process very large files (like logs)
+
+
+## When MapReduce is a bad choice ?
+
+- If you need interactive session (data exploration)
+- You want to process other things than text file but don't want to learn java
+- To run ML algorithms
+- To process streams of data (like IoT data, click stream etc)
+
+
+## Keep in mind
+
+- MapReduce is a file processing framework !
+- Throughput oriented : better to process very large data than small one (it's a Big Data tools !)
+- Perfect for batch processing
+- No GUI, only CLI or code
+- For statistics, ML, interactive sessions you should use **Spark**
+
+---
+
+![](img/meme/draw25.jpg){fig-align="center"}
+
+## Spark in a nutshell
+
+- A widely use computing engine
+- *"In memory MapReduce"*
+- Python and R friendly
+- Can process *very large data* 
+- Can run without HDFS or the Hadoop ecosystem
+
+
+## Who use Spark ?
+
+- Amazon
+- AstraZeneca
+- eBay
+- Electolux
+- la SNCF
+- Tecent
+- Yahoo
+
+::: aside
+Source : [site officiel apache Spark](https://spark.apache.org/powered-by.html), [site officiel Databricks](https://www.databricks.com/fr/customers?itm_data=hp-promo-customerlogos-seeallcustomers) 
+:::
+
+
+
+
+
+
+## The Hadoop Ecosystem
+
+<img src="img/hadoop ecosystem.png" style="width: 80%; display: block; margin-left: auto;margin-right: auto" />
+
+
+
+## Common Spark APIs
+
+
+- Scala (the default one)
+
+
+- Java
+
+
+- **Python** ([pyspark](https://spark.apache.org/docs/latest/api/python/))
+
+
+- **R** ([SparkR](https://spark.apache.org/docs/latest/sparkr.html), [sparklyR](https://spark.rstudio.com/))
+
+
+- **SQL** ([Spark SQL](https://spark.apache.org/sql/))
+
+
+
+## Key Concepts
+
+### Architecture
+
+Main/workers architecture<sup>1</sup>
+
+- **Driver** (main): maintains information about the Spark Application,
+responding to user's program, analyse, distributes and schedules works.
+Can be your own computer in *client-mode* or a distant machine in *cluster-mode*.
+If the driver fails, everything fail
+- **Executors** (workers): workhorse of the system. Keep data in memory and 
+do the computation. If on top of HDFS, executors and datanodes are running on 
+the same machine. If some executors fail, just need some recomputation
+
+::: aside
+1:The real architecture is more complex because of the Resource Management Layer 
+:::
+
+
+
+## Key Concepts
+
+### In memory data
+
+- Spark keeps data in memory (RAM) (like R or Python)
+- Spark is a distributed system
+
+
+
+So your data are not in only one machine ! They are spread among your cluster, **WITHOUT REPLICATION**
+
+
+
+
+
+## Key Concepts
+
+### Dataframe
+
+- Spark manipulates **tabular data** :
+
+
+
+  - Fixed number of typed columns (schema)
+  - Every line must have a value for every column (`null` is ok)
+
+
+
+- A DF is spread among your cluster
+
+
+
+- You manipulate the DF like it's only in one machine
+
+
+- **A DF is immutable (you can't modify it once it's created)**
+
+
+---
+
+![](https://media.giphy.com/media/EdRgVzb2X3iJW/source.gif){fig-align="center"}
+
+## Key Concepts
+
+### Transformations and Actions
+
+- Spark has two types of methods :
+
+  - **Transformation** : takes a dataframe as input and produces another dataframe as output
+  - **Action** : takes a dataframe as input and writes it to output data sources (console, file)
+
+## Key Concepts
+
+### A transformation flow
+
+```python
+# read file
+flightData2015=spark.read.format("json")
+  .option("inferSchema", "true")
+  .load("file://2015-summary.json")
+
+#process  file, chaining transformations
+df = flightData2015.groupBy("DEST_COUNTRY_NAME")
+  .sum("count")
+  .withColumnRenamed("sum(count)","destination_total")
+  .sort(desc("destination_total"))
+  .limit(5)
+
+# Print data in console, action
+df.show()
+# write date in file, action
+df.write.format("csv")
+  .save("file://output")
+```
+
+---
+
+![](img/spark/workflow spark.png){fig-align="center"}
+
+Example of a dataframe transformation flow
+
+## Key Concepts
+
+### Lazy evaluation
+
+Wait the very last moment to process computation. You manipulate "hollow" dataframe
+
+
+
+Writing a **transformation** don't run any computation.
+
+You chaine **transformations** to design your process. And you use an **action** to run it.
+
+## In a nutshell
+
+<img src="img/meme/plan to dataframe.jpg" style="width: 50%; display: block; margin-left: auto;margin-right: auto" />
+
+
+## Key Concepts
+
+### Transformations
+
+Some common transformations :
+
+- `df.map()`/`flatmap()` : applies a function to each row
+- `df.filter()` : filter rows 
+- `df.select()` : select columns
+- `df.selectExpr()` : run `SELECT` SQL statement 
+- `df.union(otherDataframe)`: return a dataframe with the union of the element of the source and the argument
+- `df.distinct()` : Return a new dataframe that contains the distinct elements of the source dataframe
+- `df.groupby()` : group a DF by a criteria
+-  `df.sum()`/`avg()`/`mean()` : if grouped DF return one line by group
+
+:::{.notes}
+- map : one row = one row
+- flatmap : one row = multiple row
+:::
+
+---
+
+<img src="img/spark/transformation spark.png" class="border" />
+
+Two types of transformations
+
+---
+
+<img src="http://www.quickmeme.com/img/71/71d4f9e6c603698a186bff6dd8ea8c3fd1b5ad9c9fb37455b8d114b1938a735b.jpg" style="height: 80%; display: block; margin-left: auto;margin-right: auto" />
+
+
+## Key Concepts
+
+### `sql()` : one transformation to rule then all^[not exactly all it's just for the dramatic effect]
+
+Spark understands sql statements !
+
+
+
+```SQL
+spark.sql("""
+	SELECT user_id, departement, first_name
+	FROM professors
+    WHERE departement IN
+    	(SELECT name FROM departement WHERE created_date >= '2016-01-01')
+	""")
+```
+
+
+
+
+
+## Key Concepts
+
+### `sql()` : one transformation to rule then all
+
+Pros :
+
+- Easy to understand
+- Return a DF so you can chain it with another transformation
+- One of the most powerful feature of Spark
+
+Cons :
+
+- Can't do everything with SQL
+
+## Key Concepts
+
+### Actions
+
+Trigger computation. So they take time !
+
+Common actions :
+
+- `df.show(n=20)` : print the first n row
+- `df.count()`: return the number of line in the dataset
+- `df.take(n)`: return the first n rows as `list` of `Row`
+- `df.write.format().mode().save()` : write the DF to file
+
+
+## Importing data
+
+Natively Spark can handle :
+
+- CSV files
+- JSON files
+- Plain-text files
+- Databases connections
+- Data stream
+
+Can handle compressed files too
+
+:::{.notes}
+There is other datasource maintained by the community
+:::
+
+
+## Importing data
+
+Always the same basic layout
+
+```python
+df = spark.read.format(file_format) #csv, json
+  .option("mode", [permissive(default), dropMalformed, failFast]) 
+  .option("inferSchema", [True/False(default)]) # read some reccord and infer the schema
+  .option("path", "path/to/file") # for local file begin with file://
+  .schema(someSchema) #if you didn't infer it
+  .load() #lazy operation
+  
+df.show()#to print the first 20 lines
+```
+
+
+
+## Importing data
+
+To read a gzip csv file with an header, letting Spark inferring the schema, and failing if
+there is one bad record
+
+```python
+df = spark.read.format("csv")
+  .option("mode", "failFast")
+  .option("header", "true") 
+  .option("inferSchema", True) 
+  .option("path", "file://path/to/file.csv.gz") 
+  .load() 
+```
+
+
+## Importing data
+
+To read a csv file without an header, giving Spark the schema, and accepting bad record
+
+```python
+from pysark.sql.types import StructField, StructType, StringType, LongType
+schema = StructType([
+  StructField("col1", StringType(), True),
+  StructField("col2", StringType(), True),
+  StructField("col3", LongType(), True)
+])
+
+df = spark.read.format("csv")
+  .schema(schema)
+  .option("header", "false") 
+  .option("path", "file://path/to/file.csv") # for local file begin with file://
+  .load() 
+```
+
+
+## Importing data
+
+To read a json file inferring the schema and accepting bad record
+
+```python
+df = spark.read.format("json")
+  .option("inferSchema", "True")
+  .option("path", "file://path/to/file.json") # for local file begin with file://
+  .load() 
+```
+
+
+## Exporting data
+
+Always the same basic layout
+
+```python
+df.write.format(file_format) #csv, json
+  .mode([append/overwrite/errorIfExists(default)/ignore]) 
+  .save("path/to/folder")
+```
+
+
+By default, each **executor** write their partition in a different file. 100 executors = 100 files.
+
+Spark priorises reading, as most analytics tools..
+
+---
+
+![](img/meme/no coalesce.jpg){fig-align="center"}
+
+:::{.notes} 
+coalesce(1) gather all the partition on one executor. No more parallelization. And you executor have to deal with a lot of data
+:::
+
+## What if spark wasn't lazy ?
+
+- Each line of code could take ages to compute
+
+
+- Users do not optimize their code (*filter data at the end*)
+
+
+- Each transformation produce a DF. 10 transformations = 10 DF
+
+
+
+Only users can optimise the process
+
+:::{.notes}
+
+if one DF takes 10 To of memory, 10 DF ~ 100 To ...
+:::
+
+
+## Knowledge is power
+
+
+- Spark optimizes your transformations chain because it knows all your transformations
+(*execution plan*)
+
+
+- Spark can snow its plan with `df.explain()`
+
+
+- Does not keep useless data in memory (better use of memory)
+
+
+
+:::{.notes}
+Postgres has one too
+:::
+
+We are in a big data situation, and we do not want to keep in memory
+useless data.
+
+
+
+## Lazy execution : sum up
+
+
+- Pros :
+  - Spark optimizes your operations (*catalyst optimizer*)
+  - Data are not kept in memory forever
+
+
+- Cons :
+  - Cannot reuse the same DF
+
+
+## Caching DF
+
+Caching make it possible to store in memory or disk a DF for future reuses.
+
+
+-  `df_to_cached.cache()` to cache a DF
+
+
+- It's a lazy operation (cached only when computed)
+
+
+- Very useful in a **interactive data science session** 😉😉
+
+
+
+## How to run Spark ?
+
+- Interactively :
+
+  - `pyspark` shell
+  - `SparkR` shell / R with `sparklyR`
+  - Notebook
+  
+- Scripts :
+
+  - Submit script with the `spark-submit` commands
+  
+
+:::{.notes}
+- Interactively (good for prototyping script)
+- Scripts (good to run production script)
+:::
+
+
+
+##  Example `pyspark` shell
+
+
+<img src="img/spark/shell.png" style="width: 80%; display: block; margin-left: auto;margin-right: auto" />
+
+
+
+
+
+
+##  Example `pyspark` shell
+
+
+<img src="img/spark/shell_result.png" style="width: 80%; display: block; margin-left: auto;margin-right: auto" />
+
+
+
+
+
+##  Example notebook in databricks
+
+
+<img src="img/spark/spark_databricks.png" style="width: 80%; display: block; margin-left: auto;margin-right: auto" />
+
+
+
+
+
+##  Example `spark-submit`
+
+<img src="img/spark/spark_submit.png" style="width: 80%; display: block; margin-left: auto;margin-right: auto" />
+
+
+
+
+## To sum up Spark
+
+
+💻 Only a distributed computation engine. Works better on a cluster than on your pc 
+
+
+
+👌 Lot of easy ways to define spark processes (Python, R, SQL) 
+
+
+
+💤 Lazy evaluation : transformations chain + action to run computation 
+
+
+
+💣 Your data are distributed some transformations cost more than others (like `groupBy()`, `coalesce()`)
+
+
+
+🧰 Easy to use, can be hard to i

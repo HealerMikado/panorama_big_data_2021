@@ -2,8 +2,9 @@
 title: | 
     | Introduction to Big Data
     | Lesson 1.3 High-performance computing without distribution
+date: "Tuesday, March 29, 2023"
 author: "Arthur Katossky & Rémi Pépin"
-output: 
+output:
   xaringan::moon_reader:
     nature:
       highlightLines: 
@@ -11,6 +12,7 @@ output:
       scroll: false
       countIncrementalSlides: false
     css: ["css/xaringan-themer.css", "css/mine.css"]
+    self_contained: true
 ---
 
 # High-performance computing without distribution
@@ -24,6 +26,7 @@ Shift focus away from absolute precision to **relative** or **marginal precision
 - per additional observation
 - per additional second of computation
 - per additional dollar used
+- per additional Watt-hour spent
 
 ???
 
@@ -82,12 +85,12 @@ Well know approximation algorithm  :
 
 ## Down-size
 
-- selecting (columns) and filtering (rows)
-- sampling
+- select (columns) and filter (rows)
+- sample
 
 --
 
-In development phases work on small data. For production process only load what
+In development phases, work on small data. In production, only load what
 you really need.
 
 ???
@@ -105,8 +108,8 @@ An advantage of sampling + bootstrapping is that you get an statistical idea of 
 ## Shift from memory to disk
 
 - you usually have much more disk space
-- need to use some special library or know some basics of programming
-- usually increase the computation time (hard drive are slower than RAM)
+- need to use some special library or design your own algorithms
+- usually increases the computation time (hard drives are slower than RAM)
 
 ???
 
@@ -152,9 +155,30 @@ object.size(factor(char))
 
 ## Take advantage of sparcity
 
-In computation, it is possible to perform **sparse matrix operations** very effectively. Package `scipy.sparse` in python. Multiple format, each has pros/cons.
+In computation, it is possible to perform **sparse matrix operations** very effectively. Package `scipy.sparse` in python. Multiple formats, each has pros/cons.
 
+.pull-left[
+```{r}
+library(Matrix) # sparse package in R
 
+n <- 500
+a <- runif(n**2)
+a <- ifelse(runif(n**2)<0.9, 0, a)
+A <- matrix(nrow=n, ncol=n, a)
+B <- Matrix(A, sparse = T)
+```
+]
+
+.pull-right[
+```{r}
+object.size(A)
+object.size(B)
+```
+]
+
+```{r, warning=FALSE}
+microbenchmark::microbenchmark(A %*% t(A), B %*% t(B) )
+```
 
 ---
 
@@ -164,9 +188,13 @@ Python, R or spreadsheets are **high-level programs**
 
 - tailored for human understanding (**expressive power**)
 
-- abstract away the actual processing by the machine (**transparency**)
+- abstract away the actual processing by the machine (**transparency** ¹)
 
 However, you also lose control on the fine details of execution
+
+.footnote[
+¹ <small>In computer science, transparency means that you _don't see_ the machine, not that you _see_ it _perfectly_. A "transparent" process hides technical implementations away.</small>
+]
 
 ???
 
@@ -182,7 +210,7 @@ High-level programs:
 - perform a lot a checks and formatting operations
 - have lower-level sub-functions that only accept very standardized inputs
 
-<small>In R, the `lm()` function is actually only tests and formatting, the actual computation taking inside a call to `lm.fit()`, which itself calls the C function `Cdqrls`.</small>
+<small>In R, the `lm()` function is actually only tests and formatting, the actual computation happening inside a call to `lm.fit()`, which itself calls the C function `Cdqrls`.</small>
 
 **Skipping formatting and tests can increase the speed!** <small>Especially if you call such functions multiple times.</small>
 
@@ -198,6 +226,14 @@ R or Python allow you to write functions directly in these languages, with often
 
 ## Go low-level
 
+.height450[ ![](img/benchmark-sum-by.png) ]
+
+.footnote[<small>Source: https://h2oai.github.io/db-benchmark/</small>]
+
+---
+
+## Go low-level
+
 **Command line** code, also known as **bash** or **shell**, is a way to take advantage of very effective low-level functions.
 
 You can execute command line code from R with `system(...)` or with Python through `os.system(...)` or `subprocess.run(...)`.
@@ -206,9 +242,13 @@ A usually impressively fast data but hard-to-learn processing command line is th
 
 ---
 
-## Compilation
+<blockquote class="twitter-tweet"><p lang="en" dir="ltr">Recently I got put in change of wrangling 25+ TB of raw genotyping data for my lab. When I started, using spark took 8 min &amp; cost $20 to query a SNP. After using AWK + <a href="https://twitter.com/hashtag/rstats?src=hash&amp;ref_src=twsrc%5Etfw">#rstats</a> to process, it now takes less than a 10th of a second and costs $0.00001. My personal <a href="https://twitter.com/hashtag/BigData?src=hash&amp;ref_src=twsrc%5Etfw">#BigData</a> win. <a href="https://t.co/ANOXVGrmkk">pic.twitter.com/ANOXVGrmkk</a></p>&mdash; Nick Strayer (@NicholasStrayer) <a href="https://twitter.com/NicholasStrayer/status/1134151057385369600?ref_src=twsrc%5Etfw">May 30, 2019</a></blockquote>
 
-The lowest-level code is **machine code**, specific to each machine and **high-level programs have to be translated** into machine code :
+---
+
+## Go low-level : Compilation
+
+The lowest-level code is **machine code**, specific to each machine and high-level programs have to be **translated** into machine code :
 
 1. either **interpreting** the source code : instructions from source code are converted **one by one** into machine code
 
@@ -232,13 +272,13 @@ Real-world computing is not black and white. For instance most interpreters do p
 
 ## Go low-level : compilation
 
-**Cython**, compile python code to C.
+**Cython** compiles python code to C.
 
 1. Static type your code
 2. Compile to C
 3. Import your C code as an external library
 
-Not magical, can be a easy improvement.
+Not magical, but easy-to-reach improvement.
 
 ---
 
@@ -246,7 +286,7 @@ Not magical, can be a easy improvement.
 
 A common intermediate pattern is **compilation to bytecode**, a platform agnostic language that gets interpreted at run time, or even further compiled to machine code.
 
-Compiled code often faster than non-compiled one but compiling also takes time. It is usually worth it only for production code.
+Compiled code often faster than non-compiled one but **compiling** also **takes time**. It is usually worth it only when you reuse the same peace of code several times.
 
 ---
 
@@ -264,6 +304,8 @@ Compiled code often faster than non-compiled one but compiling also takes time. 
 
 For instance, most SQL servers have (limited) statistical abilities for mean, sum, percentiles, variance, standard error, etc. More recently, many have moved to allow execution of [arbitrary scripts in R and Python](https://docs.microsoft.com/fr-fr/sql/machine-learning/sql-server-machine-learning-services).
 
+On the other hand, [`dbplyr`](https://dbplyr.tidyverse.org) allows you to write plain R code (tidyverse-style) and then optimises the SQL request in order to move as much treatment as possible at the source.
+
 ???
 
 When data is not located on the local computer, moving the computing to the source and returning the results instead of transfering the data to exectute the computation is often faster, since results are probably smaller than .
@@ -274,7 +316,7 @@ When data is not located on the local computer, moving the computing to the sour
 
 - moving data around takes time, even inside a computer
 - reading (load) and writing (save) operations may be bottlenecks
-- is possible, perform readings / writings in parallel to earlier / later tasks, aka. **pipelining**
+- if possible, perform readings / writings in parallel to earlier / later tasks, aka. **pipelining**
 
 <small>A common mistake is printing messages inside a fast loop. The printing actually slows down the whole process. Printing once every $k$ steps may be preferable.</small>
 

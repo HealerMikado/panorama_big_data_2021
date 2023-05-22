@@ -4,7 +4,7 @@
     <title>1-lesson-1.4-what-if.knit</title>
     <meta charset="utf-8" />
     <meta name="author" content="Arthur Katossky &amp; Rémi Pépin" />
-    <script src="1-lesson-1.4-what-if_files/header-attrs-2.12/header-attrs.js"></script>
+    <script src="1-lesson-1.4-what-if_files/header-attrs-2.19/header-attrs.js"></script>
     <link rel="stylesheet" href="css/xaringan-themer.css" type="text/css" />
     <link rel="stylesheet" href="css/mine.css" type="text/css" />
   </head>
@@ -12,10 +12,16 @@
     <textarea id="source">
 class: center, middle, inverse, title-slide
 
+.title[
 # <div class="line-block">Introduction to Big Data<br />
 Lesson 1.4 What if … ?</div>
+]
+.author[
 ### Arthur Katossky &amp; Rémi Pépin
-### Friday, March 12, 2021
+]
+.date[
+### Tuesday, March 29, 2023
+]
 
 ---
 
@@ -23,6 +29,13 @@ Lesson 1.4 What if … ?</div>
 
 
 ## What if ... ?
+
+--
+&gt; Jane is a data analyst at Acme Corporation, a large online retailer.
+&gt; 
+&gt; She needs to build a model to predict which customers are most likely to make a purchase in the next month so they can target them with personalized marketing campaigns. She thinks of a standard linear regression however the purchase data weighs 2To and is too large to fit in memory on her computer (16GB of RAM) or on the company's server (500 Go of RAM).
+
+.footnote[Example adapted form suggestion by GPT-3.5.]
 
 ???
 
@@ -35,29 +48,37 @@ We have to distinguish between estimation of a statistical model (always the sam
 .pull-right[![](https://www.flaticon.com/free-icons/question-mark)]
 
 --
-1. buy more/bigger memory.
+1. Buy more / bigger memory cards&lt;/br&gt;
 --
 Easy but expensive. Not the best solution
 
 --
-2. do less (filter, select, sample) &lt;/br&gt;
+2. Do less (filter, select, sample) &lt;/br&gt;
 --
-
 Do you really need all this data ? Can statistic help you ?
 
 --
-3. do things in chunks / stream
+3. Do things in chunks / stream &lt;/br&gt;
 --
-Need to rethink the process. Or to use exotic libraries 
+Need to rethink the process. Or to use exotic libraries.
 
 --
-4. distribute the data
+4. Rent one virtual machine in the cloud&lt;/br&gt;
 --
-Go to the cloud, or use a Spark cluster
+Need to store the data at the same service provider.
+
+--
+5. Use a computing service&lt;/br&gt;
+--
+For simple uses (exploratory statistics, mainstream ML), cloud providers have your back
 
 ---
 
 ## What if ... ?
+
+&gt; Sarah works at Global Logistics Inc., a transportation company. There, she analyzes GPS data from the company's fleet of vehicles to optimize routes and fuel consumption.
+&gt;
+&gt; The data is stored on a dedicated server, where each new datum is appended to a gigantic text file. Some day, Sarah faces a single 5 Go file, but her workstation runs under Windows with FAT32 file system and she cannot open it anymore. When she borrows her manager's computer and tries to open the file from the file explorer, it takes 15 minutes just to open and the whole operating system is slowed down.
 
 ---
 
@@ -66,19 +87,24 @@ Go to the cloud, or use a Spark cluster
 .pull-right[![](https://image.flaticon.com/icons/png/512/906/906794.png)]
 
 --
-1. update file system
+1. Update file system &lt;/br&gt;
+&lt;small&gt;No more FAT32&lt;/small&gt;
 
 --
-2. import less data (filter, select, sample)
+2. Import less data (filter, select, sample)&lt;/br&gt;
+&lt;small&gt;For a small experimentation, you don't need 2To of data&lt;/small&gt;
 
 --
-3. cut file into pieces and process in chunks&lt;br&gt;&lt;small&gt;for instance 1 file per day&lt;/small&gt;
+3. Cut file into pieces and process in chunks&lt;br&gt;
+&lt;small&gt;For instance 1 file per day&lt;br&gt;(many data formats are text under the hood)&lt;/small&gt;
 
 --
-4. if you file is slight structured, go onto databases, that's what they are made for
+4. If your data are structured, even so slightly, move to a database&lt;/br&gt;
+&lt;small&gt;That's what databases are made for&lt;/small&gt;
 
 --
-5. rent a remote cloud-based service, they will abstract the problem away from you
+5. Rent a remote cloud-based service, they will abstract the problem away from you&lt;/br&gt;
+&lt;small&gt;Like AWS S3, Azure Bloc Blobs, GCP Storage&lt;/small&gt;
 
 ???
 
@@ -106,6 +132,10 @@ Sometimes you don't have the choice. You get data you have to read before you ca
 
 ## What if ... ?
 
+&gt; Kim is data scientist at West Coast Energy. The company is launching a new project where they plan to analyse satellite imagery to identify potential locations for new wind farms.
+&gt; 
+&gt; The high-resolution imagery covers a large area and generates huge amounts of data that cannot be stored on an average desktop computer.
+
 ---
 
 ## What if data is too big to fit on disk ?
@@ -113,19 +143,24 @@ Sometimes you don't have the choice. You get data you have to read before you ca
 .pull-right[![](https://image.flaticon.com/icons/png/512/906/906794.png)]
 
 --
-1. store less (filter, select, sample)
+1. Store less (filter, select, sample) &lt;br&gt;
+&lt;small&gt;Especially for exploratory projects&lt;/small&gt;
 
 --
-2. buy bigger physical disk
+2. Buy bigger physical disk &lt;br&gt;
+&lt;small&gt;(Easier on desktops)&lt;/small&gt;
 
 --
-3. buy your own storage server
+3. Buy your own storage server&lt;br&gt;
+&lt;small&gt;Distribution is transparent. Local replication possible.&lt;/small&gt;
 
 --
-4. rent storage space (file space or database) in the cloud
+4. Rent storage space (file space or database) in the cloud&lt;br&gt;
+&lt;small&gt;It is transparently distributed and replicated over a cluster&lt;br&gt;but there are privacy or sovereignty concerns!&lt;/small&gt;
 
 --
-5. distribute data yourself on several nodes in a cluster
+5. Distribute data on an organisation-hosted cluster&lt;br&gt;
+&lt;small&gt;Quite technical. Local replication possible.&lt;/small&gt;
 
 ???
 
@@ -135,38 +170,50 @@ Database may be helpful, but won't solve the issue of not enough space on the di
 
 ## What if ... ?
 
+&gt; Amin works at an Environmental research organization called Noah's Ark. The organisation is running simulations of climate models to predict future climate patterns and identify potential areas of concern for conservation efforts.
+&gt;
+&gt; The models are borrowed from a preliminary project from a partner university and have a manageable size (a few GB) but executing just one simulation at a low resolution, on a regional scale and in the short run already takes days on Amin's laptop (32 GB of RAM). However, his manager asked for multiple variants based on the IPCC latest scenarii.
+
 ---
 
 ## What if computation takes ages ?
 
-
-.pull-right[![](https://image.flaticon.com/icons/png/512/906/906794.png)]
+--
+1. Do less: filter, select, sample&lt;br&gt;&lt;small&gt;Especially in development stages&lt;br&gt;Processing is the most costly aspect of statistics in production&lt;br&gt;... both in dollars and environmentally-speaking&lt;/small&gt;
 
 --
-1. do less (filter, select, sample), especially in development stages
+4. Profile your code&lt;br&gt;&lt;small&gt;How does it scale ? Where are the bottlenecks?&lt;br&gt;Then focus on these parts&lt;/small&gt;
 
 --
-2. do less (less tests, less formatting)
+2. Do less: less tests, less formatting
 
 --
-3. go low-level (compile, use C or C++, use command shells ... or build chips!)
+2. Use parallelism locally&lt;br&gt;&lt;small&gt;Works on both CPUs and GPUs&lt;/small&gt;
 
 --
-4. profile your code (how does it scale ? where are the bottlenecks?)
+3. Go low-level: compile, use C or C++, use command shells ... or build chips!
+
+---
+
+## What if computation takes ages ?
+
+6\. Buy processors with faster or more cores
+
 
 --
-5. buy bigger or more cores
+7\. Move computation closer to the data source in a first stage and use the ouputs for final computation&lt;br&gt;&lt;small&gt;This redirects the computation load towards the data source&lt;/small&gt;
+
 
 --
-6. rent cores on the cloud
+8\. Rent low-level infrastructure (virtual machines) or high-level computing service (such AWS SageMaker) over the cloud &lt;br&gt;&lt;small&gt;Same privacy or sovereignty concerns as before&lt;/small&gt;
+
 
 --
-7. avoid i/o or network operations
+9\. Avoid i/o or network operations
+
 
 --
-8. **parallelise on non-local nodes**
-
-]
+10\. Use a supercomputer, a grid or a cluster&lt;br&gt;&lt;small&gt;Developing your own cluster solution may be quite challenging&lt;br&gt;... using one less so&lt;/small&gt;
 
 ---
 
@@ -176,22 +223,20 @@ Database may be helpful, but won't solve the issue of not enough space on the di
 
 ## What if computation / storage is too expensive ?
 
-.pull-right[![](https://image.flaticon.com/icons/png/512/906/906794.png)]
+--
+1. Store or compute less (filter, select, sample)
 
 --
-1. store or compute less (filter, select, sample)
+2. Consider cloud computing&lt;br&gt;&lt;small&gt;Not always cheaper, though!&lt;/small&gt;
 
 --
-2. consider cloud computing&lt;br&gt;&lt;small&gt;Not always cheaper, though!&lt;/small&gt;
+3. Be careful with databases requests&lt;br&gt;&lt;small&gt;(When you pay on read)&lt;/small&gt;
 
 --
-3. be careful with databases requests
+4. Go from RAM (expensive) to disk (cheap)
 
 --
-4. go from RAM (expensive) to disk (cheap)
-
---
-5. use smaller but many computing units (ex: scientific grids)
+5. Use smaller but more computing units&lt;br&gt;&lt;small&gt;Scientific grids, edge computing, fog computing, etc.&lt;br&gt;Technically challenging&lt;/small&gt;
 
 ???
 
@@ -205,13 +250,10 @@ Database may be helpful, but won't solve the issue of not enough space on the di
 
 ## What if data i/o is too fast ?
 
-.pull-right[![](https://image.flaticon.com/icons/png/512/906/906794.png)]
+1. For computing: pipelining (overlapping chunk processing), stream (never-ending one-by-one processing)
 
 --
-1. for computing: pipeline (overlapping chunk processing), stream (never-ending one-by-one processing)
-
---
-2. for storage: fast databases
+2. For storage: fast databases
 
 ---
 
@@ -221,10 +263,8 @@ Database may be helpful, but won't solve the issue of not enough space on the di
 
 ## What if data i/o is too varied ?
 
-.pull-right[![](https://image.flaticon.com/icons/png/512/906/906794.png)]
-
 --
-1. dedicated file systems and databases
+1. Dedicated file systems and databases
 
 This is ultimately not a computation issue.
     </textarea>
@@ -275,6 +315,19 @@ if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
     deleted = true;
   });
 })();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
 (function() {
   "use strict"
   // Replace <script> tags in slides area to make them executable

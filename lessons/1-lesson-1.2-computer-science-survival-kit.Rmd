@@ -2,6 +2,7 @@
 title: | 
     | Introduction to Big Data
     | Lesson 1.2 Computer science survival kit
+date: "Tuesday, March 29, 2023"
 author: "Arthur Katossky & Rémi Pépin"
 output: 
   xaringan::moon_reader:
@@ -11,6 +12,7 @@ output:
       scroll: false
       countIncrementalSlides: false
     css: ["css/xaringan-themer.css", "css/mine.css"]
+    self_contained: true
 ---
 
 ```{r setup, include=FALSE}
@@ -24,7 +26,7 @@ knitr::opts_chunk$set(echo = FALSE)
 A computer can be abstracted by four key components:
 
 --
-- processing (FR: processeurs)
+- processing (FR: capacité de calcul)
 
 --
 - memory (FR: mémoire vive)
@@ -33,7 +35,7 @@ A computer can be abstracted by four key components:
 - storage (FR: stockage)
 
 --
-- wiring / network (FR: connexions / réseau)
+- wiring / network (FR: réseau)
 
 ???
 
@@ -74,7 +76,7 @@ A processor performance is measured in how many operations it can perform per se
 - **instructions are stored sequentially** in one or several stacks / threads / queues
 
 --
-- Mono vs multi threaded application.     
+- one program / application may access several treads (**multi-threading**)
 
 --
 - **processors can be specialized** (e.g. GPU)
@@ -118,10 +120,10 @@ Processors have made incredible progress over time. And this keeps happening.
 
 **Processing is a limitting factor.**
 
-- processors are **the most expensive part** of the hardware
+- processors are **the most expensive part** of the hardware at buy time
 - energy consumption of the processors are the **main cost of computation**
 - one core can **only** perform **so many operations** per second
-- it is **non-trivial** problem to **coordinate multiple processors** on the same complex task
+- it is **non-trivial** to **coordinate multiple processors** on the same complex task
 
 ???
 
@@ -160,7 +162,7 @@ Memory efficiency is measured by how much information it can contain and how fas
 - memory is **volatile** (lost in case of power interruption)
 
 --
-- memory-processor units are **heavily** optimized
+- memory-processor units are heavily **optimized**
 
 --
 - processors always access the the hard disk through **memory caching**
@@ -185,9 +187,13 @@ Source : https://aiimpacts.org/trends-in-dram-price-per-gigabyte/
 
 **Memory is a limitting factor.**
 
-- it is non trivial to work with data that **can't fit into memory**
-- memory is **the second-most expensive part** of a computer
-- memory is **shared** with other programs on the computer
+- it is **non trivial** to work with data that **can't fit into memory**
+- memory is **the second-most expensive part** of a computer at buy time
+- memory is **shared** with other programs on the computer ¹
+
+.footnote[
+¹ <small>Or with other users in case of shared server.</small>
+]
 
 ???
 
@@ -195,7 +201,7 @@ We can readily perform computation only on a chunk of data that can fit into mem
 
 <!-- graph of the veolution of memory size -->
 
-[2]: Formally, there is intermediate memory between RAM and the processor: the CPU register is closest to the processor, then comes the CPU cache, on which the computer moves data and instructions that need to for efficiency reasons. "Caching" in general refers to the act of copying a piece of information closer to the place it will be used, such as when storing a local copy of website while navigating over the Internet. RAM (random access memory) is the most-used type of memory.
+[2]: Formally, there is intermediate memory between RAM and the processor: the CPU register is closest to the processor, then comes the CPU cache, on which the computer moves data and instructions that need to for efficiency reasons. "Caching" in general refers to the act of copying a piece of information closer to the place it will be used, such as when storing a local copy of website while navigating over the Internet.
 
 ---
 
@@ -209,10 +215,10 @@ background-size: contain
 - for long-term storage of information
 
 --
-- can have **multiple forms**: electronic disk (SSD), magnetic disk (hard disk, floppy disk), physical engraving (vinyls, CDs, DVDs), magnetic tape, paper (books, punch cards, bar codes, QR codes), biological (DNA), etc.
+- can have **multiple forms**: transistor plates (USB sticks, SSD), magnetic disks (hard disk, floppy disk), physical engraving (vinyls, CDs, DVDs), magnetic tape, paper (books, punch cards, bar codes, QR codes), biological (DNA), etc.
 
 --
-- commonly referred to as "(disk / storage) space" or "(hard) disk"
+- commonly referred to as "(disk / storage) space" or "(hard) disk" (even when no disk is involved)
 
 --
 - **non-volatile**, contrary to memory
@@ -304,7 +310,7 @@ What is important to know for us:
 - on a given computer, **you can only store so much**
 
 --
-- dealing with **files distributed over multiple computers** is non-trivial
+- dealing with files **distributed** over multiple computers is **non-trivial**
 
 --
 
@@ -335,7 +341,7 @@ On a given computer, we can only store so much. Today's price of disk space does
 
 ## Network
 
-For transferring volumes above 1 Po (1000 To) to their servers, Amazon actually sends a truck, which is faster than a fast Internet connection.
+For transferring volumes above 1 Po (1024 To) to their servers, Amazon actually sends a truck, which is faster than a fast Internet connection (https://aws.amazon.com/fr/snowmobile).
 
 .height400[![](img/storage/snowmobile.png)]
 

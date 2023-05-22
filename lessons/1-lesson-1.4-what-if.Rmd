@@ -2,6 +2,7 @@
 title: | 
     | Introduction to Big Data
     | Lesson 1.4 What if ... ?
+date: "Tuesday, March 29, 2023"
 author: "Arthur Katossky & Rémi Pépin"
 output: 
   xaringan::moon_reader:
@@ -11,6 +12,7 @@ output:
       scroll: false
       countIncrementalSlides: false
     css: ["css/xaringan-themer.css", "css/mine.css"]
+    self_contained: true
 ---
 
 ```{r setup, include=FALSE}
@@ -18,6 +20,13 @@ knitr::opts_chunk$set(echo = FALSE)
 ```
 
 ## What if ... ?
+
+--
+> Jane is a data analyst at Acme Corporation, a large online retailer.
+> 
+> She needs to build a model to predict which customers are most likely to make a purchase in the next month so they can target them with personalized marketing campaigns. She thinks of a standard linear regression however the purchase data weighs 2To and is too large to fit in memory on her computer (16GB of RAM) or on the company's server (500 Go of RAM).
+
+.footnote[Example adapted form suggestion by GPT-3.5.]
 
 ???
 
@@ -30,7 +39,7 @@ We have to distinguish between estimation of a statistical model (always the sam
 .pull-right[![](https://www.flaticon.com/free-icons/question-mark)]
 
 --
-1. Buy more/bigger  </br>
+1. Buy more / bigger memory cards</br>
 --
 Easy but expensive. Not the best solution
 
@@ -42,16 +51,25 @@ Do you really need all this data ? Can statistic help you ?
 --
 3. Do things in chunks / stream </br>
 --
-Need to rethink the process. Or to use exotic libraries 
+Need to rethink the process. Or to use exotic libraries.
 
 --
-4. Distribute the data </br>
+4. Rent one virtual machine in the cloud</br>
 --
-Go to the cloud, or use a Spark cluster, use in DB processes ...
+Need to store the data at the same service provider.
+
+--
+5. Use a computing service</br>
+--
+For simple uses (exploratory statistics, mainstream ML), cloud providers have your back
 
 ---
 
 ## What if ... ?
+
+> Sarah works at Global Logistics Inc., a transportation company. There, she analyzes GPS data from the company's fleet of vehicles to optimize routes and fuel consumption.
+>
+> The data is stored on a dedicated server, where each new datum is appended to a gigantic text file. Some day, Sarah faces a single 5 Go file, but her workstation runs under Windows with FAT32 file system and she cannot open it anymore. When she borrows her manager's computer and tries to open the file from the file explorer, it takes 15 minutes just to open and the whole operating system is slowed down.
 
 ---
 
@@ -61,24 +79,23 @@ Go to the cloud, or use a Spark cluster, use in DB processes ...
 
 --
 1. Update file system </br>
---
-No more FAT32
+<small>No more FAT32</small>
 
 --
 2. Import less data (filter, select, sample)</br>
---
-For a small experimentation, you don't need 2To of data
+<small>For a small experimentation, you don't need 2To of data</small>
 
 --
-3. Cut file into pieces and process in chunks<br><small>for instance 1 file per day</small>
+3. Cut file into pieces and process in chunks<br>
+<small>For instance 1 file per day<br>(many data formats are text under the hood)</small>
 
 --
-4. If you file is slight structured, go onto databases, that's what they are made for
+4. If your data are structured, even so slightly, move to a database</br>
+<small>That's what databases are made for</small>
 
 --
 5. Rent a remote cloud-based service, they will abstract the problem away from you</br>
---
-Like AWS S3, Azure Bloc Blobs 
+<small>Like AWS S3, Azure Bloc Blobs, GCP Storage</small>
 
 ???
 
@@ -106,6 +123,10 @@ Sometimes you don't have the choice. You get data you have to read before you ca
 
 ## What if ... ?
 
+> Kim is data scientist at West Coast Energy. The company is launching a new project where they plan to analyse satellite imagery to identify potential locations for new wind farms.
+> 
+> The high-resolution imagery covers a large area and generates huge amounts of data that cannot be stored on an average desktop computer.
+
 ---
 
 ## What if data is too big to fit on disk ?
@@ -113,19 +134,24 @@ Sometimes you don't have the choice. You get data you have to read before you ca
 .pull-right[![](https://image.flaticon.com/icons/png/512/906/906794.png)]
 
 --
-1. store less (filter, select, sample)
+1. Store less (filter, select, sample) <br>
+<small>Especially for exploratory projects</small>
 
 --
-2. buy bigger physical disk
+2. Buy bigger physical disk <br>
+<small>(Easier on desktops)</small>
 
 --
-3. buy your own storage server
+3. Buy your own storage server<br>
+<small>Distribution is transparent. Local replication possible.</small>
 
 --
-4. rent storage space (file space or database) in the cloud
+4. Rent storage space (file space or database) in the cloud<br>
+<small>It is transparently distributed and replicated over a cluster<br>but there are privacy or sovereignty concerns!</small>
 
 --
-5. distribute data yourself on several nodes in a cluster
+5. Distribute data on an organisation-hosted cluster<br>
+<small>Quite technical. Local replication possible.</small>
 
 ???
 
@@ -135,38 +161,50 @@ Database may be helpful, but won't solve the issue of not enough space on the di
 
 ## What if ... ?
 
+> Amin works at an Environmental research organization called Noah's Ark. The organisation is running simulations of climate models to predict future climate patterns and identify potential areas of concern for conservation efforts.
+>
+> The models are borrowed from a preliminary project from a partner university and have a manageable size (a few GB) but executing just one simulation at a low resolution, on a regional scale and in the short run already takes days on Amin's laptop (32 GB of RAM). However, his manager asked for multiple variants based on the IPCC latest scenarii.
+
 ---
 
 ## What if computation takes ages ?
 
-
-.pull-right[![](https://image.flaticon.com/icons/png/512/906/906794.png)]
+--
+1. Do less: filter, select, sample<br><small>Especially in development stages<br>Processing is the most costly aspect of statistics in production<br>... both in dollars and environmentally-speaking</small>
 
 --
-1. do less (filter, select, sample), especially in development stages
+4. Profile your code<br><small>How does it scale ? Where are the bottlenecks?<br>Then focus on these parts</small>
 
 --
-2. do less (less tests, less formatting)
+2. Do less: less tests, less formatting
 
 --
-3. go low-level (compile, use C or C++, use command shells ... or build chips!)
+2. Use parallelism locally<br><small>Works on both CPUs and GPUs</small>
 
 --
-4. profile your code (how does it scale ? where are the bottlenecks?)
+3. Go low-level: compile, use C or C++, use command shells ... or build chips!
+
+---
+
+## What if computation takes ages ?
+
+6\. Buy processors with faster or more cores
+
 
 --
-5. buy bigger or more cores
+7\. Move computation closer to the data source in a first stage and use the ouputs for final computation<br><small>This redirects the computation load towards the data source</small>
+
 
 --
-6. rent cores on the cloud
+8\. Rent low-level infrastructure (virtual machines) or high-level computing service (such AWS SageMaker) over the cloud <br><small>Same privacy or sovereignty concerns as before</small>
+
 
 --
-7. avoid i/o or network operations
+9\. Avoid i/o or network operations
+
 
 --
-8. **parallelise on non-local nodes**
-
-]
+10\. Use a supercomputer, a grid or a cluster<br><small>Developing your own cluster solution may be quite challenging<br>... using one less so</small>
 
 ---
 
@@ -176,22 +214,20 @@ Database may be helpful, but won't solve the issue of not enough space on the di
 
 ## What if computation / storage is too expensive ?
 
-.pull-right[![](https://image.flaticon.com/icons/png/512/906/906794.png)]
+--
+1. Store or compute less (filter, select, sample)
 
 --
-1. store or compute less (filter, select, sample)
+2. Consider cloud computing<br><small>Not always cheaper, though!</small>
 
 --
-2. consider cloud computing<br><small>Not always cheaper, though!</small>
+3. Be careful with databases requests<br><small>(When you pay on read)</small>
 
 --
-3. be careful with databases requests
+4. Go from RAM (expensive) to disk (cheap)
 
 --
-4. go from RAM (expensive) to disk (cheap)
-
---
-5. use smaller but many computing units (ex: scientific grids)
+5. Use smaller but more computing units<br><small>Scientific grids, edge computing, fog computing, etc.<br>Technically challenging</small>
 
 ???
 
@@ -205,13 +241,10 @@ Database may be helpful, but won't solve the issue of not enough space on the di
 
 ## What if data i/o is too fast ?
 
-.pull-right[![](https://image.flaticon.com/icons/png/512/906/906794.png)]
+1. For computing: pipelining (overlapping chunk processing), stream (never-ending one-by-one processing)
 
 --
-1. for computing: pipeline (overlapping chunk processing), stream (never-ending one-by-one processing)
-
---
-2. for storage: fast databases
+2. For storage: fast databases
 
 ---
 
@@ -221,9 +254,7 @@ Database may be helpful, but won't solve the issue of not enough space on the di
 
 ## What if data i/o is too varied ?
 
-.pull-right[![](https://image.flaticon.com/icons/png/512/906/906794.png)]
-
 --
-1. dedicated file systems and databases
+1. Dedicated file systems and databases
 
 This is ultimately not a computation issue.

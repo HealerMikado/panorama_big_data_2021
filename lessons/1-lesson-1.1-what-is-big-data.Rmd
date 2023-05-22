@@ -2,8 +2,9 @@
 title: | 
     | Introduction to Big Data
     | Lesson 1.1 What is big data?
+date: "Tuesday, March 29, 2023"
 author: "Arthur Katossky & Rémi Pépin"
-output: 
+output:
   xaringan::moon_reader:
     nature:
       highlightLines: 
@@ -11,6 +12,7 @@ output:
       scroll: false
       countIncrementalSlides: false
     css: ["css/xaringan-themer.css", "css/mine.css"]
+    self_contained: true
 ---
 
 ```{r setup, include=FALSE}
@@ -20,6 +22,10 @@ library(tidyverse)
 
 <!-- intro sur la quantité de données produites -->
 <img src="http://allaccess.com/assets/img/content/merge/2021/m-4-13-pic2.jpg" class="border" style="width: 60%; display: block; margin-left: auto;margin-right: auto"  />
+
+---
+
+<blockquote class="twitter-tweet"><p lang="en" dir="ltr">Me taking algorithms class in college: &quot;Ugh, no one cares about computational complexity of all these sorting algorithms&quot; <br><br>Me trying to sort on a column in a 20TB <a href="https://twitter.com/hashtag/spark?src=hash&amp;ref_src=twsrc%5Etfw">#spark</a> table: &quot;Why is this taking so long?&quot; <a href="https://twitter.com/hashtag/DataScience?src=hash&amp;ref_src=twsrc%5Etfw">#DataScience</a> struggles.</p>&mdash; Nick Strayer (@NicholasStrayer) <a href="https://twitter.com/NicholasStrayer/status/1105127759318319105?ref_src=twsrc%5Etfw">March 11, 2019</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 
 ---
 
@@ -43,7 +49,7 @@ library(tidyverse)
 
 --
 
-- is inherently relative to _**who**_ is using it and _**when**_ data are used
+- is inherently relative to _**who**_ is using it and _**where**_
 
 ???
 
@@ -260,11 +266,11 @@ To this day, can be considered "big" for a data analyst :
 What is usually **not** an issue:
 
 - file size on modern OS ³
-- DBMS *constraints* ⁴
+- database management systems' *constraints* ⁴
 
 --
 
-What is usually an issue:
+What **is** usually an issue:
 - your physical storage
 - computation time
 
@@ -285,9 +291,19 @@ Source:
 
 To this day, **any data change is challenging** for a data analyst :
 
-- **most data analysis is done with data at rest**
+- most data analysis is done with **data "at rest"**
+- version control (slow-changing data) or stream (fast-changing)
+
+--
+- current effort to port version control from code to data and to processing pipelines ¹
+
+--
 - most spreadsheet or statistical software is not well adapted to streams of data
 - processing data streams can be challenging (delay, keep the order, retrain the model ?)
+
+.footnote[
+¹ <small>Processing pipelines notably include (but are not restricted to) data wrangling, ETL (extract, transform and load) and ML-Ops (machine-leaning operations ; e.g updating machine-learning model when in production).</small>
+]
 
 ???
 Retrain a model takes time
@@ -370,7 +386,7 @@ Shift from:
 
 To:
 
-> How better do my estimations become **for each additional second of computation**?
+> How better do my estimations become **for each FLOP** (floating-point operation) ? Or **for each additional second of computation** ? Or **for each extra kWh** spent ?
 
 - We often can't use all the data we have at hand
 
@@ -424,6 +440,10 @@ There are also political considerations: autonomy ; population, election manipul
 
 --
 - computational issues cumulate (e.g. rounding errors)
+
+--
+- with streams, all data may not arrive at once then we need algorithms that can be updated when new data arrive
+- even if data is random, the order in which we receive the data may not be and we need algorithms that can guarantee good beahviour in this locally non-independent context ; this is the field of online learning
 
 ???
 

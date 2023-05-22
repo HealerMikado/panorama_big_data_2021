@@ -11,6 +11,7 @@ output:
       scroll: false
       countIncrementalSlides: false
     css: ["css/xaringan-themer.css", "css/mine.css"]
+    self_contained: true
 ---
 
 ## Ethical issues
@@ -22,6 +23,7 @@ output:
 - **Security** : more data collected = more risk of data breaches = more cyber attacks
 - **Captology** : using data to influence people or keeping then engage (*doomscrolling*) 
 
+Engaging all of these aspects is hard and clearly a team job. One may want to use reference guidelines. Take a look at [the Deon project](https://github.com/drivendataorg/deon) for an instance.
 
 ???
 
@@ -42,38 +44,35 @@ output:
 ## Do data scientists do it on purpose ?
 --
 
-NO !
+NO ! (most of the time)
 --
 
 - ML model learn from input data
-- If your input data are biased : lake of diversity or based on biased processes your model will be biased
+- Most data collection is biased towards well-off young males of European ancestry
+- Social prejudices are embedded into data and retrieved by algorithms
 
 --
 
-Hard to find biased in your data if you don't realize that some groups are discriminated and in what extend.
-
---
-
-The best solution is to have a team with multiple profiles with multiple points of view !
+Possible solutions :
+1. have a team with multiple profiles with multiple points of view
+2. always allow user feedbacks and do not dismiss criticism
+3. plan ahead about the potential harms of you data-based solution
 
 ---
 
 ## Environmental issues
 
-- **Energy consumption** : the Internet : 10% electricity consumption worldwide, 1 data center = consumption of 30 000 habs.[1]
-- **E-Waste / Rare earth metals** : need to recycle components ! Computers use rare earth metals, usually mined in developing countries (working regulation ? pollution ?). Risk of run out in the future. 
-- **Carbon Emissions / Water consumption** : building and running data center are polluting. Data center operator try to build green data center by producing their own energy.
+- **Energy consumption**<br>The Internet : 10% electricity consumption worldwide<br>1 data center = consumption of 30 000 habs ¹
+- **Matter matters**<br>Computers use metals (including rare earths), usually mined in developing countries wit low regulation and releasing tremendous amounts of pollutants 
+- **Carbon Emissions / Water consumption**<br>Building and running data centres is polluting.<br><small>Data centre operator try to build green data centre by producing their own energy. Data centers can be couples with district heating (ex: Microsoft in Finland).</small>
 
+.footnote[
+¹ <small>[Source](https://www.fournisseur-energie.com/internet-plus-gros-pollueur-de-planete/)</small>
+]
 
 --
 
-Even if efforts are made to reduce all those issues, because it's easy to use the overall energy consumption of big data increase. Rebound effect
---
-
-Big infrastructures are not always the best solution. Try to be as sober as possible.
-
-
-.footnote[[1][source](https://www.fournisseur-energie.com/internet-plus-gros-pollueur-de-planete/)]
+Big infrastructures are not always the most environmentally-friendly solution. Active work currently for measuring and mitigating environmental impacts of computing.
 
 ???
 
@@ -82,18 +81,26 @@ Big infrastructures are not always the best solution. Try to be as sober as poss
 - but also what to do with all the waste
 -  Cloud computing makes it easy to get state of the art infrastructures. Current python libraries make machine learning accessible. It's easier than ever to train and deploy consumming application so lot of companies does that.
 
+
+Even if efforts are made to reduce all those issues, because it's easy to use the overall energy consumption of big data increase. Rebound effect
+
 ---
 
 ## Political issues
 
-- **Surveillance** : easy to watch people in the current era. Like targeted add, or detecting odd behavior with pattern detection.
-- **Misinformation** : target contents to polarize people (electoral manipulation), distilled propaganda (Chinese video on TikTok). Not new phenomenon, big data helps to industrialize it.
-- **Biased algorithm** : decision-making algorithm are widely spread but they are mostly biased because of the training data. How to prevent that ?
-- **Transparency** : ML algorithm seems magical by lot of people. It's important to explain how they work and IA models are not intelligent (like chatGPT3)
-- **GAFAM** : currently Europe is dependent of American companies. OVH growing but sill behind. We are financing US company by using their services.
+- **Surveillance** : Easy to watch people in the current era. Like targeted add, or detecting odd behaviour with pattern detection.
+- **War** : A lot of the AI research is directed towards autonomous weapons.
+- **Misinformation** : Target contents to polarize people (electoral manipulation), distilled propaganda (Chinese video on TikTok). Not new phenomenon, big data helps to industrialize it.
+- **Transparency** : Algorithmic decisions that impact people's life (grants, asylum, access to essential services, etc.) deserve to be explicit and transparent ; however this exposes the decision to adversarial selection
+- **Sovereignty** : currently Europe is dependent of American companies. OVH growing but sill behind. We are financing US company by using their services.
 
-> It's a complex problem for ours democraties. Big data is here and will stay. Peoples need to be educated to understand the current state of the world.
+---
+
+## Conclusion
+
+It's a complex problem for ours democraties. Big data is here and will stay. Peoples need to be educated to understand the current state of the world.
 
 ???
 
 - what independance do you get when all the data is in the hand of a handful of American companies? see the struggle of OVH for existing on this market
+ML algorithms seem magical by lot of people. It's important to explain how they work and IA models are not intelligent (like chatGPT3)
